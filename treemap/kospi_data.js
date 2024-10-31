@@ -74,11 +74,11 @@ $.get(
             let value = info.value;
             let amount = value[0];
             amount = isValidNumber(amount)
-              ? echarts.format.addCommas(amount * 1000) + '$'
+              ? echarts.format.addCommas(amount) + '원'
               : '-';
             let amount2011 = value[1];
             amount2011 = isValidNumber(amount2011)
-              ? echarts.format.addCommas(amount2011 * 1000) + '$'
+              ? echarts.format.addCommas(amount2011) + '원'
               : '-';
             let change = value[2];
             change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
@@ -86,9 +86,9 @@ $.get(
               '<div class="tooltip-title">' +
                 echarts.format.encodeHTML(info.name) +
                 '</div>',
-              '2012 Amount: &nbsp;&nbsp;' + amount + '<br>',
-              '2011 Amount: &nbsp;&nbsp;' + amount2011 + '<br>',
-              'Change From 2011: &nbsp;&nbsp;' + change
+              '금일종가: &nbsp;&nbsp;' + amount + '<br>',
+              '전일종가: &nbsp;&nbsp;' + amount2011 + '<br>',
+              '변동율: &nbsp;&nbsp;' + change
             ].join('');
           }
         },
