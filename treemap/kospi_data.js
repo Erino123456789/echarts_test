@@ -80,16 +80,16 @@ $.get(
             pre_cap = isValidNumber(pre_cap)
               ? echarts.format.addCommas(pre_cap) + '원'
               : '-';
-            let now_price = value[1];
+            let change = value[2];
+            change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
+            let now_price = value[3];
             now_price = isValidNumber(now_price)
               ? echarts.format.addCommas(now_price) + '원'
               : '-';
-            let pre_price = value[1];
+            let pre_price = value[4];
             pre_price = isValidNumber(pre_price)
               ? echarts.format.addCommas(pre_price) + '원'
               : '-';
-            let change = value[2];
-            change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
             return [
               '<div class="tooltip-title">' +
                 echarts.format.encodeHTML(info.name) +
