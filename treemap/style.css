@@ -1,23 +1,26 @@
+/* 기존 CSS */
 * {
   margin: 0;
   padding: 0;
 }
+
 #chart-container {
   position: relative;
   height: 100vh;
   overflow: hidden;
 }
-body {
+
+/* h1 스타일 설정 */
+h1 {
   font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; /* 맑은 고딕 설정 */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 수평 중앙 정렬 */
-  justify-content: center; /* 수직 중앙 정렬 */
-  height: 100vh; /* 전체 화면 높이 */
+  text-align: center; /* 제목 중앙 정렬 */
+  margin-bottom: 20px; /* 제목과 버튼 간격 */
 }
 
-h1 {
-  margin-bottom: 20px; /* 제목과 버튼 간격 */
+/* 버튼을 옆으로 나열 */
+.button-container {
+  display: flex; /* flexbox를 사용하여 버튼을 옆으로 나열 */
+  justify-content: center; /* 수평 중앙 정렬 */
 }
 
 button {
