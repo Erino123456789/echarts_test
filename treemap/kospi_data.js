@@ -34,24 +34,24 @@ $.get(
           let value = node.value;
           // Scale value for visual effect
           if (value[2] != null && value[2] > 0) {
-            value[3] = echarts.number.linearMap(
+            value[5] = echarts.number.linearMap(
               value[2],
               [0, max],
               [visualMaxBound, visualMax],
               true
             );
           } else if (value[2] != null && value[2] < 0) {
-            value[3] = echarts.number.linearMap(
+            value[5] = echarts.number.linearMap(
               value[2],
               [min, 0],
               [visualMin, visualMinBound],
               true
             );
           } else {
-            value[3] = 0;
+            value[5] = 0;
           }
-          if (!isFinite(value[3])) {
-            value[3] = 0;
+          if (!isFinite(value[5])) {
+            value[5] = 0;
           }
           if (node.children) {
             convertData(node.children);
