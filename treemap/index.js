@@ -117,7 +117,7 @@ $.get(
                 }
               },
               {
-                color: ['#942e38', '#aaa', '#269f3c'],
+                color: ['#269f3c', '#aaa', '#942e38'],
                 colorMappingBy: 'value',
                 itemStyle: {
                   gapWidth: 1
