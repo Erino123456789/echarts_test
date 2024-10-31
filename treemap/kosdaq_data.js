@@ -147,3 +147,6 @@ $.get(
 if (option && typeof option === 'object') {
   myChart.setOption(option);
 }
+
+
+window.addEventListener('resize', myChart.resize);
