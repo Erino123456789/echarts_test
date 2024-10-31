@@ -24,8 +24,8 @@ $.get(
         let node = originList[i];
         if (node) {
           let value = node.value;
-          value[2] != null && value[2] < min && (min = value[2]);
-          value[2] != null && value[2] > max && (max = value[2]);
+          value[4] != null && value[4] < min && (min = value[4]);
+          value[4] != null && value[4] > max && (max = value[4]);
         }
       }
       for (let i = 0; i < originList.length; i++) {
@@ -33,16 +33,16 @@ $.get(
         if (node) {
           let value = node.value;
           // Scale value for visual effect
-          if (value[2] != null && value[2] > 0) {
+          if (value[4] != null && value[2] > 0) {
             value[5] = echarts.number.linearMap(
-              value[2],
+              value[4],
               [0, max],
               [visualMaxBound, visualMax],
               true
             );
-          } else if (value[2] != null && value[2] < 0) {
+          } else if (value[4] != null && value[2] < 0) {
             value[5] = echarts.number.linearMap(
-              value[2],
+              value[4],
               [min, 0],
               [visualMin, visualMinBound],
               true
@@ -80,16 +80,16 @@ $.get(
             pre_cap = isValidNumber(pre_cap)
               ? echarts.format.addCommas(pre_cap) + '원'
               : '-';
-            let change = value[2];
-            change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
-            let now_price = value[3];
+            let now_price = value[2];
             now_price = isValidNumber(now_price)
               ? echarts.format.addCommas(now_price) + '원'
               : '-';
-            let pre_price = value[4];
+            let pre_price = value[3];
             pre_price = isValidNumber(pre_price)
               ? echarts.format.addCommas(pre_price) + '원'
               : '-';
+            let change = value[4];
+            change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
             return [
               '<div class="tooltip-title">' +
                 echarts.format.encodeHTML(info.name) +
