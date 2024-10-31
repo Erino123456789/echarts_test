@@ -33,16 +33,16 @@ $.get(
         if (node) {
           let value = node.value;
           // Scale value for visual effect
-          if (value[1] != null && value[2] > 0) {
+          if (value[2] != null && value[2] > 0) {
             value[5] = echarts.number.linearMap(
-              value[1],
+              value[2],
               [0, max],
               [visualMaxBound, visualMax],
               true
             );
-          } else if (value[1] != null && value[2] < 0) {
+          } else if (value[2] != null && value[2] < 0) {
             value[5] = echarts.number.linearMap(
-              value[1],
+              value[2],
               [min, 0],
               [visualMin, visualMinBound],
               true
@@ -50,7 +50,7 @@ $.get(
           } else {
             value[5] = 0;
           }
-          if (!isFinite(value[5])) {
+          if (!isFinite(value[3])) {
             value[5] = 0;
           }
           if (node.children) {
@@ -107,6 +107,10 @@ $.get(
             name: 'ALL',
             top: 80,
             type: 'treemap',
+            upperLabel: {
+              show: true,
+              color: '#fff'
+            },
             label: {
               show: true,
               formatter: '{b}'
@@ -116,7 +120,7 @@ $.get(
             },
             visualMin: visualMin,
             visualMax: visualMax,
-            visualDimension: 3,
+            visualDimension: 5,
             levels: [
               {
                 itemStyle: {
@@ -126,7 +130,7 @@ $.get(
                 }
               },
               {
-                color: ['#269f3c', '#aaa', '#942e38'],
+                color: ['#942e38', '#aaa', '#269f3c'],
                 colorMappingBy: 'value',
                 itemStyle: {
                   gapWidth: 1
