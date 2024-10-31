@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>KOSPI/KOSDAQ MAP Demo</title>
-  <link rel="stylesheet" href="./style.css">
+  <title>Gradient Mapping - Apache ECharts Demo</title>
+  <link rel="stylesheet" href="./style.css"> <!-- CSS 파일 링크 -->
   <script>
     function loadScript(scriptName) {
         const script = document.createElement('script');
@@ -14,12 +14,15 @@
 </head>
 <body>
   <h1>주식 지수 선택</h1>
-  <button onclick="loadScript('./kospi_data.js')">KOSPI</button>
-  <button onclick="loadScript('./kosdaq_data.js')">KOSDAQ</button>
+  <div class="button-container">
+    <button onclick="loadScript('./kospi_data.js')">KOSPI</button>
+    <button onclick="loadScript('./kosdaq_data.js')">KOSDAQ</button>
+  </div>
 
   <div id="chart-container"></div>
   
   <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script src="./kospi_data.js"></script>
 </body>
 </html>
