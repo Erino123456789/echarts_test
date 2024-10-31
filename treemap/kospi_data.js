@@ -73,21 +73,31 @@ $.get(
           formatter: function (info) {
             let value = info.value;
             let amount = value[0];
-            amount = isValidNumber(amount)
-              ? echarts.format.addCommas(amount) + '원'
+            now_marketcap = isValidNumber(now_marketcap)
+              ? echarts.format.addCommas(now_marketcap) + '원'
               : '-';
-            let amount2011 = value[1];
-            amount2011 = isValidNumber(amount2011)
-              ? echarts.format.addCommas(amount2011) + '원'
+            let pre_marketcap = value[1];
+            pre_marketcap = isValidNumber(pre_marketcap)
+              ? echarts.format.addCommas(pre_marketcap) + '원'
               : '-';
-            let change = value[2];
+            let pre_marketcap = value[2];
+            now_price = isValidNumber(now_price)
+              ? echarts.format.addCommas(now_price) + '원'
+              : '-';
+            let pre_marketcap = value[3];
+            pre_price = isValidNumber(pre_price)
+              ? echarts.format.addCommas(pre_price) + '원'
+              : '-';
+            let change = value[4];
             change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
             return [
               '<div class="tooltip-title">' +
                 echarts.format.encodeHTML(info.name) +
                 '</div>',
-              '금일종가: &nbsp;&nbsp;' + amount + '<br>',
-              '전일종가: &nbsp;&nbsp;' + amount2011 + '<br>',
+              '금일시가총액: &nbsp;&nbsp;' + now_marketcap + '<br>',
+              '전일시가총액: &nbsp;&nbsp;' + pre_marketcap + '<br>',
+              '금일종가: &nbsp;&nbsp;' + now_price + '<br>',
+              '전일종가: &nbsp;&nbsp;' + pre_price + '<br>',
               '변동율: &nbsp;&nbsp;' + change
             ].join('');
           }
