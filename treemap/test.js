@@ -11,6 +11,7 @@ option = {
   series: [
     {
       type: 'treemap',
+      name: 'Main'
       data: [
         {
           name: 'nodeA',
