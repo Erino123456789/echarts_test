@@ -72,7 +72,7 @@ $.get(
         tooltip: {
           formatter: function (info) {
             let value = info.value;
-            let amount = value[0];
+            let now_marketcap = value[0];
             now_marketcap = isValidNumber(now_marketcap)
               ? echarts.format.addCommas(now_marketcap) + '원'
               : '-';
@@ -80,11 +80,11 @@ $.get(
             pre_marketcap = isValidNumber(pre_marketcap)
               ? echarts.format.addCommas(pre_marketcap) + '원'
               : '-';
-            let pre_marketcap = value[2];
+            let now_price = value[2];
             now_price = isValidNumber(now_price)
               ? echarts.format.addCommas(now_price) + '원'
               : '-';
-            let pre_marketcap = value[3];
+            let pre_price = value[3];
             pre_price = isValidNumber(pre_price)
               ? echarts.format.addCommas(pre_price) + '원'
               : '-';
