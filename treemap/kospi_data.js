@@ -10,7 +10,7 @@ var option;
 myChart.showLoading();
 const household_america_2012 = 113616229;
 $.get(
-  './obama_budget_proposal_2012.json',
+  './kospi_data.json',
   function (obama_budget_2012) {
     myChart.hideLoading();
     const visualMin = -100;
