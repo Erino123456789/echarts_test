@@ -110,6 +110,9 @@ $.get(
               show: true,
               color: '#fff'
             },
+            breadcrumb: {
+              show: false
+            },
             labelLayout: function (params) {
               if (params.rect.width < 5 || params.rect.height < 5) {
                   return {  fontSize: 0  };
