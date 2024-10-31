@@ -110,6 +110,10 @@ $.get(
               show: true,
               color: '#fff'
             },
+            breadcrumb: {
+              show: false
+            },
+            
             label: {
               show: true,
               formatter: '{b}'
