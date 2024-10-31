@@ -66,8 +66,8 @@ $.get(
       (option = {
         title: {
           left: 'center',
-          text: 'Gradient Mapping',
-          subtext: 'Growth > 0: green; Growth < 0: red; Growth = 0: grey'
+          text: '코스피 맵(20241031)',
+          subtext: '범례'
         },
         tooltip: {
           formatter: function (info) {
