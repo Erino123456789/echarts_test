@@ -1,14 +1,28 @@
+/* 기존 CSS */
 * {
   margin: 0;
   padding: 0;
 }
 
+html, body {
+  height: 100%; /* html과 body의 높이를 100%로 설정 */
+}
+
 #chart-container {
   position: relative;
-  height: 100vh;
+  width: 100%; /* 전체 너비 사용 */
+  height: calc(100vh - 100px); /* 전체 높이에서 제목과 버튼의 높이를 뺌 (예: 100px) */
   overflow: hidden;
 }
 
+/* h1 스타일 설정 */
+h1 {
+  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; /* 맑은 고딕 설정 */
+  text-align: center; /* 제목 중앙 정렬 */
+  margin-bottom: 20px; /* 제목과 버튼 간격 */
+}
+
+/* 버튼을 옆으로 나열 */
 .button-container {
   display: flex; /* flexbox를 사용하여 버튼을 옆으로 나열 */
   justify-content: center; /* 수평 중앙 정렬 */
