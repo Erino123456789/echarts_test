@@ -1,4 +1,3 @@
-/* 기존 CSS */
 * {
   margin: 0;
   padding: 0;
@@ -10,14 +9,6 @@
   overflow: hidden;
 }
 
-/* h1 스타일 설정 */
-h1 {
-  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; /* 맑은 고딕 설정 */
-  text-align: center; /* 제목 중앙 정렬 */
-  margin-bottom: 20px; /* 제목과 버튼 간격 */
-}
-
-/* 버튼을 옆으로 나열 */
 .button-container {
   display: flex; /* flexbox를 사용하여 버튼을 옆으로 나열 */
   justify-content: center; /* 수평 중앙 정렬 */
