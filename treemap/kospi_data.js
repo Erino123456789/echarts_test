@@ -110,6 +110,14 @@ $.get(
               show: true,
               color: '#fff'
             },
+            labelLayout: function (params) {
+              if (params.rect.width < 5 || params.rect.height < 5) {
+                  return {  fontSize: 0  };
+              }
+              return {
+                  fontSize: Math.min(Math.sqrt(params.rect.width * params.rect.height) / 10, 20)
+              };
+            },
             label: {
               show: true,
               formatter: '{b}'
