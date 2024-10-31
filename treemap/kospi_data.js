@@ -8,16 +8,15 @@ var app = {};
 var option;
 
 myChart.showLoading();
-const household_america_2012 = 113616229;
 $.get(
   './kospi_data.json',
-  function (obama_budget_2012) {
+  function (kospi_data) {
     myChart.hideLoading();
     const visualMin = -100;
     const visualMax = 100;
     const visualMinBound = -40;
     const visualMaxBound = 40;
-    convertData(obama_budget_2012);
+    convertData(kospi_data);
     function convertData(originList) {
       let min = Infinity;
       let max = -Infinity;
@@ -124,7 +123,7 @@ $.get(
                 }
               }
             ],
-            data: obama_budget_2012
+            data: kospi_data
           }
         ]
       })
