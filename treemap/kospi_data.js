@@ -24,8 +24,8 @@ $.get(
         let node = originList[i];
         if (node) {
           let value = node.value;
-          value[2] != null && value[2] < min && (min = value[2]);
-          value[2] != null && value[2] > max && (max = value[2]);
+          value[4] != null && value[4] < min && (min = value[4]);
+          value[4] != null && value[4] > max && (max = value[4]);
         }
       }
       for (let i = 0; i < originList.length; i++) {
@@ -33,16 +33,16 @@ $.get(
         if (node) {
           let value = node.value;
           // Scale value for visual effect
-          if (value[2] != null && value[2] > 0) {
+          if (value[4] != null && value[4] > 0) {
             value[3] = echarts.number.linearMap(
-              value[2],
+              value[4],
               [0, max],
               [visualMaxBound, visualMax],
               true
             );
-          } else if (value[2] != null && value[2] < 0) {
+          } else if (value[4] != null && value[4] < 0) {
             value[3] = echarts.number.linearMap(
-              value[2],
+              value[4],
               [min, 0],
               [visualMin, visualMinBound],
               true
