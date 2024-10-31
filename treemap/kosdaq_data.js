@@ -66,7 +66,7 @@ $.get(
       (option = {
         title: {
           left: 'center',
-          text: 'KOSPI MAP',
+          text: 'KOSDAQ MAP',
           subtext: '업종별 최대/최저치에 따라 색상 차등 부여'
         },
         tooltip: {
