@@ -116,7 +116,7 @@ $.get(
             },
             visualMin: visualMin,
             visualMax: visualMax,
-            visualDimension: 3,
+            visualDimension: 5,
             levels: [
               {
                 itemStyle: {
