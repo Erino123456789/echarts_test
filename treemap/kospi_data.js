@@ -66,8 +66,8 @@ $.get(
       (option = {
         title: {
           left: 'center',
-          text: 'Gradient Mapping',
-          subtext: 'Growth > 0: green; Growth < 0: red; Growth = 0: grey'
+          text: 'KOSPI MAP',
+          subtext: '업종별 최대/최저치에 따라 색상 차등 부여'
         },
         tooltip: {
           formatter: function (info) {
