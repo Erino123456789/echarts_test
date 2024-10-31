@@ -36,14 +36,14 @@ $.get(
           if (value[4] != null && value[4] > 0) {
             value[5] = echarts.number.linearMap(
               value[4],
-              [0, max],
+              [0, 5],
               [visualMaxBound, visualMax],
               true
             );
           } else if (value[4] != null && value[4] < 0) {
             value[5] = echarts.number.linearMap(
               value[4],
-              [min, 0],
+              [-5, 0],
               [visualMin, visualMinBound],
               true
             );
