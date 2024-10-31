@@ -10,13 +10,13 @@ var option;
 myChart.showLoading();
 $.get(
   './kosdaq_data.json',
-  function (kospi_data) {
+  function (kosdaq_data) {
     myChart.hideLoading();
     const visualMin = -100;
     const visualMax = 100;
     const visualMinBound = -40;
     const visualMaxBound = 40;
-    convertData(kospi_data);
+    convertData(kosdaq_data);
     function convertData(originList) {
       let min = Infinity;
       let max = -Infinity;
@@ -137,7 +137,7 @@ $.get(
                 }
               }
             ],
-            data: kospi_data
+            data: kosdaq_data
           }
         ]
       })
