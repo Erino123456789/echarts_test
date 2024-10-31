@@ -8,15 +8,16 @@ var app = {};
 var option;
 
 myChart.showLoading();
+const household_america_2012 = 113616229;
 $.get(
-  './kospi_data.json',
-  function (kospi_data) {
+  './obama_budget_proposal_2012.json',
+  function (obama_budget_2012) {
     myChart.hideLoading();
     const visualMin = -100;
     const visualMax = 100;
     const visualMinBound = -40;
     const visualMaxBound = 40;
-    convertData(kospi_data);
+    convertData(obama_budget_2012);
     function convertData(originList) {
       let min = Infinity;
       let max = -Infinity;
@@ -66,27 +67,19 @@ $.get(
       (option = {
         title: {
           left: 'center',
-          text: '코스피 맵(20241031)',
-          subtext: '범례'
+          text: 'Gradient Mapping',
+          subtext: 'Growth > 0: green; Growth < 0: red; Growth = 0: grey'
         },
         tooltip: {
           formatter: function (info) {
             let value = info.value;
-            let now_marketcap = value[0];
-            now_marketcap = isValidNumber(now_marketcap)
-              ? echarts.format.addCommas(now_marketcap) + '원'
+            let amount = value[0];
+            amount = isValidNumber(amount)
+              ? echarts.format.addCommas(amount * 1000) + '$'
               : '-';
-            let pre_marketcap = value[1];
-            pre_marketcap = isValidNumber(pre_marketcap)
-              ? echarts.format.addCommas(pre_marketcap) + '원'
-              : '-';
-            let now_price = value[2];
-            now_price = isValidNumber(now_price)
-              ? echarts.format.addCommas(now_price) + '원'
-              : '-';
-            let pre_price = value[3];
-            pre_price = isValidNumber(pre_price)
-              ? echarts.format.addCommas(pre_price) + '원'
+            let amount2011 = value[1];
+            amount2011 = isValidNumber(amount2011)
+              ? echarts.format.addCommas(amount2011 * 1000) + '$'
               : '-';
             let change = value[4];
             change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
@@ -94,11 +87,9 @@ $.get(
               '<div class="tooltip-title">' +
                 echarts.format.encodeHTML(info.name) +
                 '</div>',
-              '금일시가총액: &nbsp;&nbsp;' + now_marketcap + '<br>',
-              '전일시가총액: &nbsp;&nbsp;' + pre_marketcap + '<br>',
-              '금일종가: &nbsp;&nbsp;' + now_price + '<br>',
-              '전일종가: &nbsp;&nbsp;' + pre_price + '<br>',
-              '변동율: &nbsp;&nbsp;' + change
+              '2012 Amount: &nbsp;&nbsp;' + amount + '<br>',
+              '2011 Amount: &nbsp;&nbsp;' + amount2011 + '<br>',
+              'Change From 2011: &nbsp;&nbsp;' + change
             ].join('');
           }
         },
@@ -133,7 +124,7 @@ $.get(
                 }
               }
             ],
-            data: kospi_data
+            data: obama_budget_2012
           }
         ]
       })
