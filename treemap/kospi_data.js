@@ -33,14 +33,14 @@ $.get(
         if (node) {
           let value = node.value;
           // Scale value for visual effect
-          if (value[4] != null && value[2] > 0) {
+          if (value[4] != null && value[4] > 0) {
             value[5] = echarts.number.linearMap(
               value[4],
               [0, max],
               [visualMaxBound, visualMax],
               true
             );
-          } else if (value[4] != null && value[2] < 0) {
+          } else if (value[4] != null && value[4] < 0) {
             value[5] = echarts.number.linearMap(
               value[4],
               [min, 0],
