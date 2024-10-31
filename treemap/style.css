@@ -7,3 +7,22 @@
   height: 100vh;
   overflow: hidden;
 }
+body {
+  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; /* 맑은 고딕 설정 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수평 중앙 정렬 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  height: 100vh; /* 전체 화면 높이 */
+}
+
+h1 {
+  margin-bottom: 20px; /* 제목과 버튼 간격 */
+}
+
+button {
+  margin: 5px; /* 버튼 간격 */
+  padding: 10px 20px; /* 버튼 패딩 */
+  font-size: 16px; /* 버튼 글꼴 크기 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+}
