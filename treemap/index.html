@@ -15,29 +15,6 @@
         script.src = './index.js';
         document.body.appendChild(script);
     }
-
-    // JSON 파일 로드 함수
-    function loadJsonFile(fileName) {
-        console.log("Loading JSON file:", fileName);
-        // 여기에서 JSON 파일을 처리하는 코드를 추가하세요.
-    }
-
-    // JSON 파일 목록 로드 함수
-    function loadJsonFileList() {
-        fetch('file.json')
-            .then(response => response.json())
-            .then(data => {
-                const jsonListDiv = document.querySelector('.json-list');
-                data.files.forEach(file => {
-                    const button = document.createElement('button');
-                    button.textContent = file;
-                    button.onclick = () => loadJsonFile(file);
-                    jsonListDiv.appendChild(button);
-                });
-            })
-            .catch(error => console.error('Error loading JSON file list:', error));
-    }
-
     // 다크 모드 토글 함수
     function toggleDarkMode(checkbox) {
         const body = document.body;
@@ -47,29 +24,19 @@
             body.classList.remove('dark-mode'); // 다크 모드 비활성화
         }
     }
-
-    // 페이지가 로드되면 JSON 파일 목록 로드
-    window.onload = loadJsonFileList;
   </script>
 </head>
 <body>
-  <div class="container">
-    <div class="json-list">
-      <h3>JSON 파일 리스트</h3>
-      <!-- JSON 파일 목록은 JavaScript에 의해 여기에 추가됩니다. -->
-    </div>
-
-    <div class="button-container">
-      <button onclick="loadScript('kospi')">KOSPI</button>
-      <button onclick="loadScript('kosdaq')">KOSDAQ</button>
-      <label class="switch">
-        <input type="checkbox" onchange="toggleDarkMode(this)">
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <div id="chart-container"></div>
+  <div class="button-container">
+    <button onclick="loadScript('kospi')">KOSPI</button>
+    <button onclick="loadScript('kosdaq')">KOSDAQ</button>
+    <label class="switch">
+      <input type="checkbox" onchange="toggleDarkMode(this)">
+      <span class="slider"></span>
+    </label>
   </div>
+
+  <div id="chart-container"></div>
   
   <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
