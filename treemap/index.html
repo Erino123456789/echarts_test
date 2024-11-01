@@ -10,6 +10,7 @@
   <script>
     function loadJsonList(type) {
         const fileName = type === 'KOSPI' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
+        console.log(`Loading JSON file: ${fileName}`); // 추가된 로그
         $.getJSON(fileName, function(data) {
             const buttonContainer = $('#json-button-container');
             buttonContainer.empty(); // 이전 버튼 제거
