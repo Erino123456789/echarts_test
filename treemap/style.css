@@ -1,4 +1,3 @@
-/* 기존 CSS */
 * {
   margin: 0;
   padding: 0;
@@ -8,24 +7,45 @@ html, body {
   height: 100%; /* html과 body의 높이를 100%로 설정 */
 }
 
+.container {
+  display: flex; /* flexbox를 사용하여 수평 정렬 */
+  height: 100%; /* 전체 높이 사용 */
+}
+
+.json-list {
+  width: 200px; /* JSON 파일 리스트의 너비 */
+  padding: 10px; /* 여백 추가 */
+  border-right: 1px solid #ccc; /* 오른쪽 경계선 추가 */
+  background-color: #f9f9f9; /* 배경색 추가 */
+}
+
+.json-list button {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #4CAF50; /* 버튼 색상 */
+  color: white; /* 글자 색상 */
+  border: none; /* 테두리 없애기 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  transition: background-color 0.3s; /* 부드러운 효과 */
+}
+
+.json-list button:hover {
+  background-color: #45a049; /* 호버 시 색상 변경 */
+}
+
 #chart-container {
   position: relative;
-  width: 100%; /* 전체 너비 사용 */
-  height: calc(100vh - 100px); /* 전체 높이에서 제목과 버튼의 높이를 뺌 (예: 100px) */
+  flex-grow: 1; /* 남은 공간을 모두 차지하도록 설정 */
+  height: calc(100vh - 100px); /* 전체 높이에서 제목과 버튼의 높이를 뺌 */
   overflow: hidden;
 }
 
-/* h1 스타일 설정 */
-h1 {
-  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; /* 맑은 고딕 설정 */
-  text-align: center; /* 제목 중앙 정렬 */
-  margin-bottom: 20px; /* 제목과 버튼 간격 */
-}
-
-/* 버튼을 옆으로 나열 */
 .button-container {
   display: flex; /* flexbox를 사용하여 버튼을 옆으로 나열 */
   justify-content: center; /* 수평 중앙 정렬 */
+  padding: 10px; /* 여백 추가 */
 }
 
 /* 버튼 스타일 */
@@ -36,6 +56,13 @@ button {
   cursor: pointer; /* 마우스 포인터 변경 */
 }
 
+/* h1 스타일 설정 */
+h1 {
+  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; /* 맑은 고딕 설정 */
+  text-align: center; /* 제목 중앙 정렬 */
+  margin-bottom: 20px; /* 제목과 버튼 간격 */
+}
+
 /* 다크 모드 스타일 */
 body {
   background-color: white; /* 기본 배경색 */
@@ -43,7 +70,6 @@ body {
   transition: background-color 0.5s, color 0.5s; /* 배경색과 텍스트 색상 전환 */
 }
 
-/* 다크 모드 스타일 */
 body.dark-mode {
   background-color: #121212; /* 어두운 배경색 */
   color: white; /* 흰색 텍스트 */
@@ -94,26 +120,4 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(26px); /* 슬라이더 이동 */
-}
-
-.json-list {
-  float: left;
-  width: 200px; /* 너비 조정 */
-  padding: 10px; /* 여백 추가 */
-}
-
-.json-list button {
-  display: block;
-  margin: 10px 0;
-  padding: 10px;
-  background-color: #4CAF50; /* 버튼 색상 */
-  color: white; /* 글자 색상 */
-  border: none; /* 테두리 없애기 */
-  border-radius: 5px; /* 모서리 둥글게 */
-  cursor: pointer; /* 마우스 포인터 변경 */
-  transition: background-color 0.3s; /* 부드러운 효과 */
-}
-
-.json-list button:hover {
-  background-color: #45a049; /* 호버 시 색상 변경 */
 }
