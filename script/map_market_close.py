@@ -221,10 +221,10 @@ kosdaq_json_structure = create_json_structure(merged_kosdaq_data, sector_data_ko
 
 # JSON 파일 저장
 now = datetime.now().strftime('%Y%m%d%H%M')
-with open(f'kospi_map_data_{now}.json', 'w', encoding='utf-8') as kospi_file:
+with open(f'data/kospi_map_data_{now}.json', 'w', encoding='utf-8') as kospi_file:
     json.dump(kospi_json_structure, kospi_file, ensure_ascii=False, indent=4)
 
-with open(f'kosdaq_map_data_{now}.json', 'w', encoding='utf-8') as kosdaq_file:
+with open(f'data/kosdaq_map_data_{now}.json', 'w', encoding='utf-8') as kosdaq_file:
     json.dump(kosdaq_json_structure, kosdaq_file, ensure_ascii=False, indent=4)
 
 print("JSON 파일이 저장되었습니다.")
