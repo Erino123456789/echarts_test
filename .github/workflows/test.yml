@@ -29,4 +29,8 @@ jobs:
     - name: run test.py
       run: |
         python "./script/test.py"
-
+    - name: Upload data folder as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: data-files
+        path: data/
