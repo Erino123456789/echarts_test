@@ -9,7 +9,7 @@ var option;
 var filename = item.filename;
 myChart.showLoading();
 $.get(
-  '../data/' + type + '_map_data_' + 202411011050 + '.json'
+  '../data/' + type + '_map_data_' + filename + '.json'
   function (kospi_data) {
     myChart.hideLoading();
     const visualMin = -10;
