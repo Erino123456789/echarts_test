@@ -8,33 +8,54 @@
     // 전역 변수 초기화
     window.dataType = 'kospi'; // 기본값 설정
 
+    // JSON 파일에서 버튼 목록 로드
+    function loadFileList() {
+      fetch('./file.json')
+        .then(response => response.json())
+        .then(data => {
+          const jsonListContainer = document.getElementById('json-list-container');
+          jsonListContainer.innerHTML = ''; // 기존 내용 지우기
+          data.forEach(item => {
+            const button = document.createElement('button');
+            button.textContent = item; // 버튼에 파일 이름 설정
+            button.onclick = () => loadScript(item); // 버튼 클릭 시 loadScript 호출
+            jsonListContainer.appendChild(button); // 버튼 추가
+          });
+        })
+        .catch(error => console.error('Error loading file list:', error));
+    }
+
     // 스크립트를 로드하면서 dataType 설정
     function loadScript(dataType) {
-        window.dataType = dataType;  // 전역 변수에 버튼에 따른 값 설정
-        const script = document.createElement('script');
-        script.src = './index.js';
-        document.body.appendChild(script);
+      window.dataType = dataType;  // 전역 변수에 버튼에 따른 값 설정
+      const script = document.createElement('script');
+      script.src = './index.js';
+      document.body.appendChild(script);
     }
+
     // 다크 모드 토글 함수
     function toggleDarkMode(checkbox) {
-        const body = document.body;
-        if (checkbox.checked) {
-            body.classList.add('dark-mode'); // 다크 모드 활성화
-        } else {
-            body.classList.remove('dark-mode'); // 다크 모드 비활성화
-        }
+      const body = document.body;
+      if (checkbox.checked) {
+        body.classList.add('dark-mode'); // 다크 모드 활성화
+      } else {
+        body.classList.remove('dark-mode'); // 다크 모드 비활성화
+      }
     }
+
+    // 페이지 로드 시 파일 리스트 로드
+    window.onload = loadFileList;
   </script>
 </head>
 <body>
   <div class="button-container">
-    <button onclick="loadScript('kospi')">KOSPI</button>
-    <button onclick="loadScript('kosdaq')">KOSDAQ</button>
     <label class="switch">
       <input type="checkbox" onchange="toggleDarkMode(this)">
       <span class="slider"></span>
     </label>
   </div>
+
+  <div class="json-list" id="json-list-container"></div> <!-- JSON 버튼 리스트를 위한 컨테이너 -->
 
   <div id="chart-container"></div>
   
