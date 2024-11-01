@@ -14,12 +14,15 @@
             const buttonContainer = $('#json-button-container');
             buttonContainer.empty(); // 이전 버튼 제거
             data.forEach(item => {
-                const button = $('<button></button>').text(item.filename)
+                const button = $('<button></button>')
+                    .text(item.name)
                     .click(() => {
                         loadData(type, item.filename); // index.js로 type과 filename 전달
                     });
                 buttonContainer.append(button);
             });
+        }).fail(function() {
+            alert('JSON 파일을 불러오는 데 실패했습니다. 파일 이름이 올바른지 확인하세요.');
         });
     }
   </script>
