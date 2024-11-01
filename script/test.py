@@ -109,8 +109,8 @@ kospi_selected = kospi_data[['종목코드', '종목명', '종가', '대비', '�
 kosdaq_selected = kosdaq_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
 
 # CSV 파일로 저장
-kospi_selected.to_csv('kospi_data.csv', index=False, encoding='utf-8-sig')  # UTF-8 with BOM for Korean characters
-kosdaq_selected.to_csv('kosdaq_data.csv', index=False, encoding='utf-8-sig')
+kospi_selected.to_csv('data/kospi_data.csv', index=False, encoding='utf-8-sig')
+kosdaq_selected.to_csv('data/kosdaq_data.csv', index=False, encoding='utf-8-sig')
 
 # 결과 출력
 print("KOSPI 200 데이터가 'kospi_data.csv' 파일에 저장되었습니다.")
