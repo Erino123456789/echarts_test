@@ -8,7 +8,7 @@ var app = {};
 var option;
 myChart.showLoading();
 $.get(
-  '../data/'
+  '../data/kosdaq_map_data_202411011050.json'
   function (kospi_data) {
     myChart.hideLoading();
     const visualMin = -10;
