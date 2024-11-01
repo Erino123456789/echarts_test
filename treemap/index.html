@@ -6,13 +6,8 @@
   <link rel="stylesheet" href="./style.css"> <!-- CSS 파일 링크 -->
   <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script src="./index.js"></script> <!-- index.js 파일 링크 -->
   <script>
-    function loadScript(scriptName) {
-        const script = document.createElement('script');
-        script.src = scriptName;
-        document.body.appendChild(script);
-    }
-
     function loadJsonList(type) {
         const fileName = type === 'KOSPI' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
         $.getJSON(fileName, function(data) {
@@ -21,9 +16,7 @@
             data.forEach(item => {
                 const button = $('<button></button>').text(item.name)
                     .click(() => {
-                        loadScript(`./${type.toLowerCase()}_data.js`);
-                        // 필요에 따라 type과 filename 전달
-                        // 예: loadData(type, item.filename);
+                        loadData(type, item.filename); // index.js로 type과 filename 전달
                     });
                 buttonContainer.append(button);
             });
