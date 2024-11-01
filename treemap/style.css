@@ -1,3 +1,8 @@
+#json-button-container {
+  display: block; /* 버튼을 세로로 정렬 */
+  margin-top: 20px;
+}
+
 button {
   background-color: #007BFF; /* 파란색 */
   border: none;
@@ -6,21 +11,14 @@ button {
   text-align: center;
   text-decoration: none;
   font-size: 16px;
-  margin: 4px; /* 버튼 사이의 여백 */
+  margin: 2px 0; /* 버튼 사이의 여백을 줄임 */
   cursor: pointer;
   border-radius: 5px;
-  flex: 1; /* 버튼의 너비를 동일하게 설정 */
+  width: calc(100% - 4px); /* 버튼 너비를 100%로 설정, 여백을 고려하여 약간 줄임 */
   font-weight: bold; /* 글씨를 굵게 설정 */
 }
 
-#json-button-container {
-  display: flex; /* 버튼을 가로로 정렬 */
-  margin-top: 20px;
-}
-
-#loading-message {
-  display: none;
-  font-size: 18px;
-  color: #555;
-  margin-top: 20px;
+div[style*="flex: 1"] {
+  padding: 5px 0; /* 왼쪽 패딩을 줄임 */
+  border-right: 1px solid #ccc; /* 테두리는 유지 */
 }
