@@ -3,25 +3,29 @@
 <head>
   <meta charset="utf-8">
   <title>KOSPI/KOSDAQ Map Demo</title>
-  <link rel="stylesheet" href="./style.css"> <!-- CSS 파일 링크 -->
+  <link rel="stylesheet" href="./style.css">
   <script>
-    function loadScript(scriptName) {
+    // 전역 변수 초기화
+    window.dataType = 'kospi'; // 기본값 설정
+
+    // 스크립트를 로드하면서 dataType 설정
+    function loadScript(dataType) {
+        window.dataType = dataType;  // 전역 변수에 버튼에 따른 값 설정
         const script = document.createElement('script');
-        script.src = scriptName;
+        script.src = './kospi_data.js';
         document.body.appendChild(script);
     }
   </script>
 </head>
 <body>
   <div class="button-container">
-    <button onclick="loadScript('./kospi_data.js')">KOSPI</button>
-    <button onclick="loadScript('./kosdaq_data.js')">KOSDAQ</button>
+    <button onclick="loadScript('kospi')">KOSPI</button>
+    <button onclick="loadScript('kosdaq')">KOSDAQ</button>
   </div>
 
   <div id="chart-container"></div>
   
   <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
-  <script src="./kospi_data.js"></script>
 </body>
 </html>
