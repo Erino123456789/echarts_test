@@ -5,13 +5,17 @@ button {
   padding: 15px 0; /* 위아래 패딩 */
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   font-size: 16px;
   margin: 4px; /* 버튼 사이의 여백 */
   cursor: pointer;
   border-radius: 5px;
-  width: calc(50% - 8px); /* 두 버튼이 가로로 맞춰지도록 너비 설정 */
+  flex: 1; /* 버튼의 너비를 동일하게 설정 */
   font-weight: bold; /* 글씨를 굵게 설정 */
+}
+
+#json-button-container {
+  display: flex; /* 버튼을 가로로 정렬 */
+  margin-top: 20px;
 }
 
 #loading-message {
