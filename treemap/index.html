@@ -16,22 +16,40 @@
         document.body.appendChild(script);
     }
 
-    // JSON 파일 리스트 불러오기
-    async function loadJsonList() {
-      try {
-        const response = await fetch('file.json');
-        const data = await response.json();
-        const jsonListContainer = document.getElementById('json-list');
-        data.forEach(fileName => {
-          const button = document.createElement('button');
-          button.textContent = fileName;
-          button.onclick = () => loadJsonFile(fileName);
-          jsonListContainer.appendChild(button);
+    // JSON 파일 리스트 불러오기function loadJsonList() {
+    fetch('file.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 데이터 확인을 위한 콘솔 로그 추가
+            console.log(data); // 여기서 data의 내용을 확인
+            
+            // data가 배열인지 확인
+            if (Array.isArray(data)) {
+                const jsonListContainer = document.getElementById('json-list');
+                jsonListContainer.innerHTML = ''; // 기존 내용 삭제
+
+                data.forEach(fileName => {
+                    const button = document.createElement('button');
+                    button.textContent = fileName;
+                    button.onclick = () => {
+                        loadJsonFile(fileName);
+                    };
+                    jsonListContainer.appendChild(button);
+                });
+            } else {
+                throw new TypeError('Data is not an array');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading JSON list:', error);
         });
-      } catch (error) {
-        console.error('Error loading JSON list:', error);
-      }
-    }
+}
+
 
     // JSON 파일 로드 함수 (예시)
     function loadJsonFile(fileName) {
