@@ -1,5 +1,5 @@
 function loadJsonList(type) {
-  const lowerType = type.toLowerCase(); // Convert type to lowercase
+  const type = type.toLowerCase(); // Convert type to lowercase
   const fileName = type === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
   $.getJSON(fileName, function(data) {
       const buttonContainer = $('#json-button-container');
