@@ -1,7 +1,14 @@
-{
-  "files": [
-    "data1.json",
-    "data2.json",
-    "data3.json"
-  ]
-}
+[
+	"kosdaq_map_data_202411011050.json",
+	"kosdaq_map_data_202411011105.json",
+	"kosdaq_map_data_202411011106.json",
+	"kosdaq_map_data_202411011107.json",
+	"kosdaq_map_data_202411011111.json",
+	"kosdaq_map_data_202411011113.json",
+	"kospi_map_data_202411011050.json",
+	"kospi_map_data_202411011105.json",
+	"kospi_map_data_202411011106.json",
+	"kospi_map_data_202411011107.json",
+	"kospi_map_data_202411011111.json",
+	"kospi_map_data_202411011113.json"
+]
