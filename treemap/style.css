@@ -6,6 +6,13 @@
 
 html, body {
   height: 100%; /* html과 body의 높이를 100%로 설정 */
+  background-color: white;
+  color: black;
+}
+body.dark-mode {
+  height: 100%;
+  background-color: #121212; /* 어두운 배경색 */
+  color: white; /* 흰색 텍스트 */
 }
 
 #chart-container {
@@ -34,3 +41,4 @@ button {
   font-size: 16px; /* 버튼 글꼴 크기 */
   cursor: pointer; /* 마우스 포인터 변경 */
 }
+
