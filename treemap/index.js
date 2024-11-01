@@ -6,10 +6,10 @@ var myChart = echarts.init(dom, null, {
 var app = {};
 
 var option;
-
+const dataType = window.dataType;
 myChart.showLoading();
 $.get(
-  './kospi_data.json',
+  './' + dataType + '_data.json',
   function (kospi_data) {
     myChart.hideLoading();
     const visualMin = -100;
