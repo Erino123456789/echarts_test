@@ -12,10 +12,10 @@ $.get(
   '../data/' + dataType,
   function (kospi_data) {
     myChart.hideLoading();
-    const visualMin = -100;
-    const visualMax = 100;
-    const visualMinBound = -40;
-    const visualMaxBound = 40;
+    const visualMin = -10;
+    const visualMax = 10;
+    const visualMinBound = -3;
+    const visualMaxBound = 3;
     convertData(kospi_data);
     function convertData(originList) {
       let min = Infinity;
@@ -123,7 +123,12 @@ $.get(
             },
             label: {
               show: true,
-              formatter: '{b}'
+              formatter: '{b}',
+              color: '#fff',  // 텍스트 색상 설정
+              textShadowColor: 'black',     // 그림자 색상 설정 (테두리 효과용)
+              textShadowBlur: 4,            // 그림자 블러 정도 설정
+              textShadowOffsetX: 0,
+              textShadowOffsetY: 0
             },
             itemStyle: {
               borderColor: 'black'
@@ -141,11 +146,27 @@ $.get(
               },
               {
                 color: [
-                  '#5e151e', // 더 낮은 값에 대한 색상
-                  '#942e38',
-                  '#aaa',
-                  '#61a36a',
-                  '#269f3c'  // 더 높은 값에 대한 색상
+                  '#8b0000',  // -10%
+                  '#a83232',  // -9%
+                  '#bf5656',  // -8%
+                  '#d67979',  // -7%
+                  '#e3a3a3',  // -6%
+                  '#ebc6c6',  // -5%
+                  '#f0e0e0',  // -4%
+                  '#f3eded',  // -3%
+                  '#f7f7f7',  // -2%
+                  '#fafafa',  // -1%
+                  '#aaaaaa',     // 0%
+                  '#e0f4e0',  // 1%
+                  '#c8eac8',  // 2%
+                  '#ade2ad',  // 3%
+                  '#92d992',  // 4%
+                  '#77d077',  // 5%
+                  '#61c861',  // 6%
+                  '#4cbf4c',  // 7%
+                  '#38b738',  // 8%
+                  '#26af26',  // 9%
+                  '#008000'   // 10%
                 ],
                 colorMappingBy: 'value',
                 itemStyle: {
