@@ -6,7 +6,7 @@ var myChart = echarts.init(dom, null, {
 var app = {};
 
 var option;
-let dataType = window.dataType;
+var dataType = window.dataType;
 myChart.showLoading();
 $.get(
   './' + dataType + '_data.json',
