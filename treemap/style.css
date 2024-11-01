@@ -1,6 +1,7 @@
-#json-button-container {
-  display: block; /* 버튼을 세로로 정렬 */
-  margin-top: 20px;
+#json-button-container button {
+  font-size: 12px; /* 버튼의 폰트 사이즈 조정 */
+  padding: 5px 0; /* 버튼의 위아래 패딩 조정 */
+  margin: 2px 0; /* 버튼 사이의 여백 조정 */
 }
 
 button {
