@@ -140,7 +140,13 @@ $.get(
                 }
               },
               {
-                color: ['#942e38', '#aaa', '#269f3c'],
+                color: [
+                  '#5e151e', // 더 낮은 값에 대한 색상
+                  '#942e38',
+                  '#aaa',
+                  '#61a36a',
+                  '#269f3c'  // 더 높은 값에 대한 색상
+                ],
                 colorMappingBy: 'value',
                 itemStyle: {
                   gapWidth: 1
