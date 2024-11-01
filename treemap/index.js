@@ -9,7 +9,7 @@ var option;
 var dataType = window.dataType;
 myChart.showLoading();
 $.get(
-  './' + dataType + '_data.json',
+  '../data/' + dataType,
   function (kospi_data) {
     myChart.hideLoading();
     const visualMin = -100;
