@@ -15,12 +15,25 @@
         script.src = './index.js';
         document.body.appendChild(script);
     }
+    // 다크 모드 토글 함수
+    function toggleDarkMode(checkbox) {
+        const body = document.body;
+        if (checkbox.checked) {
+            body.classList.add('dark-mode'); // 다크 모드 활성화
+        } else {
+            body.classList.remove('dark-mode'); // 다크 모드 비활성화
+        }
+    }
   </script>
 </head>
 <body>
   <div class="button-container">
     <button onclick="loadScript('kospi')">KOSPI</button>
     <button onclick="loadScript('kosdaq')">KOSDAQ</button>
+    <label class="switch">
+      <input type="checkbox" onchange="toggleDarkMode(this)">
+      <span class="slider"></span>
+    </label>
   </div>
 
   <div id="chart-container"></div>
