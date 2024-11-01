@@ -14,7 +14,7 @@
             const buttonContainer = $('#json-button-container');
             buttonContainer.empty(); // 이전 버튼 제거
             data.forEach(item => {
-                const button = $('<button></button>').text(item.name)
+                const button = $('<button></button>').text(item.filename)
                     .click(() => {
                         loadData(type, item.filename); // index.js로 type과 filename 전달
                     });
