@@ -1,24 +1,22 @@
 function loadJsonList(type) {
-  const type = type.toLowerCase(); // Convert type to lowercase
-  const fileName = type === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
-  $.getJSON(fileName, function(data) {
-      const buttonContainer = $('#json-button-container');
-      buttonContainer.empty(); // 이전 버튼 제거
-      data.forEach(item => {
-          const button = $('<button></button>')
-              .text(item.name)
-              .click(() => {
-                  // type과 filename을 var로 선언하고 index.js에서 사용할 수 있도록 처리
-                  var selectedType = type;
-                  var selectedFilename = item.filename;
-                  loadData(selectedType, selectedFilename); // index.js로 type과 filename 전달
-              });
-          buttonContainer.append(button);
-      });
-  }).fail(function() {
-      alert('JSON 파일을 불러오는 데 실패했습니다. 파일 이름이 올바른지 확인하세요.');
-  });
+    const lowerType = type.toLowerCase(); // Convert type to lowercase
+    const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
+    $.getJSON(fileName, function(data) {
+        const buttonContainer = $('#json-button-container');
+        buttonContainer.empty(); // 이전 버튼 제거
+        data.forEach(item => {
+            const button = $('<button></button>')
+                .text(item.name)
+                .click(() => {
+                    loadData(lowerType, item.filename); // index.js로 type과 filename 전달
+                });
+            buttonContainer.append(button);
+        });
+    }).fail(function() {
+        alert('JSON 파일을 불러오는 데 실패했습니다. 파일 이름이 올바른지 확인하세요.');
+    });
 }
+
 
 function loadData(type, filename) {
   var dom = document.getElementById('chart-container');
