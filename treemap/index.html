@@ -1,65 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>KOSPI/KOSDAQ Map Demo</title>
-  <link rel="stylesheet" href="./style.css">
+  <title>KOSPI/KOSDAQ 맵 데모</title>
+  <link rel="stylesheet" href="./style.css"> <!-- CSS 파일 링크 -->
+  <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
   <script>
-    // 전역 변수 초기화
-    window.dataType = 'kospi'; // 기본값 설정
-
-    // JSON 파일에서 버튼 목록 로드
-    function loadFileList() {
-      fetch('./file.json')
-        .then(response => response.json())
-        .then(data => {
-          const jsonListContainer = document.getElementById('json-list-container');
-          jsonListContainer.innerHTML = ''; // 기존 내용 지우기
-          data.forEach(item => {
-            const button = document.createElement('button');
-            button.textContent = item; // 버튼에 파일 이름 설정
-            button.onclick = () => loadScript(item); // 버튼 클릭 시 loadScript 호출
-            jsonListContainer.appendChild(button); // 버튼 추가
-          });
-        })
-        .catch(error => console.error('Error loading file list:', error));
+    function loadScript(scriptName) {
+        const script = document.createElement('script');
+        script.src = scriptName;
+        document.body.appendChild(script);
     }
 
-    // 스크립트를 로드하면서 dataType 설정
-    function loadScript(dataType) {
-      window.dataType = dataType;  // 전역 변수에 버튼에 따른 값 설정
-      const script = document.createElement('script');
-      script.src = './index.js';
-      document.body.appendChild(script);
+    function loadJsonList(type) {
+        const fileName = type === 'KOSPI' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
+        $.getJSON(fileName, function(data) {
+            const buttonContainer = $('#json-button-container');
+            buttonContainer.empty(); // 이전 버튼 제거
+            data.forEach(item => {
+                const button = $('<button></button>').text(item.name)
+                    .click(() => {
+                        loadScript(`./${type.toLowerCase()}_data.js`);
+                        // 필요에 따라 type과 filename 전달
+                        // 예: loadData(type, item.filename);
+                    });
+                buttonContainer.append(button);
+            });
+        });
     }
-
-    // 다크 모드 토글 함수
-    function toggleDarkMode(checkbox) {
-      const body = document.body;
-      if (checkbox.checked) {
-        body.classList.add('dark-mode'); // 다크 모드 활성화
-      } else {
-        body.classList.remove('dark-mode'); // 다크 모드 비활성화
-      }
-    }
-
-    // 페이지 로드 시 파일 리스트 로드
-    window.onload = loadFileList;
   </script>
 </head>
 <body>
-  <div class="button-container">
-    <label class="switch">
-      <input type="checkbox" onchange="toggleDarkMode(this)">
-      <span class="slider"></span>
-    </label>
+  <div style="display: flex; height: 100vh;">
+    <div style="flex: 2; padding: 10px; border-right: 1px solid #ccc;">
+      <button onclick="loadJsonList('KOSPI')">KOSPI</button>
+      <button onclick="loadJsonList('KOSDAQ')">KOSDAQ</button>
+      <div id="json-button-container" style="margin-top: 20px;"></div>
+    </div>
+    <div style="flex: 8; padding: 10px;" id="chart-container"></div>
   </div>
-
-  <div class="json-list" id="json-list-container"></div> <!-- JSON 버튼 리스트를 위한 컨테이너 -->
-
-  <div id="chart-container"></div>
-  
-  <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 </body>
 </html>
