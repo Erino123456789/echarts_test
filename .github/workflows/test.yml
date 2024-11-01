@@ -26,12 +26,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install requests pandas datetime
+        python -m pip install requests pandas datetime json
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Run test.py
       run: |
-        python "./script/test.py"
+        python "./script/map_market_close.py"
 
     - name: Configure Git
       run: |
