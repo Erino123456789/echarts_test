@@ -40,7 +40,7 @@ jobs:
 
     - name: Commit and push changes
       run: |
-        git add data/*.csv
+        git add data/*.json
         git commit -m "Update data files"
         git push
       env:
