@@ -13,6 +13,7 @@
     <div style="flex: 1; padding: 10px; border-right: 1px solid #ccc;">
       <button onclick="loadJsonList('KOSPI')">KOSPI</button>
       <button onclick="loadJsonList('KOSDAQ')">KOSDAQ</button>
+      <input type="text" id="search-input" placeholder="Search..." oninput="filterData()">
       <div id="json-button-container" style="margin-top: 20px;"></div>
     </div>
     <div style="flex: 9; padding: 10px;" id="chart-container">
