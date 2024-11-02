@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import json
 from bs4 import BeautifulSoup
 import os
-import time
+import sys
 
 
 # OTP 생성을 위한 헤더 정의
@@ -212,7 +212,8 @@ kospi_today_data, kosdaq_today_data = fetch_today_data(kospi_params, kosdaq_para
 
 # 데이터가 비어있는 경우 중단
 if kospi_today_data.empty or kosdaq_today_data.empty:
-    raise ValueError("데이터가 하나 이상 비어 있습니다. 데이터 수집을 중단합니다.")
+    print("데이터가 하나 이상 비어 있습니다. 데이터 수집을 중단합니다.")
+    sys.exit()  
 
 # KOSPI 업종 데이터 가져오기
 stock_codes_kospi = kospi_data['종목코드'].tolist()
