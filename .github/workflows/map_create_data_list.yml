@@ -43,7 +43,7 @@ jobs:
           sed -i '$ s/,$//' kosdaq.json
           echo "]" >> kosdaq.json
 
-      - name: Save JSON files to repository/treemap
+      - name: Save JSON files to treemap
         run: |
           mkdir -p treemap
           mv kospi.json treemap/kospi_json_list.json
