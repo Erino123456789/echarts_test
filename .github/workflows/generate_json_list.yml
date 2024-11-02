@@ -3,7 +3,7 @@ name: Generate JSON File List
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/1 * * * *"  # 매 1분마다 실행
+    - cron: "0/5 * * * *"  # 매 1분마다 실행
 
 jobs:
   generate-json-list:
@@ -24,7 +24,7 @@ jobs:
           echo "[" > kospi.json
           for file in $kospi_files; do
             filename=$(basename "$file")
-            date="${filename:17:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            date="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
             echo $date
             formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
             echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kospi.json
