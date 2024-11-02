@@ -142,7 +142,13 @@ function loadData(type, filename) {
               },
               label: {
                 show: true,
-                formatter: '{b}',
+                formatter: function(params) {
+                  if (params.data.children) {
+                    return `${params.name}`; // 상위 항목은 일반 텍스트
+                  } else {
+                    return `${params.name}: ${params.value[4]}`; // 하위 항목은 굵게 표시
+                  }
+                },
                 color: '#fff',  // 텍스트 색상 설정
                 textShadowColor: 'black',     // 그림자 색상 설정 (테두리 효과용)
                 textShadowBlur: 4,            // 그림자 블러 정도 설정
