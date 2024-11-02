@@ -17,6 +17,8 @@ function loadJsonList(type) {
     });
 }
 
+let currentData = []; // 전역 변수로 데이터 저장
+
 function loadData(type, filename) {
     var dom = document.getElementById('chart-container');
     var myChart = echarts.init(dom, null, {
@@ -29,14 +31,13 @@ function loadData(type, filename) {
     $.get(
         '../data/' + filename,
         function (kospi_data) {
+            currentData = kospi_data; // 현재 데이터를 전역 변수에 저장
             myChart.hideLoading();
             const visualMin = -5;
             const visualMax = 5;
             const visualMinBound = -1;
             const visualMaxBound = 1;
-
             convertData(kospi_data);
-
             function convertData(originList) {
                 let min = Infinity;
                 let max = -Infinity;
@@ -79,16 +80,14 @@ function loadData(type, filename) {
                     }
                 }
             }
-
             function isValidNumber(num) {
                 return num != null && isFinite(num);
             }
-
             myChart.setOption(
                 (option = {
                     title: {
                         left: 'center',
-                        subtext: '테스트 중'
+                        subtext: 'test'
                     },
                     tooltip: {
                         formatter: function (info) {
@@ -113,8 +112,8 @@ function loadData(type, filename) {
                             change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
                             return [
                                 '<div class="tooltip-title">' +
-                                echarts.format.encodeHTML(info.name) +
-                                '</div>',
+                                    echarts.format.encodeHTML(info.name) +
+                                    '</div>',
                                 '금일시총: &nbsp;&nbsp;' + now_cap + '<br>',
                                 '전일시총: &nbsp;&nbsp;' + pre_cap + '<br>',
                                 '금일종가: &nbsp;&nbsp;' + now_price + '<br>',
@@ -137,7 +136,7 @@ function loadData(type, filename) {
                             },
                             labelLayout: function (params) {
                                 if (params.rect.width < 5 || params.rect.height < 5) {
-                                    return { fontSize: 0 };
+                                    return {  fontSize: 0  };
                                 }
                                 return {
                                     fontSize: Math.min(Math.sqrt(params.rect.width * params.rect.height) / 10, 20)
@@ -198,21 +197,6 @@ function loadData(type, filename) {
                     ]
                 })
             );
-
-            // Add search functionality
-            $('#search-button').off('click').on('click', function() {
-                const searchTerm = $('#search-input').val().toLowerCase();
-                const filteredData = kospi_data.filter(item => 
-                    item.name.toLowerCase().includes(searchTerm)
-                );
-                myChart.setOption({
-                    series: [
-                        {
-                            data: filteredData
-                        }
-                    ]
-                });
-            });
         }
     );
 
@@ -222,5 +206,65 @@ function loadData(type, filename) {
     }
 }
 
-// Example call to load the JSON list (replace 'kospi' with 'kosdaq' as needed)
-loadJsonList('kospi');
+$(document).ready(function() {
+    $('#search-input').on('input', function() {
+        const query = $(this).val().toLowerCase(); // 검색어를 소문자로 변환
+        searchInData(query);
+    });
+});
+
+function searchInData(query) {
+    const currentData = window.currentData || []; // window에 현재 데이터 저장
+
+    // 검색 결과 배열
+    const results = currentData.filter(item => {
+        // 상위 항목 검색
+        if (item.name.toLowerCase().includes(query)) {
+            return true;
+        }
+        // 하위 항목 검색
+        if (item.children) {
+            return item.children.some(child => child.name.toLowerCase().includes(query));
+        }
+        return false;
+    });
+
+    // 결과를 시각화하는 함수 호출
+    visualizeSearchResults(results);
+}
+
+function visualizeSearchResults(results) {
+    const myChart = echarts.init(document.getElementById('chart-container'));
+    
+    myChart.setOption({
+        title: {
+            text: '검색 결과',
+            left: 'center',
+        },
+        series: [
+            {
+                name: '검색 결과',
+                type: 'treemap',
+                data: results,
+                // 여기에 트리맵 옵션 추가...
+                label: {
+                    show: true,
+                    formatter: function(params) {
+                        if (params.data.children) {
+                            return `${params.name}`; // 상위 항목은 일반 텍스트
+                        } else {
+                            return `${params.name}\n${params.value[4]}%`; // 하위 항목은 굵게 표시
+                        }
+                    },
+                    color: '#fff',
+                    textShadowColor: 'black',
+                    textShadowBlur: 4,
+                    fontWeight: 'bold'
+                },
+                itemStyle: {
+                    borderColor: 'black'
+                },
+            }
+        ]
+    });
+}
