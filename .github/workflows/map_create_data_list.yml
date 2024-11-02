@@ -45,7 +45,7 @@ jobs:
 
       - name: Save JSON files to repository/treemap
         run: |
-          mkdir -p repository/treemap
+          mkdir -p treemap
           mv kospi.json treemap/kospi_json_list.json
           mv kosdaq.json treemap/kosdaq_json_list.json
 
