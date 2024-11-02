@@ -29,7 +29,7 @@ jobs:
         python -m pip install requests pandas datetime bs4
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Run test.py
+    - name: Run map_market_close.py
       run: |
         python "./script/map_market_close.py"
 
