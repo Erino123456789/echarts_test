@@ -1,7 +1,6 @@
 name: Generate JSON File List
 
 on:
-  workflow_dispatch:  # 이 줄을 추가합니다.
   schedule:
     - cron: "*/1 * * * *"  # 매 1분마다 실행
 
@@ -24,8 +23,7 @@ jobs:
           echo "[" > kospi.json
           for file in $kospi_files; do
             filename=$(basename "$file")
-            # filename에서 날짜 추출: 'kospi_map_data_' 이후의 날짜 추출
-            date="${filename:10:8}"  # 8자리(YYYYMMDD) 추출
+            date="${filename:10:8}"  # 'kospi_map_data_' 이후의 날짜 추출
             formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
             echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kospi.json
           done
@@ -37,14 +35,18 @@ jobs:
           echo "[" > kosdaq.json
           for file in $kosdaq_files; do
             filename=$(basename "$file")
-            # filename에서 날짜 추출: 'kosdaq_map_data_' 이후의 날짜 추출
-            date="${filename:10:8}"  # 8자리(YYYYMMDD) 추출
+            date="${filename:10:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
             formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
             echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kosdaq.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kosdaq.json
           echo "]" >> kosdaq.json
+
+      - name: Check generated JSON files
+        run: |
+          cat kospi.json
+          cat kosdaq.json
 
       - name: Save JSON files to treemap
         run: |
@@ -60,7 +62,7 @@ jobs:
           # 커밋할 파일이 존재하는지 확인
           if [ -f treemap/kospi_json_list.json ] || [ -f treemap/kosdaq_json_list.json ]; then
             git add treemap/kospi_json_list.json treemap/kosdaq_json_list.json
-            git commit -m "Update JSON lists for KOSPI and KOSDAQ files"
+            git commit -m "Update JSON lists for KOSPI and KOSDAQ files" || echo "No changes to commit."
             git push
           else
             echo "No changes to commit."
