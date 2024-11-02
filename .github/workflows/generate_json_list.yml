@@ -56,6 +56,12 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add treemap/kospi_json_list.json treemap/kosdaq_json_list.json
-          git commit -m "Update JSON lists for KOSPI and KOSDAQ files"
-          git push
+          
+          # 커밋할 파일이 존재하는지 확인
+          if [ -f treemap/kospi_json_list.json ] || [ -f treemap/kosdaq_json_list.json ]; then
+            git add treemap/kospi_json_list.json treemap/kosdaq_json_list.json
+            git commit -m "Update JSON lists for KOSPI and KOSDAQ files"
+            git push
+          else
+            echo "No changes to commit."
+          fi
