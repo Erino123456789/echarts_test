@@ -1,0 +1,40 @@
+name: Generate JSON File List
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"  # 매 1분마다 실행
+
+jobs:
+  generate-json-list:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: List JSON files in data folder
+        id: list-files
+        run: |
+          # kospi로 시작하는 파일 목록을 가져옵니다.
+          kospi_files=$(ls repository/data/kospi_map_data_*.json | sort -r)
+          kosdaq_files=$(ls repository/data/kosdaq_map_data_*.json | sort -r)
+
+          # kospi_json_list.json 생성
+          echo "$kospi_files" | awk -F '_' '{print "{ \"name\": \"" substr($4,1,4)"-"substr($4,5,2)"-"substr($4,7,2) "\", \"filename\": \""$0"\" }"}' > kospi.json
+
+          # kosdaq_json_list.json 생성
+          echo "$kosdaq_files" | awk -F '_' '{print "{ \"name\": \"" substr($4,1,4)"-"substr($4,5,2)"-"substr($4,7,2) "\", \"filename\": \""$0"\" }"}' > kosdaq.json
+
+      - name: Save JSON files to repository/treemap
+        run: |
+          mkdir -p repository/treemap
+          mv kospi.json repository/treemap/kospi_json_list.json
+          mv kosdaq.json repository/treemap/kosdaq_json_list.json
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add repository/treemap/kospi_json_list.json repository/treemap/kosdaq_json_list.json
+          git commit -m "Update JSON lists for KOSPI and KOSDAQ files"
+          git push
