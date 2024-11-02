@@ -1,7 +1,14 @@
+#json-button-container {
+  max-height: 80vh; /* 최대 높이를 설정하여 너무 길어지지 않도록 함 */
+  overflow-y: auto; /* 세로 스크롤 가능하도록 설정 */
+  padding: 5px 0; /* 패딩 추가 */
+}
+
 #json-button-container button {
   font-size: 12px; /* 버튼의 폰트 사이즈 조정 */
   padding: 5px 0; /* 버튼의 위아래 패딩 조정 */
   margin: 2px 0; /* 버튼 사이의 여백 조정 */
+  width: calc(100% - 4px); /* 버튼 너비를 100%로 설정, 여백을 고려하여 약간 줄임 */
 }
 
 button {
@@ -15,7 +22,6 @@ button {
   margin: 2px 0; /* 버튼 사이의 여백을 줄임 */
   cursor: pointer;
   border-radius: 5px;
-  width: calc(100% - 4px); /* 버튼 너비를 100%로 설정, 여백을 고려하여 약간 줄임 */
   font-weight: bold; /* 글씨를 굵게 설정 */
 }
 
