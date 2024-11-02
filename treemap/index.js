@@ -146,7 +146,7 @@ function loadData(type, filename) {
                   if (params.data.children) {
                     return `${params.name}`; // 상위 항목은 일반 텍스트
                   } else {
-                    return `${params.name}: ${params.value[4]}`; // 하위 항목은 굵게 표시
+                    return `${params.name}\n${params.value[4]}%`; // 하위 항목은 굵게 표시
                   }
                 },
                 color: '#fff',  // 텍스트 색상 설정
