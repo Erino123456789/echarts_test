@@ -31,10 +31,10 @@ function loadData(type, filename) {
     '../data/' + filename,
     function (kospi_data) {
       myChart.hideLoading();
-      const visualMin = -10;
-      const visualMax = 10;
-      const visualMinBound = -3;
-      const visualMaxBound = 3;
+      const visualMin = -5;
+      const visualMax = 5;
+      const visualMinBound = -1;
+      const visualMaxBound = 1;
       convertData(kospi_data);
       function convertData(originList) {
         let min = Infinity;
