@@ -198,74 +198,60 @@ def create_json_structure(merged_data, sector_data):
     return result
 
 # 초기 날짜 설정
-basedate = datetime.now().strftime('%Y%m%d%H%M')
-end_date = datetime.now().strftime('%Y%m%d%H%M')
+basedate = datetime.now()
 
-# 대기 시간 (초)
-sleep_time = 2
+# YYYYMMDD 형식으로 날짜 출력
+date_str = basedate.strftime("%Y%m%d")
+print(f"Fetching data for date: {date_str}")
 
-while basedate >= end_date:
-    # YYYYMMDD 형식으로 날짜 출력
-    date_str = basedate.strftime("%Y%m%d")
-    print(f"Fetching data for date: {date_str}")
+# KOSPI와 KOSDAQ의 데이터 가져오기
+kospi_data, kosdaq_data, prev_date = fetch_data_for_previous_days(kospi_params, kosdaq_params, date_str)
 
-    # KOSPI와 KOSDAQ의 데이터 가져오기
-    kospi_data, kosdaq_data, prev_date = fetch_data_for_previous_days(kospi_params, kosdaq_params, date_str)
-    
-    # 오늘자 데이터 가져오기
-    kospi_today_data, kosdaq_today_data = fetch_today_data(kospi_params, kosdaq_params, date_str)
-    
-    # 데이터가 비어있는 경우 중단
-    if kospi_today_data.empty or kosdaq_today_data.empty:
-        print(f"{date_str}의 데이터가 하나 이상 비어 있습니다. 데이터 수집을 중단합니다.")
-        basedate -= timedelta(days=1)  # 날짜 감소
-        time.sleep(sleep_time)
-        continue  # 다음 날짜로 넘어감
-    
-    # KOSPI 업종 데이터 가져오기
-    stock_codes_kospi = kospi_data['종목코드'].tolist()
-    sector_data_kospi = fetch_sector_data_naver(stock_codes_kospi)
-    # KOSDAQ 업종 데이터 가져오기
-    stock_codes_kosdaq = kosdaq_data['종목코드'].tolist()
-    sector_data_kosdaq = fetch_sector_data_naver(stock_codes_kosdaq)
-    
-    # 필요한 데이터 선택 (컬럼 순서 수정)
-    kospi_selected = kospi_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
-    kosdaq_selected = kosdaq_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
-    
-    # 오늘자 데이터를 선택할 때 필요 컬럼 추가
-    kospi_today_selected = kospi_today_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
-    kosdaq_today_selected = kosdaq_today_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
-    
-    # 오늘자 KOSPI와 KOSDAQ 데이터와 전일자 데이터를 합치기
-    merged_kospi_data = kospi_selected.merge(kospi_today_selected, on='종목코드', how='outer', suffixes=('', '_today'))
-    merged_kosdaq_data = kosdaq_selected.merge(kosdaq_today_selected, on='종목코드', how='outer', suffixes=('', '_today'))
-    
-    # 업종 정보 병합
-    merged_kospi_data = merged_kospi_data.merge(sector_data_kospi, on='종목코드', how='left')
-    merged_kosdaq_data = merged_kosdaq_data.merge(sector_data_kosdaq, on='종목코드', how='left')
-    
-    # NaN 값 처리
-    merged_kospi_data['업종명'] = merged_kospi_data['업종명'].fillna('기타')
-    merged_kosdaq_data['업종명'] = merged_kosdaq_data['업종명'].fillna('기타')
-    
-    
-    
-    # KOSPI 및 KOSDAQ 데이터 JSON 구조 생성
-    kospi_json_structure = create_json_structure(merged_kospi_data, sector_data_kospi)
-    kosdaq_json_structure = create_json_structure(merged_kosdaq_data, sector_data_kosdaq)
-    
-    # JSON 파일 저장
-    with open(f'data/kospi_map_data_{date_str}.json', 'w', encoding='utf-8') as kospi_file:
-        json.dump(kospi_json_structure, kospi_file, ensure_ascii=False, indent=4)
-    
-    with open(f'data/kosdaq_map_data_{date_str}.json', 'w', encoding='utf-8') as kosdaq_file:
-        json.dump(kosdaq_json_structure, kosdaq_file, ensure_ascii=False, indent=4)
-    
-    print("JSON 파일이 저장되었습니다.")
+# 오늘자 데이터 가져오기
+kospi_today_data, kosdaq_today_data = fetch_today_data(kospi_params, kosdaq_params, date_str)
 
-    # 지정된 대기 시간만큼 대기
-    time.sleep(sleep_time)
+# 데이터가 비어있는 경우 중단
+if kospi_today_data.empty or kosdaq_today_data.empty:
+    raise ValueError("데이터가 하나 이상 비어 있습니다. 데이터 수집을 중단합니다.")
 
-    # 하루 빼기
-    basedate -= timedelta(days=1)
+# KOSPI 업종 데이터 가져오기
+stock_codes_kospi = kospi_data['종목코드'].tolist()
+sector_data_kospi = fetch_sector_data_naver(stock_codes_kospi)
+# KOSDAQ 업종 데이터 가져오기
+stock_codes_kosdaq = kosdaq_data['종목코드'].tolist()
+sector_data_kosdaq = fetch_sector_data_naver(stock_codes_kosdaq)
+
+# 필요한 데이터 선택 (컬럼 순서 수정)
+kospi_selected = kospi_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
+kosdaq_selected = kosdaq_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
+
+# 오늘자 데이터를 선택할 때 필요 컬럼 추가
+kospi_today_selected = kospi_today_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
+kosdaq_today_selected = kosdaq_today_data[['종목코드', '종목명', '종가', '대비', '등락률', '상장시가총액']]
+
+# 오늘자 KOSPI와 KOSDAQ 데이터와 전일자 데이터를 합치기
+merged_kospi_data = kospi_selected.merge(kospi_today_selected, on='종목코드', how='outer', suffixes=('', '_today'))
+merged_kosdaq_data = kosdaq_selected.merge(kosdaq_today_selected, on='종목코드', how='outer', suffixes=('', '_today'))
+
+# 업종 정보 병합
+merged_kospi_data = merged_kospi_data.merge(sector_data_kospi, on='종목코드', how='left')
+merged_kosdaq_data = merged_kosdaq_data.merge(sector_data_kosdaq, on='종목코드', how='left')
+
+# NaN 값 처리
+merged_kospi_data['업종명'] = merged_kospi_data['업종명'].fillna('기타')
+merged_kosdaq_data['업종명'] = merged_kosdaq_data['업종명'].fillna('기타')
+
+
+
+# KOSPI 및 KOSDAQ 데이터 JSON 구조 생성
+kospi_json_structure = create_json_structure(merged_kospi_data, sector_data_kospi)
+kosdaq_json_structure = create_json_structure(merged_kosdaq_data, sector_data_kosdaq)
+
+# JSON 파일 저장
+with open(f'data/kospi_map_data_{date_str}1540.json', 'w', encoding='utf-8') as kospi_file:
+    json.dump(kospi_json_structure, kospi_file, ensure_ascii=False, indent=4)
+
+with open(f'data/kosdaq_map_data_{date_str}1540.json', 'w', encoding='utf-8') as kosdaq_file:
+    json.dump(kosdaq_json_structure, kosdaq_file, ensure_ascii=False, indent=4)
+
+print("JSON 파일이 저장되었습니다.")
