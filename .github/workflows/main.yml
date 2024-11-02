@@ -1,0 +1,58 @@
+name: Generate JSON File List
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"  # 매 1분마다 실행
+
+jobs:
+  generate-json-list:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: List JSON files in data folder
+        id: list-files
+        run: |
+          # kospi로 시작하는 파일 목록을 가져옵니다.
+          kospi_files=$(ls data/kospi_map_data_*.json | sort -r)
+          kosdaq_files=$(ls data/kosdaq_map_data_*.json | sort -r)
+
+          # JSON 배열 시작
+          echo "[" > kospi.json
+          for file in $kospi_files; do
+            filename=$(basename "$file")
+            date="${filename:10:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
+            echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kospi.json
+          done
+          # 마지막 쉼표 제거
+          sed -i '$ s/,$//' kospi.json
+          echo "]" >> kospi.json
+
+          # JSON 배열 시작
+          echo "[" > kosdaq.json
+          for file in $kosdaq_files; do
+            filename=$(basename "$file")
+            date="${filename:10:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
+            formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
+            echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kosdaq.json
+          done
+          # 마지막 쉼표 제거
+          sed -i '$ s/,$//' kosdaq.json
+          echo "]" >> kosdaq.json
+
+      - name: Save JSON files to treemap
+        run: |
+          mkdir -p treemap
+          mv kospi.json treemap/kospi_json_list.json
+          mv kosdaq.json treemap/kosdaq_json_list.json
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add treemap/kospi_json_list.json treemap/kosdaq_json_list.json
+          git commit -m "Update JSON lists for KOSPI and KOSDAQ files"
+          git push
