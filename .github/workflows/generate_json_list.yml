@@ -24,7 +24,7 @@ jobs:
           echo "[" > kospi.json
           for file in $kospi_files; do
             filename=$(basename "$file")
-            date="${filename:10:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            date="${filename:17:8}"  # 'kospi_map_data_' 이후의 날짜 추출
             formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
             echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kospi.json
           done
@@ -36,7 +36,7 @@ jobs:
           echo "[" > kosdaq.json
           for file in $kosdaq_files; do
             filename=$(basename "$file")
-            date="${filename:10:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
+            date="${filename:16:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
             formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
             echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kosdaq.json
           done
