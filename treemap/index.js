@@ -84,8 +84,8 @@ function loadData(type, filename) {
       myChart.setOption(
         (option = {
           title: {
-            left: 'center',
-            subtext: '업종별 최대/최저치에 따라 색상 차등 부여'
+            left: 'center'
+            #subtext: '업종별 최대/최저치에 따라 색상 차등 부여'
           },
           tooltip: {
             formatter: function (info) {
