@@ -1,6 +1,7 @@
 name: Generate JSON File List
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/1 * * * *"  # 매 1분마다 실행
 
