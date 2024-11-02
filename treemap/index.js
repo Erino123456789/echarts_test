@@ -214,10 +214,11 @@ $(document).ready(function() {
 });
 
 function searchInData(query) {
-    const currentData = window.currentData || []; // window에 현재 데이터 저장
+    // 전역 변수를 사용
+    const data = currentData || []; // 전역에 저장된 데이터
 
     // 검색 결과 배열
-    const results = currentData.filter(item => {
+    const results = data.filter(item => {
         // 상위 항목 검색
         if (item.name.toLowerCase().includes(query)) {
             return true;
@@ -235,7 +236,18 @@ function searchInData(query) {
 
 function visualizeSearchResults(results) {
     const myChart = echarts.init(document.getElementById('chart-container'));
-    
+
+    if (results.length === 0) {
+        myChart.setOption({
+            title: {
+                text: '검색 결과 없음',
+                left: 'center',
+            },
+            series: []
+        });
+        return;
+    }
+
     myChart.setOption({
         title: {
             text: '검색 결과',
@@ -246,14 +258,13 @@ function visualizeSearchResults(results) {
                 name: '검색 결과',
                 type: 'treemap',
                 data: results,
-                // 여기에 트리맵 옵션 추가...
                 label: {
                     show: true,
                     formatter: function(params) {
                         if (params.data.children) {
                             return `${params.name}`; // 상위 항목은 일반 텍스트
                         } else {
-                            return `${params.name}\n${params.value[4]}%`; // 하위 항목은 굵게 표시
+                            return `${params.name}\n${params.value[4] ? params.value[4] + '%' : ''}`; // 하위 항목은 변동율
                         }
                     },
                     color: '#fff',
