@@ -8,7 +8,7 @@
   font-size: 12px; /* 버튼의 폰트 사이즈 조정 */
   padding: 5px 0; /* 버튼의 위아래 패딩 조정 */
   margin: 2px 0; /* 버튼 사이의 여백 조정 */
-  width: calc(100% - 4px); /* 버튼 너비를 100%로 설정, 여백을 고려하여 약간 줄임 */
+  width: 100%; /* 버튼 너비를 100%로 설정하여 일관성 유지 */
 }
 
 button {
@@ -18,12 +18,14 @@ button {
   padding: 15px 0; /* 위아래 패딩 */
   text-align: center;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 16px; /* 버튼의 폰트 사이즈 조정 */
   margin: 2px 0; /* 버튼 사이의 여백을 줄임 */
   cursor: pointer;
   border-radius: 5px;
+  width: 100%; /* 버튼 너비를 100%로 설정 */
   font-weight: bold; /* 글씨를 굵게 설정 */
 }
+
 
 div[style*="flex: 1"] {
   padding: 5px 0; /* 왼쪽 패딩을 줄임 */
