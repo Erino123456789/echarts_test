@@ -153,7 +153,8 @@ function loadData(type, filename) {
                 textShadowColor: 'black',     // 그림자 색상 설정 (테두리 효과용)
                 textShadowBlur: 4,            // 그림자 블러 정도 설정
                 textShadowOffsetX: 0,
-                textShadowOffsetY: 0
+                textShadowOffsetY: 0,
+                fontWeight: 'bold'
               },
               itemStyle: {
                 borderColor: 'black'
