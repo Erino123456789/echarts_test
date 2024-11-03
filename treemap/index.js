@@ -1,5 +1,44 @@
 let currentFilename; // 현재 파일명을 저장할 변수
 
+function getNearestPreviousTime() {
+    const currentTime = new Date();
+    
+    // KST로 변환
+    const utcOffset = 9 * 60; // 한국은 UTC+9
+    const localTimeInMinutes = currentTime.getUTCHours() * 60 + currentTime.getUTCMinutes() + utcOffset;
+
+    let hours = Math.floor(localTimeInMinutes / 60) % 24; // 24시간 형식으로
+    let minutes = localTimeInMinutes % 60;
+
+    // 15분 단위로 내림
+    minutes = Math.floor(minutes / 15) * 15;
+
+    // 15:50 이후라면 원래 파일명으로 돌아감
+    if (hours < 9 || (hours === 9 && minutes < 15) || (hours === 15 && minutes > 50)) {
+        return null; // 원래 파일명 반환을 위해 null 반환
+    }
+    console.log(`${hours.toString().padStart(2, '0')}${minutes.toString().padStart(2, '0')}`);
+    // 시간을 문자열 형태로 변환하여 반환
+    return `${hours.toString().padStart(2, '0')}${minutes.toString().padStart(2, '0')}`;
+}
+
+function updateTimeDisplay(sliderValue) {
+    let timeString;
+    if (sliderValue === 0) {
+        timeString = "09:15"; // 슬라이더가 0일 때
+    } else if (sliderValue >= 26) {
+        timeString = "15:30"; // 슬라이더가 끝에 있을 때
+    } else {
+        // 슬라이더가 1~25일 때
+        const time = new Date();
+        time.setHours(9, 15); // 기본 시간
+        time.setMinutes(time.getMinutes() + sliderValue * 15); // 슬라이더 값에 따라 분 추가
+        timeString = time.toTimeString().slice(0, 5); // HH:MM 형태로 변환
+    }
+    console.log(`슬라이더 값: ${sliderValue}, 시간: ${timeString}`);
+    // 여기서 timeString을 화면에 표시하는 로직 추가 가능
+}
+
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
     const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
@@ -13,6 +52,19 @@ function loadJsonList(type) {
                     loadData(lowerType, item.filename); // index.js로 type과 filename 전달
                     currentFilename = item.filename; // 현재 파일명 저장
                     document.getElementById('slider-container').style.display = 'block'; // 슬라이더 보이기
+                    // 슬라이더 초기화 및 시간 계산
+                    const nearestTime = getNearestPreviousTime();
+                    if (nearestTime) {
+                        const hourPart = parseInt(nearestTime.substring(0, 2));
+                        const minutePart = parseInt(nearestTime.substring(2, 4));
+                        // 슬라이더 인덱스 계산
+                        const sliderIndex = (hourPart - 9) * 4 + (minutePart / 15); // 09:15부터 시작하므로, 09시 기준으로 인덱스를 계산
+                        $('#time-slider').val(sliderIndex); // 슬라이더 설정
+                        updateTimeDisplay(sliderIndex); // 슬라이더의 값을 화면에 업데이트
+                    } else {
+                        $('#time-slider').val(26); // 15:30 이후인 경우
+                        updateTimeDisplay(26); // 슬라이더의 값을 화면에 업데이트
+                    }
                 });
             buttonContainer.append(button);
         });
@@ -29,7 +81,23 @@ function loadData(type, filename) {
     });
     var option;
 
-  myChart.showLoading();
+    myChart.showLoading();
+  
+    const nearestTime = getNearestPreviousTime();
+    const currentTime = new Date();
+    const hours = currentTime.getUTCHours() + 9; // KST로 변환
+    const minutes = currentTime.getUTCMinutes();
+
+    // 현재 시간 체크 (09:14 이전 또는 15:50 이후)
+    let finalFilename;
+    if ((hours === 9 && minutes < 15) || (hours === 15 && minutes > 50)) {
+        finalFilename = filename; // 원래 파일명 사용
+    } else if (nearestTime) {
+        finalFilename = filename.substring(0, filename.length - 8) + nearestTime + '.json'; // 날짜 부분 변경
+    } else {
+        finalFilename = filename; // 원래 파일명 사용
+    }
+  
   $.get(
     '../data/' + filename,
     function (kospi_data) {
@@ -218,7 +286,9 @@ function loadData(type, filename) {
 
 // 슬라이더의 이벤트 리스너 추가
 document.getElementById('time-slider').addEventListener('input', function() {
-    const sliderValue = parseInt(this.value, 10);
+  
+    const sliderValue = parseInt(this.value);
+    updateTimeDisplay(sliderValue);
     
     // 파일명에서 기본 파일명과 날짜 부분 추출
     const baseFilename = currentFilename.substring(0, currentFilename.length - 10); // "kosdaq_map_data_"와 ".json"을 제외한 부분
@@ -237,7 +307,7 @@ document.getElementById('time-slider').addEventListener('input', function() {
 
         // 새로운 시간 문자열 생성
         const hourString = (9 + hour).toString().padStart(2, '0'); // 09시부터 시작
-        const minuteString = minute.toString().padStart(2, '0');
+        const minuteString = (minute + 15).toString().padStart(2, '0');
         const timeString = `${baseDate}${hourString}${minuteString}`; // 날짜 + 시 + 분
 
         newFilename = `${baseFilename}${timeString}.json`; // 새로운 파일명 생성
