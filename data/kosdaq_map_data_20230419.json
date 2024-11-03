@@ -191,10 +191,10 @@
                 "discretion": "mandatory",
                 "value": [
                     1160523.0,
-                    NaN,
+                    0.0,
                     21800.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             }
         ]
@@ -370,13 +370,13 @@
         "value": 12160539.0,
         "children": [
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "003100",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     1094940.0,
-                    NaN,
+                    0.0,
                     165900.0,
                     1.59
                 ]
