@@ -398,13 +398,13 @@
         "value": 0.0,
         "children": [
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "489790",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     1681263.0,
-                    NaN,
+                    0.0,
                     33300,
                     -5.93
                 ]
