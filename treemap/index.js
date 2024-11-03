@@ -284,38 +284,35 @@ function loadData(type, filename) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+// 슬라이더의 이벤트 리스너 추가
+document.getElementById('time-slider').addEventListener('input', function() {
+  
+    const sliderValue = parseInt(this.value);
+    updateTimeDisplay(sliderValue);
+    
+    // 파일명에서 기본 파일명과 날짜 부분 추출
+    const baseFilename = currentFilename.substring(0, currentFilename.length - 10); // "kosdaq_map_data_"와 ".json"을 제외한 부분
+    const baseDate = currentFilename.slice(-10, -5); // 원래 날짜 부분인 "20241101" 추출
+    let newFilename;
 
-    // 슬라이더의 이벤트 리스너 추가
-    document.getElementById('time-slider').addEventListener('input', function() {
-      
-        const sliderValue = parseInt(this.value);
-        updateTimeDisplay(sliderValue);
+    if (sliderValue === 26) {
+        newFilename = currentFilename;
+    } else {
+        // 슬라이더 값에 따라 15분씩 증가
+        const totalMinutes = 15 + (sliderValue - 1) * 15; // 슬라이더가 1일 때 09:30부터 시작
         
-        // 파일명에서 기본 파일명과 날짜 부분 추출
-        const baseFilename = currentFilename.substring(0, currentFilename.length - 10); // "kosdaq_map_data_"와 ".json"을 제외한 부분
-        const baseDate = currentFilename.slice(-10, -5); // 원래 날짜 부분인 "20241101" 추출
-        let newFilename;
-    
-        if (sliderValue === 26) {
-            newFilename = currentFilename;
-        } else {
-            // 슬라이더 값에 따라 15분씩 증가
-            const totalMinutes = 15 + (sliderValue - 1) * 15; // 슬라이더가 1일 때 09:30부터 시작
-            
-            // 시와 분 계산
-            const hour = Math.floor(totalMinutes / 60);
-            const minute = totalMinutes % 60;
-    
-            // 새로운 시간 문자열 생성
-            const hourString = (9 + hour).toString().padStart(2, '0'); // 09시부터 시작
-            const minuteString = (minute + 15).toString().padStart(2, '0');
-            const timeString = `${baseDate}${hourString}${minuteString}`; // 날짜 + 시 + 분
-    
-            newFilename = `${baseFilename}${timeString}.json`; // 새로운 파일명 생성
-        }
-    
-        // 새 파일로 데이터 로드
-        loadData(currentFilename.toLowerCase().includes('kospi') ? 'KOSPI' : 'KOSDAQ', newFilename);
-    });
+        // 시와 분 계산
+        const hour = Math.floor(totalMinutes / 60);
+        const minute = totalMinutes % 60;
+
+        // 새로운 시간 문자열 생성
+        const hourString = (9 + hour).toString().padStart(2, '0'); // 09시부터 시작
+        const minuteString = (minute + 15).toString().padStart(2, '0');
+        const timeString = `${baseDate}${hourString}${minuteString}`; // 날짜 + 시 + 분
+
+        newFilename = `${baseFilename}${timeString}.json`; // 새로운 파일명 생성
+    }
+
+    // 새 파일로 데이터 로드
+    loadData(currentFilename.toLowerCase().includes('kospi') ? 'KOSPI' : 'KOSDAQ', newFilename);
 });
