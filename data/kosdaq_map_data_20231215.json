@@ -59,10 +59,10 @@
                 "discretion": "mandatory",
                 "value": [
                     343021.0,
-                    NaN,
+                    0.0,
                     4975.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -71,10 +71,10 @@
                 "discretion": "mandatory",
                 "value": [
                     211759.0,
-                    NaN,
+                    0.0,
                     20650.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             }
         ]
@@ -247,10 +247,10 @@
                 "discretion": "mandatory",
                 "value": [
                     344253.0,
-                    NaN,
+                    0.0,
                     3190.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             }
         ]
@@ -394,49 +394,49 @@
         "value": 13865738.0,
         "children": [
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "053610",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     525800.0,
-                    NaN,
+                    0.0,
                     47800.0,
                     -4.3
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "058610",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     783970.0,
-                    NaN,
+                    0.0,
                     35350.0,
                     -0.42
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "058970",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     815121.0,
-                    NaN,
+                    0.0,
                     72700.0,
                     -1.76
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "060280",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     707720.0,
-                    NaN,
+                    0.0,
                     17280.0,
                     0.0
                 ]
@@ -447,68 +447,68 @@
                 "discretion": "mandatory",
                 "value": [
                     13222964.0,
-                    NaN,
+                    0.0,
                     80400.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "095660",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     600419.0,
-                    NaN,
+                    0.0,
                     27250.0,
                     -3.02
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "099190",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     700340.0,
-                    NaN,
+                    0.0,
                     25450.0,
                     5.17
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "108860",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     550407.0,
-                    NaN,
+                    0.0,
                     20450.0,
                     -0.97
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "114190",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     501562.0,
-                    NaN,
+                    0.0,
                     19200.0,
                     3.67
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "118990",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     385609.0,
-                    NaN,
+                    0.0,
                     15510.0,
                     -1.34
                 ]
@@ -526,97 +526,97 @@
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "194480",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     580130.0,
-                    NaN,
+                    0.0,
                     48400.0,
                     -2.52
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "204270",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     727155.0,
-                    NaN,
+                    0.0,
                     12570.0,
                     -3.23
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "299030",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     555737.0,
-                    NaN,
+                    0.0,
                     68100.0,
                     0.74
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "310210",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     698952.0,
-                    NaN,
+                    0.0,
                     40750.0,
                     -0.61
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "328130",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     2431877.0,
-                    NaN,
+                    0.0,
                     85400.0,
                     -4.9
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "336570",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     818254.0,
-                    NaN,
+                    0.0,
                     9280.0,
                     -7.29
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "360070",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     507006.0,
-                    NaN,
+                    0.0,
                     63500.0,
                     -1.4
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "418550",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     942238.0,
-                    NaN,
+                    0.0,
                     29850.0,
                     -2.45
                 ]
@@ -703,10 +703,10 @@
                 "discretion": "mandatory",
                 "value": [
                     266857.0,
-                    NaN,
+                    0.0,
                     3455.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -1083,10 +1083,10 @@
                 "discretion": "mandatory",
                 "value": [
                     634591.0,
-                    NaN,
+                    0.0,
                     3710.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             }
         ]
@@ -1103,10 +1103,10 @@
                 "discretion": "mandatory",
                 "value": [
                     357500.0,
-                    NaN,
+                    0.0,
                     7150.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -1115,10 +1115,10 @@
                 "discretion": "mandatory",
                 "value": [
                     346433.0,
-                    NaN,
+                    0.0,
                     7440.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -1183,10 +1183,10 @@
                 "discretion": "mandatory",
                 "value": [
                     267806.0,
-                    NaN,
+                    0.0,
                     2070.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             }
         ]
@@ -1239,10 +1239,10 @@
                 "discretion": "mandatory",
                 "value": [
                     236268.0,
-                    NaN,
+                    0.0,
                     5680.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -1263,10 +1263,10 @@
                 "discretion": "mandatory",
                 "value": [
                     138283.0,
-                    NaN,
+                    0.0,
                     7000.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -1495,10 +1495,10 @@
                 "discretion": "mandatory",
                 "value": [
                     117876.0,
-                    NaN,
+                    0.0,
                     17860.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             }
         ]
@@ -1515,10 +1515,10 @@
                 "discretion": "mandatory",
                 "value": [
                     215780.0,
-                    NaN,
+                    0.0,
                     3900.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             }
         ]
@@ -1871,10 +1871,10 @@
                 "discretion": "mandatory",
                 "value": [
                     143981.0,
-                    NaN,
+                    0.0,
                     6830.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -1935,10 +1935,10 @@
                 "discretion": "mandatory",
                 "value": [
                     319636.0,
-                    NaN,
+                    0.0,
                     2645.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -2231,10 +2231,10 @@
                 "discretion": "mandatory",
                 "value": [
                     163884.0,
-                    NaN,
+                    0.0,
                     1803.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -2243,10 +2243,10 @@
                 "discretion": "mandatory",
                 "value": [
                     368154.0,
-                    NaN,
+                    0.0,
                     29200.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
