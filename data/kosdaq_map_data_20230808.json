@@ -386,13 +386,13 @@
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "101670",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     568384.0,
-                    NaN,
+                    0.0,
                     25450.0,
                     -5.21
                 ]
@@ -903,10 +903,10 @@
                 "discretion": "mandatory",
                 "value": [
                     728578.0,
-                    NaN,
+                    0.0,
                     12000.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
