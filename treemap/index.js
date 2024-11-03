@@ -28,7 +28,7 @@ function loadData(type, filename) {
 
   myChart.showLoading();
   $.get(
-    filename,
+    '../data/' + filename,
     function (kospi_data) {
       myChart.hideLoading();
       const visualMin = -5;
