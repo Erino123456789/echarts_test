@@ -16,7 +16,7 @@ jobs:
       - name: List JSON files in data folder
         id: list-files
         run: |
-          # kospi로 시작하는 파일 목록을 가져옵니다.
+          # kospi, kosdaq로 시작하는 파일 목록을 가져옵니다.
           kospi_files=$(ls data/kospi_map_data_*.json | sort -r)
           kosdaq_files=$(ls data/kosdaq_map_data_*.json | sort -r)
 
@@ -46,8 +46,8 @@ jobs:
 
       - name: Check generated JSON files
         run: |
-          cat kospi.json
-          cat kosdaq.json
+          head kospi.json
+          head kosdaq.json
 
       - name: Save JSON files to treemap
         run: |
