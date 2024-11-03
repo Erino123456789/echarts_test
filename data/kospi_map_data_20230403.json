@@ -427,20 +427,20 @@
                 "discretion": "mandatory",
                 "value": [
                     3751748.0,
-                    NaN,
+                    0.0,
                     6100.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "139130",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     1146809.0,
-                    NaN,
+                    0.0,
                     6780.0,
                     -1.74
                 ]
