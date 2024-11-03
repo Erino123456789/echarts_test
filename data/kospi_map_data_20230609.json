@@ -410,13 +410,13 @@
         "value": 2937501.0,
         "children": [
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "001570",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     3181142.0,
-                    NaN,
+                    0.0,
                     54800.0,
                     -3.86
                 ]
@@ -434,13 +434,13 @@
                 ]
             },
             {
-                "name": NaN,
+                "name": "기타",
                 "id": "005420",
                 "discretion": "mandatory",
                 "value": [
-                    NaN,
+                    0.0,
                     2019975.0,
-                    NaN,
+                    0.0,
                     57700.0,
                     2.12
                 ]
@@ -1067,10 +1067,10 @@
                 "discretion": "mandatory",
                 "value": [
                     450784.0,
-                    NaN,
+                    0.0,
                     7440.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
@@ -1203,10 +1203,10 @@
                 "discretion": "mandatory",
                 "value": [
                     2269213.0,
-                    NaN,
+                    0.0,
                     45400.0,
-                    NaN,
-                    NaN
+                    0.0,
+                    0.0
                 ]
             },
             {
