@@ -28,7 +28,7 @@ function loadData(type, filename) {
 
   myChart.showLoading();
   $.get(
-    '../data/' + filename,
+    filename,
     function (kospi_data) {
       myChart.hideLoading();
       const visualMin = -5;
@@ -89,42 +89,51 @@ function loadData(type, filename) {
           },
           tooltip: {
             formatter: function (info) {
-              let value = info.value;
-              let now_cap = value[0];
-              now_cap = isValidNumber(now_cap)
-                ? echarts.format.addCommas(now_cap) + '원'
-                : '-';
-              let pre_cap = value[1];
-              pre_cap = isValidNumber(pre_cap)
-                ? echarts.format.addCommas(pre_cap) + '원'
-                : '-';
-              let now_price = value[2];
-              now_price = isValidNumber(now_price)
-                ? echarts.format.addCommas(now_price) + '원'
-                : '-';
-              let pre_price = value[3];
-              pre_price = isValidNumber(pre_price)
-                ? echarts.format.addCommas(pre_price) + '원'
-                : '-';
-              let change = value[4];
-              change = isValidNumber(change) ? change.toFixed(2) + '%' : '-';
-              return [
-                '<div class="tooltip-title">' +
-                  echarts.format.encodeHTML(info.name) +
-                  '</div>',
-                '금일시총: &nbsp;&nbsp;' + now_cap + '<br>',
-                '전일시총: &nbsp;&nbsp;' + pre_cap + '<br>',
-                '금일종가: &nbsp;&nbsp;' + now_price + '<br>',
-                '전일종가: &nbsp;&nbsp;' + pre_price + '<br>',
-                '변동율: &nbsp;&nbsp;' + change
-              ].join('');
+              if (info.data.children) {
+                let totalValue = isValidNumber(info.data.value) ? echarts.format.addCommas(info.data.value) + ' 백만원' : '-';
+                return [
+                  '<div class="tooltip-title"><b>' + echarts.format.encodeHTML(info.name) + '</b></div>',
+                  '총 합계: &nbsp;&nbsp;' + totalValue
+                ].join('');
+              } else {
+                let value = info.value;
+                let now_cap = value[0];
+                now_cap = isValidNumber(now_cap)
+                  ? echarts.format.addCommas(now_cap) + ' 백만원'
+                  : '-';
+                let pre_cap = value[1];
+                pre_cap = isValidNumber(pre_cap)
+                  ? echarts.format.addCommas(pre_cap) + ' 백만원'
+                  : '-';
+                let now_price = value[2];
+                now_price = isValidNumber(now_price)
+                  ? echarts.format.addCommas(now_price) + ' 원'
+                  : '-';
+                let pre_price = value[3];
+                pre_price = isValidNumber(pre_price)
+                  ? echarts.format.addCommas(pre_price) + ' 원'
+                  : '-';
+                let change = value[4];
+                change = isValidNumber(change) ? change.toFixed(2) + ' %' : '-';
+                return [
+                  '<div class="tooltip-title"><b>' +
+                    echarts.format.encodeHTML(info.name) +
+                    '</b></div>',
+                  '금일시총: &nbsp;&nbsp;' + now_cap + '<br>',
+                  '전일시총: &nbsp;&nbsp;' + pre_cap + '<br>',
+                  '금일종가: &nbsp;&nbsp;' + now_price + '<br>',
+                  '전일종가: &nbsp;&nbsp;' + pre_price + '<br>',
+                  '변동율: &nbsp;&nbsp;' + change
+                ].join('');
+              }
             }
           },
           series: [
             {
-              name: 'ALL',
+              name: `${type.toUpperCase()}`,
               top: 80,
               type: 'treemap',
+              animation: true,
               upperLabel: {
                 show: true,
                 color: '#fff'
