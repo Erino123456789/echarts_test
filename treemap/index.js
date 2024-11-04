@@ -41,7 +41,7 @@ function updateTimeDisplay(sliderValue) {
 
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
-    const fileName = lowerType === 'kospi' ? 'https://erino123456789.github.io/echarts_test/treemap/kospi_json_list.json' : 'https://erino123456789.github.io/echarts_test/treemap/kosdaq_json_list.json';
+    const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
     $.getJSON(fileName, function(data) {
         const buttonContainer = $('#json-button-container');
         buttonContainer.empty(); // 이전 버튼 제거
@@ -75,7 +75,7 @@ function loadJsonList(type) {
 async function fetchCompressedJson(filename) {
   try {
     // 압축된 JSON 파일 요청
-    const response = await fetch(filename+'.gz');
+    const response = await fetch('../data/' + filename + '.gz');
 
     // 압축된 데이터가 제대로 수신되었는지 확인
     if (!response.ok) {
