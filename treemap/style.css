@@ -31,3 +31,18 @@ div[style*="flex: 1"] {
   padding: 5px 0; /* 왼쪽 패딩을 줄임 */
   border-right: 1px solid #ccc; /* 테두리는 유지 */
 }
+
+#controls {
+  display: flex; /* Flexbox로 수평 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  margin-top: 10px; /* 위쪽 여백 추가 */
+}
+
+#search-input {
+  margin-right: 10px; /* 슬라이더와의 간격 */
+  padding: 5px; /* 패딩 추가 */
+  width: 200px; /* 적절한 너비 설정 */
+}
+
+#time-slider {
+  flex-grow: 1; /* 슬라이더가 가능한 공간을 채우도록 설정 */
