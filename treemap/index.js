@@ -10,11 +10,11 @@ function getNearestPreviousTime() {
     let hours = Math.floor(localTimeInMinutes / 60) % 24; // 24시간 형식으로
     let minutes = localTimeInMinutes % 60;
 
-    // 15분 단위로 내림
-    minutes = Math.floor(minutes / 15) * 15;
+    // 10분 단위로 내림
+    minutes = Math.floor(minutes / 10) * 10;
 
     // 15:50 이후라면 원래 파일명으로 돌아감
-    if (hours < 9 || (hours === 9 && minutes < 15) || (hours === 15 && minutes > 50)) {
+    if (hours < 9 || (hours === 9 && minutes < 20) || (hours === 15 && minutes > 50)) {
         return null; // 원래 파일명 반환을 위해 null 반환
     }
     console.log(`${hours.toString().padStart(2, '0')}${minutes.toString().padStart(2, '0')}`);
@@ -25,14 +25,14 @@ function getNearestPreviousTime() {
 function updateTimeDisplay(sliderValue) {
     let timeString;
     if (sliderValue === 0) {
-        timeString = "09:15"; // 슬라이더가 0일 때
-    } else if (sliderValue >= 26) {
-        timeString = "15:30"; // 슬라이더가 끝에 있을 때
+        timeString = "09:20"; // 슬라이더가 0일 때
+    } else if (sliderValue >= 39) {
+        timeString = "15:50"; // 슬라이더가 끝에 있을 때
     } else {
-        // 슬라이더가 1~25일 때
+        // 슬라이더가 1~36일 때
         const time = new Date();
-        time.setHours(9, 15); // 기본 시간
-        time.setMinutes(time.getMinutes() + sliderValue * 15); // 슬라이더 값에 따라 분 추가
+        time.setHours(9, 20); // 기본 시간
+        time.setMinutes(time.getMinutes() + sliderValue * 10); // 슬라이더 값에 따라 분 추가
         timeString = time.toTimeString().slice(0, 5); // HH:MM 형태로 변환
     }
     console.log(`슬라이더 값: ${sliderValue}, 시간: ${timeString}`);
@@ -59,23 +59,23 @@ function loadJsonList(type) {
                         const minutePart = parseInt(nearestTime.substring(2, 4));
                         console.log(`hourPart: ${hourPart}, minutePart: ${minutePart}`); // 로그 추가
                     
-                        // 기준 시간인 09:15를 분으로 변환
+                        // 기준 시간인 09:20를 분으로 변환
                         const baseHour = 9;
-                        const baseMinute = 15;
-                        const baseTotalMinutes = baseHour * 60 + baseMinute; // 555분
+                        const baseMinute = 20;
+                        const baseTotalMinutes = baseHour * 60 + baseMinute; // 560분
                     
                         // 클릭한 시간 총 분으로 변환
                         const currentTotalMinutes = hourPart * 60 + minutePart;
                     
                         // 슬라이더 인덱스 계산
-                        const sliderIndex = (currentTotalMinutes - baseTotalMinutes) / 15; // 09:15 기준으로 인덱스를 계산
+                        const sliderIndex = (currentTotalMinutes - baseTotalMinutes) / 10; // 09:20 기준으로 인덱스를 계산
                         console.log(`슬라이더 인덱스: ${sliderIndex}`); // 로그 추가
                     
                         $('#time-slider').val(sliderIndex); // 슬라이더 설정
                         updateTimeDisplay(sliderIndex); // 슬라이더의 값을 화면에 업데이트
                     } else {
-                        $('#time-slider').val(26); // 15:30 이후인 경우
-                        updateTimeDisplay(26); // 슬라이더의 값을 화면에 업데이트
+                        $('#time-slider').val(39); // 15:30 이후인 경우
+                        updateTimeDisplay(39); // 슬라이더의 값을 화면에 업데이트
                     }
                 });
             buttonContainer.append(button);
@@ -100,9 +100,9 @@ function loadData(type, filename) {
     const hours = currentTime.getUTCHours() + 9; // KST로 변환
     const minutes = currentTime.getUTCMinutes();
 
-    // 현재 시간 체크 (09:14 이전 또는 15:50 이후)
+    // 현재 시간 체크 (09:19 이전 또는 15:30 이후)
     let finalFilename;
-    if ((hours === 9 && minutes < 15) || (hours === 15 && minutes > 50)) {
+    if ((hours === 9 && minutes < 20) || (hours === 15 && minutes > 30)) {
         finalFilename = filename; // 원래 파일명 사용
     } else if (nearestTime) {
         finalFilename = filename.substring(0, filename.length - 8) + nearestTime + '.json'; // 날짜 부분 변경
@@ -298,7 +298,6 @@ function loadData(type, filename) {
 
 // 슬라이더의 이벤트 리스너 추가
 document.getElementById('time-slider').addEventListener('input', function() {
-  
     const sliderValue = parseInt(this.value);
     updateTimeDisplay(sliderValue);
     
@@ -307,11 +306,11 @@ document.getElementById('time-slider').addEventListener('input', function() {
     const baseDate = currentFilename.slice(-10, -5); // 원래 날짜 부분인 "20241101" 추출
     let newFilename;
 
-    if (sliderValue === 26) {
-        newFilename = currentFilename;
+    if (sliderValue === 39) { // 슬라이더 인덱스가 39일 때, 즉 15:50
+        newFilename = currentFilename; // 기존 파일명 사용
     } else {
-        // 슬라이더 값에 따라 15분씩 증가
-        const totalMinutes = 15 + (sliderValue - 1) * 15; // 슬라이더가 1일 때 09:30부터 시작
+        // 슬라이더 값에 따라 10분씩 증가
+        const totalMinutes = 20 + (sliderValue * 10); // 슬라이더가 0일 때 09:20부터 시작
         
         // 시와 분 계산
         const hour = Math.floor(totalMinutes / 60);
@@ -319,7 +318,7 @@ document.getElementById('time-slider').addEventListener('input', function() {
 
         // 새로운 시간 문자열 생성
         const hourString = (9 + hour).toString().padStart(2, '0'); // 09시부터 시작
-        const minuteString = (minute + 15).toString().padStart(2, '0');
+        const minuteString = minute.toString().padStart(2, '0'); // 분을 2자리로 패딩
         const timeString = `${baseDate}${hourString}${minuteString}`; // 날짜 + 시 + 분
 
         newFilename = `${baseFilename}${timeString}.json`; // 새로운 파일명 생성
