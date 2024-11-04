@@ -16,7 +16,10 @@
     </div>
     <div style="flex: 9; padding: 10px; position: relative;">
       <div id="slider-container" style="display: none;">
-        <input type="range" id="time-slider" min="0" max="39" value="39" style="width: calc(100% - 20px); position: absolute; top: 10px; left: 10px; z-index: 1;" />
+        <div id="controls">
+          <input type="text" id="search-input" placeholder="검색어를 입력하세요" />
+          <input type="range" id="time-slider" min="0" max="39" value="39" />
+        </div>
       </div>
       <div id="chart-container" style="position: relative; margin-top: 40px; height: calc(100vh - 100px);"></div>
     </div>
