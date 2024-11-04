@@ -3,7 +3,7 @@ name: Generate JSON File List
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0/5 * * * *"  # 매 1분마다 실행
+    - cron: "0/5 * * * *"  # 매 5분마다 실행
 
 jobs:
   generate-json-list:
@@ -16,32 +16,52 @@ jobs:
       - name: List JSON files in data folder
         id: list-files
         run: |
-          # kospi, kosdaq로 시작하는 파일 목록을 가져옵니다.
+          # KOSPI와 KOSDAQ로 시작하는 파일 목록을 가져옵니다.
           kospi_files=$(ls data/kospi_map_data_*.json | sort -r)
           kosdaq_files=$(ls data/kosdaq_map_data_*.json | sort -r)
 
-          # JSON 배열 시작
-          echo "[" > kospi.json
+          # 날짜별로 파일을 그룹화하기 위한 배열
+          declare -A kospi_date_files
+          declare -A kosdaq_date_files
+
+          # KOSPI 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kospi_files; do
             filename=$(basename "$file")
             date="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
-            formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
-            echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kospi.json
+            kospi_date_files["$date"]+=("$filename")
           done
-          # 마지막 쉼표 제거
-          sed -i '$ s/,$//' kospi.json
-          echo "]" >> kospi.json
 
-          # JSON 배열 시작
-          echo "[" > kosdaq.json
+          # KOSDAQ 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kosdaq_files; do
             filename=$(basename "$file")
             date="${filename:16:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
-            formatted_date="$(echo $date | sed 's/\(....\)\(..\)\(..\)/\1-\2-\3/')"  # 날짜 형식 변환
-            echo "  { \"name\": \"$formatted_date\", \"filename\": \"$filename\" }," >> kosdaq.json
+            kosdaq_date_files["$date"]+=("$filename")
           done
-          # 마지막 쉼표 제거
-          sed -i '$ s/,$//' kosdaq.json
+
+          # KOSPI JSON 배열 시작
+          echo "[" > kospi.json
+          for date in "${!kospi_date_files[@]}"; do
+            echo "  { \"date\": \"$date\", \"files\": [" >> kospi.json
+            for filename in "${kospi_date_files[$date]}"; do
+              echo "    \"$filename\"," >> kospi.json
+            done
+            sed -i '$ s/,$//' kospi.json  # 마지막 쉼표 제거
+            echo "  ] }," >> kospi.json
+          done
+          sed -i '$ s/,$//' kospi.json  # 마지막 쉼표 제거
+          echo "]" >> kospi.json
+
+          # KOSDAQ JSON 배열 시작
+          echo "[" > kosdaq.json
+          for date in "${!kosdaq_date_files[@]}"; do
+            echo "  { \"date\": \"$date\", \"files\": [" >> kosdaq.json
+            for filename in "${kosdaq_date_files[$date]}"; do
+              echo "    \"$filename\"," >> kosdaq.json
+            done
+            sed -i '$ s/,$//' kosdaq.json  # 마지막 쉼표 제거
+            echo "  ] }," >> kosdaq.json
+          done
+          sed -i '$ s/,$//' kosdaq.json  # 마지막 쉼표 제거
           echo "]" >> kosdaq.json
 
       - name: Check generated JSON files
@@ -52,8 +72,9 @@ jobs:
       - name: Save JSON files to treemap
         run: |
           mkdir -p treemap
-          mv kospi.json treemap/kospi_json_list.json
-          mv kosdaq.json treemap/kosdaq_json_list.json
+          TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
+          mv kospi.json "treemap/kospi_json_list_${TIMESTAMP}.json"
+          mv kosdaq.json "treemap/kosdaq_json_list_${TIMESTAMP}.json"
 
       - name: Commit and push changes
         run: |
@@ -61,8 +82,8 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           
           # 커밋할 파일이 존재하는지 확인
-          if [ -f treemap/kospi_json_list.json ] || [ -f treemap/kosdaq_json_list.json ]; then
-            git add treemap/kospi_json_list.json treemap/kosdaq_json_list.json
+          if [ -f treemap/kospi_json_list_${TIMESTAMP}.json ] || [ -f treemap/kosdaq_json_list_${TIMESTAMP}.json ]; then
+            git add treemap/kospi_json_list_${TIMESTAMP}.json treemap/kosdaq_json_list_${TIMESTAMP}.json
             git commit -m "Update JSON lists for KOSPI and KOSDAQ files" || echo "No changes to commit."
             git push
           else
