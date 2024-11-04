@@ -1,4 +1,5 @@
 let currentFilename; // 현재 파일명을 저장할 변수
+let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
 
 function getNearestPreviousTime() {
     const currentTime = new Date();
@@ -113,6 +114,7 @@ function loadData(type, filename) {
   $.get(
     '../data/' + filename,
     function (kospi_data) {
+      allData = kospi_data; // 검색기능용, 전체 데이터 저장
       myChart.hideLoading();
       const visualMin = -5;
       const visualMax = 5;
@@ -289,7 +291,41 @@ function loadData(type, filename) {
       );
     }
   );
-
+    
+    // 검색어에 따른 데이터 필터링 함수
+    $('#search-input').on('input', function() {
+        const query = $(this).val().toLowerCase(); // 입력된 검색어
+    
+        // 재귀적으로 하위 항목을 포함하여 필터링하는 함수
+        function filterData(data) {
+            return data.reduce((acc, item) => {
+                // 상위 항목이 검색어와 일치하는 경우
+                if (item.name.toLowerCase().includes(query)) {
+                    acc.push(item); // 전체 항목 추가
+                } else if (item.children) {
+                    // 하위 항목에 대해 재귀적으로 필터링
+                    const filteredChildren = filterData(item.children);
+                    if (filteredChildren.length) {
+                        acc.push({
+                            ...item, // 상위 항목 정보 유지
+                            children: filteredChildren // 필터링된 하위 항목 추가
+                        });
+                    }
+                }
+                return acc;
+            }, []);
+        }
+    
+        const filteredData = filterData(allData); // 필터링된 데이터
+    
+        // 필터링된 데이터를 차트에 업데이트
+        myChart.setOption({
+            series: [{
+                data: filteredData
+            }]
+        });
+    });
+    
   window.addEventListener('resize', myChart.resize);
   if (option && typeof option === 'object') {
     myChart.setOption(option);
