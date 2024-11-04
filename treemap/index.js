@@ -122,9 +122,9 @@ function loadData(type, filename) {
     } else {
         finalFilename = filename; // 원래 파일명 사용
     }
-  
+    const kospi_data = await fetchCompressedJson(finalFilename);
   $.get(
-    fetchCompressedJson(filename),
+    kospi_data,
     function (kospi_data) {
       myChart.hideLoading();
       const visualMin = -5;
