@@ -41,7 +41,7 @@ function updateTimeDisplay(sliderValue) {
 
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
-    const fileName = lowerType === 'kospi' ? 'https://erino123456789.github.io/echarts_test/treemap/kospi_json_list.json' : 'https://erino123456789.github.io/echarts_test/treemap/kosdaq_json_list.json';
+    const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
     $.getJSON(fileName, function(data) {
         const buttonContainer = $('#json-button-container');
         buttonContainer.empty(); // 이전 버튼 제거
@@ -72,31 +72,6 @@ function loadJsonList(type) {
         alert('JSON 파일을 불러오는 데 실패했습니다. 파일 이름이 올바른지 확인하세요.');
     });
 }
-async function fetchCompressedJson(filename) {
-  try {
-    // 압축된 JSON 파일 요청
-    const response = await fetch(filename+'.gz');
-
-    // 압축된 데이터가 제대로 수신되었는지 확인
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    // 압축된 데이터 가져오기 (ArrayBuffer 형식)
-    const compressedData = await response.arrayBuffer();
-
-    // 압축 해제
-    const decompressedData = pako.inflate(new Uint8Array(compressedData), { to: 'string' });
-
-    // JSON 파싱
-    const jsonData = JSON.parse(decompressedData);
-
-    // 콘솔에 JSON 출력
-    console.log(jsonData);
-  } catch (error) {
-    console.error('Error fetching or decompressing JSON:', error);
-  }
-}
 
 function loadData(type, filename) {
     var dom = document.getElementById('chart-container');
@@ -124,7 +99,7 @@ function loadData(type, filename) {
     }
   
   $.get(
-    fetchCompressedJson(filename),
+    '../data/' + filename,
     function (kospi_data) {
       myChart.hideLoading();
       const visualMin = -5;
