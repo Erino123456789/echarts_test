@@ -21,57 +21,43 @@ jobs:
           kosdaq_files=$(ls data/kosdaq_map_data_*.json | sort -r)
 
           # 날짜별로 파일을 그룹화하기 위한 문자열
-          kospi_date_files=""
-          kosdaq_date_files=""
+          declare -A kospi_date_files
+          declare -A kosdaq_date_files
 
           # KOSPI 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kospi_files; do
             filename=$(basename "$file")
             date="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
-            kospi_date_files+="$date:$filename "  # 날짜:파일 이름 형식으로 추가
+            base_name="${filename:0:15}"  # 'kospi_map_data_' 부분
+            # 중복을 피하기 위해 키로 사용
+            kospi_date_files["$date"]="${base_name}${date}.json"  # 'kospi_map_data_YYYYMMDD.json' 형식
           done
 
           # KOSDAQ 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kosdaq_files; do
             filename=$(basename "$file")
             date="${filename:16:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
-            kosdaq_date_files+="$date:$filename "  # 날짜:파일 이름 형식으로 추가
+            base_name="${filename:0:16}"  # 'kosdaq_map_data_' 부분
+            # 중복을 피하기 위해 키로 사용
+            kosdaq_date_files["$date"]="${base_name}${date}.json"  # 'kosdaq_map_data_YYYYMMDD.json' 형식
           done
 
           # KOSPI JSON 배열 시작
           echo "[" > kospi.json
-          # KOSPI 파일 처리
-          for entry in $kospi_date_files; do
-            date="${entry%%:*}"  # 날짜 추출
-            filename="${entry##*:}"  # 파일 이름 추출
-            # 중복된 날짜 확인
-            if ! grep -q "\"date\": \"$date\"" kospi.json; then
-              echo "  { \"date\": \"$date\", \"files\": [" >> kospi.json
-            fi
-            echo "    \"$filename\"," >> kospi.json
+          for date in "${!kospi_date_files[@]}"; do
+            echo "  { \"name\": \"$date\", \"filename\": \"${kospi_date_files[$date]}\" }," >> kospi.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kospi.json
-          echo "  ] }," >> kospi.json
-          sed -i '$ s/,$//' kospi.json  # 마지막 쉼표 제거
           echo "]" >> kospi.json
 
           # KOSDAQ JSON 배열 시작
           echo "[" > kosdaq.json
-          # KOSDAQ 파일 처리
-          for entry in $kosdaq_date_files; do
-            date="${entry%%:*}"  # 날짜 추출
-            filename="${entry##*:}"  # 파일 이름 추출
-            # 중복된 날짜 확인
-            if ! grep -q "\"date\": \"$date\"" kosdaq.json; then
-              echo "  { \"date\": \"$date\", \"files\": [" >> kosdaq.json
-            fi
-            echo "    \"$filename\"," >> kosdaq.json
+          for date in "${!kosdaq_date_files[@]}"; do
+            echo "  { \"name\": \"$date\", \"filename\": \"${kosdaq_date_files[$date]}\" }," >> kosdaq.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kosdaq.json
-          echo "  ] }," >> kosdaq.json
-          sed -i '$ s/,$//' kosdaq.json  # 마지막 쉼표 제거
           echo "]" >> kosdaq.json
 
       - name: Check generated JSON files
