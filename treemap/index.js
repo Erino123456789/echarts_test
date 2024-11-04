@@ -57,8 +57,20 @@ function loadJsonList(type) {
                     if (nearestTime) {
                         const hourPart = parseInt(nearestTime.substring(0, 2));
                         const minutePart = parseInt(nearestTime.substring(2, 4));
+                        console.log(`hourPart: ${hourPart}, minutePart: ${minutePart}`); // 로그 추가
+                    
+                        // 기준 시간인 09:15를 분으로 변환
+                        const baseHour = 9;
+                        const baseMinute = 15;
+                        const baseTotalMinutes = baseHour * 60 + baseMinute; // 555분
+                    
+                        // 클릭한 시간 총 분으로 변환
+                        const currentTotalMinutes = hourPart * 60 + minutePart;
+                    
                         // 슬라이더 인덱스 계산
-                        const sliderIndex = (hourPart - 9) * 4 + (minutePart / 15); // 09:15부터 시작하므로, 09시 기준으로 인덱스를 계산
+                        const sliderIndex = (currentTotalMinutes - baseTotalMinutes) / 15; // 09:15 기준으로 인덱스를 계산
+                        console.log(`슬라이더 인덱스: ${sliderIndex}`); // 로그 추가
+                    
                         $('#time-slider').val(sliderIndex); // 슬라이더 설정
                         updateTimeDisplay(sliderIndex); // 슬라이더의 값을 화면에 업데이트
                     } else {
