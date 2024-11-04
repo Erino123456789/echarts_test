@@ -28,24 +28,23 @@ jobs:
           for file in $kospi_files; do
             filename=$(basename "$file")
             date="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
-            base_name="${filename:0:15}"  # 'kospi_map_data_' 부분
             # 중복을 피하기 위해 키로 사용
-            kospi_date_files["$date"]="${base_name}${date}.json"  # 'kospi_map_data_YYYYMMDD.json' 형식
+            kospi_date_files["$date"]="$filename"  # 원본 파일명 저장
           done
 
           # KOSDAQ 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kosdaq_files; do
             filename=$(basename "$file")
             date="${filename:16:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
-            base_name="${filename:0:16}"  # 'kosdaq_map_data_' 부분
             # 중복을 피하기 위해 키로 사용
-            kosdaq_date_files["$date"]="${base_name}${date}.json"  # 'kosdaq_map_data_YYYYMMDD.json' 형식
+            kosdaq_date_files["$date"]="$filename"  # 원본 파일명 저장
           done
 
           # KOSPI JSON 배열 시작
           echo "[" > kospi.json
           for date in "${!kospi_date_files[@]}"; do
-            echo "  { \"name\": \"$date\", \"filename\": \"${kospi_date_files[$date]}\" }," >> kospi.json
+            base_name="${kospi_date_files[$date]::15}"  # 'kospi_map_data_' 부분만 추출
+            echo "  { \"name\": \"$date\", \"filename\": \"${base_name}${date}.json\" }," >> kospi.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kospi.json
@@ -54,7 +53,8 @@ jobs:
           # KOSDAQ JSON 배열 시작
           echo "[" > kosdaq.json
           for date in "${!kosdaq_date_files[@]}"; do
-            echo "  { \"name\": \"$date\", \"filename\": \"${kosdaq_date_files[$date]}\" }," >> kosdaq.json
+            base_name="${kosdaq_date_files[$date]::16}"  # 'kosdaq_map_data_' 부분만 추출
+            echo "  { \"name\": \"$date\", \"filename\": \"${base_name}${date}.json\" }," >> kosdaq.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kosdaq.json
@@ -68,9 +68,8 @@ jobs:
       - name: Save JSON files to treemap
         run: |
           mkdir -p treemap
-          TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
-          mv kospi.json "treemap/kospi_json_list_${TIMESTAMP}.json"
-          mv kosdaq.json "treemap/kosdaq_json_list_${TIMESTAMP}.json"
+          mv kospi.json "treemap/kospi_json_list.json"
+          mv kosdaq.json "treemap/kosdaq_json_list.json"
 
       - name: Commit and push changes
         run: |
@@ -78,8 +77,8 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           
           # 커밋할 파일이 존재하는지 확인
-          if [ -f treemap/kospi_json_list_${TIMESTAMP}.json ] || [ -f treemap/kosdaq_json_list_${TIMESTAMP}.json ]; then
-            git add treemap/kospi_json_list_${TIMESTAMP}.json treemap/kosdaq_json_list_${TIMESTAMP}.json
+          if [ -f treemap/kospi_json_list.json ] || [ -f treemap/kosdaq_json_list.json ]; then
+            git add treemap/kospi_json_list.json treemap/kosdaq_json_list.json
             git commit -m "Update JSON lists for KOSPI and KOSDAQ files" || echo "No changes to commit."
             git push
           else
