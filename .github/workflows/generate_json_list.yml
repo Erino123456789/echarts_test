@@ -42,7 +42,7 @@ jobs:
 
           # KOSPI JSON 배열 시작
           echo "[" > kospi.json
-          for date in "${!kospi_date_files[@]}"; do
+          for date in $(echo "${!kospi_date_files[@]}" | tr ' ' '\n' | sort -r); do
             base_name="${kospi_date_files[$date]::15}"  # 'kospi_map_data_' 부분만 추출
             echo "  { \"name\": \"$date\", \"filename\": \"${base_name}${date}.json\" }," >> kospi.json
           done
@@ -52,7 +52,7 @@ jobs:
 
           # KOSDAQ JSON 배열 시작
           echo "[" > kosdaq.json
-          for date in "${!kosdaq_date_files[@]}"; do
+          for date in $(echo "${!kosdaq_date_files[@]}" | tr ' ' '\n' | sort -r); do
             base_name="${kosdaq_date_files[$date]::16}"  # 'kosdaq_map_data_' 부분만 추출
             echo "  { \"name\": \"$date\", \"filename\": \"${base_name}${date}.json\" }," >> kosdaq.json
           done
