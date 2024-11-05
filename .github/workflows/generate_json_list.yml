@@ -54,7 +54,7 @@ jobs:
           echo "[" > kosdaq.json
           for date in $(echo "${!kosdaq_date_files[@]}" | tr ' ' '\n' | sort -r); do
             base_name="${kosdaq_date_files[$date]::16}"  # 'kosdaq_map_data_' 부분만 추출
-            echo "  { \"name\": \"$date\", \"filename\": \"${base_name}${date}.json\" }," >> kosdaq.json
+            echo "  { \"name\": \"${date:0:4}-${date:4:2}-${date:6:2}\", \"filename\": \"${base_name}${date}.json\" }," >> kosdaq.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kosdaq.json
