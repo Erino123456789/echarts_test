@@ -182,7 +182,7 @@ function handleScreenshot() {
 
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
-    const fileName = lowerType === 'kospi' ? 'kosdaq_json_list.json' : 'kosdaq_json_list.json';
+    const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
     $.getJSON(fileName, function(data) {
         const buttonContainer = $('#json-button-container');
         buttonContainer.empty(); // 이전 버튼 제거
