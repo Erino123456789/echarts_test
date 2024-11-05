@@ -1,6 +1,47 @@
 let currentFilename; // 현재 파일명을 저장할 변수
 let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
+let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
+
+function loadAndCacheData(filePrefix, date) {
+    const timeSuffixes = [];
+
+    // 09:20부터 15:50까지 10분 간격으로 접미사를 추가
+    for (let hour = 9; hour <= 15; hour++) {
+        for (let minute = 0; minute < 60; minute += 10) {
+            const timeString = `${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}`;
+            if (hour === 9 && minute < 20) continue; // 09:20 이전은 제외
+            if (hour === 15 && minute > 40) break; // 15:40 이후는 제외
+            timeSuffixes.push(timeString);
+        }
+    }
+
+    // 각 시간별 파일을 다운로드하여 캐시에 저장
+    timeSuffixes.forEach(timeSuffix => {
+        const filename = `${filePrefix}_${date}${timeSuffix}.json`;
+
+        // 파일이 이미 캐시에 있는지 확인 후 중복 로드 방지
+        if (cachedFiles[date] && cachedFiles[date][timeSuffix]) {
+            console.log(`이미 캐시에 저장된 파일: ${filename}`);
+            return;
+        }
+
+        $.getJSON(`../data/${filename}`, function(data) {
+            if (!cachedFiles[date]) cachedFiles[date] = {};
+            cachedFiles[date][timeSuffix] = data;
+        }).fail(function() {
+            console.warn(`Failed to load: ${filename}`); // 실패 시 경고 메시지
+        });
+    });
+}
+
+function loadDataFromCache(filePrefix, date, timeSuffix) {
+    if (timeSuffix > '1540') {
+        console.warn(`15:50 이후 데이터 요청 제한: ${filePrefix}_${date}${timeSuffix}.json`);
+        return; // 15:50 이후 파일 요청 차단
+    }
+    const data = cachedFiles[date] && cachedFiles[date][timeSuffix];
+}
 
 function calculateSliderIndex(timeString) {
     // timeString은 "HHMM" 형식의 문자열로, 예를 들어 "0920", "1030" 등의 값을 가짐
@@ -59,7 +100,7 @@ function updateTimeDisplay(sliderValue) {
 
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
-    const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
+    const fileName = lowerType === 'kospi' ? 'kosdaq_json_list.json' : 'kosdaq_json_list.json';
     $.getJSON(fileName, function(data) {
         const buttonContainer = $('#json-button-container');
         buttonContainer.empty(); // 이전 버튼 제거
@@ -67,9 +108,13 @@ function loadJsonList(type) {
             const button = $('<button></button>')
                 .text(item.name)
                 .click(() => {
-
-                    currentFilename = item.filename;
+                    currentFilename = item.filename; // 현재 파일명 저장
+                    const selectedDate = currentFilename.slice(-13, -5); // 날짜 추출
+                    const filePrefix = currentFilename.split('_')[0] + '_map_data'; // kosdaq_map_data 또는 kospi_map_data 형식으로 파일명 설정
+                    loadAndCacheData(filePrefix, selectedDate); // 해당 날짜의 모든 JSON 파일 캐시
                     document.getElementById('slider-container').style.display = 'block';
+                    loadDataFromCache(filePrefix, selectedDate, '0920'); // 초기 데이터 로드
+                document.getElementById('slider-container').style.display = 'block';
                     
                     // 첫 시도: 기본 파일명으로 데이터 불러오기
                     loadData(type, currentFilename, true, () => {
@@ -368,11 +413,12 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
 
 // 슬라이더 인덱스에 맞는 파일명 생성 함수
 function getFilenameForSliderIndex(sliderIndex) {
-    const baseFilename = currentFilename.substring(0, currentFilename.length - 10); // "kosdaq_map_data_"와 ".json" 제외
-    const baseDate = currentFilename.slice(-10, -5); // 날짜 부분 추출 (예: "20241101")
+    const baseFilename = currentFilename.substring(0, currentFilename.length - 10);
+    const baseDate = currentFilename.slice(-10, -5);
 
-    if (sliderIndex === 39) {
-        return currentFilename; // 슬라이더 인덱스가 39일 때는 기본 파일명
+    // 슬라이더 인덱스가 39(15:50)을 넘기면 원래 파일 호출
+    if (sliderIndex >= 39) {
+        return currentFilename; // 15:50 이상은 호출하지 않음
     }
 
     const totalMinutes = 20 + (sliderIndex * 10);
@@ -380,9 +426,9 @@ function getFilenameForSliderIndex(sliderIndex) {
     const minute = totalMinutes % 60;
     const hourString = (9 + hour).toString().padStart(2, '0');
     const minuteString = minute.toString().padStart(2, '0');
-    const timeString = `${baseDate}${hourString}${minuteString}`; // 날짜 + 시 + 분
+    const timeString = `${baseDate}${hourString}${minuteString}`;
 
-    return `${baseFilename}${timeString}.json`; // 생성된 파일명 반환
+    return `${baseFilename}${timeString}.json`;
 }
 
 // 슬라이더 이동 시 파일명 변경 및 데이터 로드
