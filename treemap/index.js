@@ -97,6 +97,83 @@ function updateTimeDisplay(sliderValue) {
     console.log(`슬라이더 값: ${sliderValue}, 시간: ${timeString}`);
     // 여기서 timeString을 화면에 표시하는 로직 추가 가능
 }
+// 캡처 기능 추가
+function captureCurrentScreenshot() {
+    const chartContainer = document.getElementById('chart-container');
+    const canvas = chartContainer.getElementsByTagName('canvas')[0];
+
+    return new Promise((resolve, reject) => {
+        if (canvas) {
+            html2canvas(canvas, { backgroundColor: null }).then(function (canvas) {
+                const imgData = canvas.toDataURL('image/png');
+                const image = new Image();
+                image.src = imgData;
+
+                image.onload = function () {
+                    const newCanvas = document.createElement('canvas');
+                    const ctx = newCanvas.getContext('2d');
+                    newCanvas.width = image.width;
+                    newCanvas.height = image.height;
+
+                    ctx.drawImage(image, 0, 0);
+                    const imageData = ctx.getImageData(0, 0, newCanvas.width, newCanvas.height);
+                    const data = imageData.data;
+
+                    for (let i = 0; i < data.length; i += 4) {
+                        if (data[i] === 248 && data[i + 1] === 249 && data[i + 2] === 250) {
+                            data[i + 3] = 0; // 투명하게 설정
+                        }
+                    }
+
+                    ctx.putImageData(imageData, 0, 0);
+                    const croppedCanvas = document.createElement('canvas');
+                    const croppedCtx = croppedCanvas.getContext('2d');
+                    let xMin = newCanvas.width, xMax = 0, yMin = newCanvas.height, yMax = 0;
+
+                    for (let y = 0; y < newCanvas.height; y++) {
+                        for (let x = 0; x < newCanvas.width; x++) {
+                            const alpha = data[(y * newCanvas.width + x) * 4 + 3];
+                            if (alpha > 0) {
+                                xMin = Math.min(xMin, x);
+                                xMax = Math.max(xMax, x);
+                                yMin = Math.min(yMin, y);
+                                yMax = Math.max(yMax, y);
+                            }
+                        }
+                    }
+
+                    if (xMax > xMin && yMax > yMin) {
+                        croppedCanvas.width = xMax - xMin;
+                        croppedCanvas.height = yMax - yMin;
+                        croppedCtx.drawImage(newCanvas, xMin, yMin, croppedCanvas.width, croppedCanvas.height, 0, 0, croppedCanvas.width, croppedCanvas.height);
+                        resolve(croppedCanvas.toDataURL('image/png')); // 이미지 데이터 반환
+                    } else {
+                        reject('투명한 영역이 없습니다.');
+                    }
+                };
+            }).catch(function (error) {
+                reject('스크린샷을 찍는 중 오류 발생: ' + error);
+            });
+        } else {
+            reject('차트 캔버스를 찾을 수 없습니다.');
+        }
+    });
+}
+
+function handleScreenshot() {
+    const selectedOption = document.getElementById('screenshot-select').value;
+
+    if (selectedOption === 'current') {
+        captureCurrentScreenshot().then(imgData => {
+            const link = document.createElement('a');
+            link.href = imgData;
+            link.download = 'echarts_screenshot.png';
+            link.click();
+        }).catch(console.error);
+    } else if (selectedOption === 'overall') {
+      
+    }
+}
 
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
