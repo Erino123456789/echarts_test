@@ -50,35 +50,26 @@ function loadJsonList(type) {
             const button = $('<button></button>')
                 .text(item.name)
                 .click(() => {
-                    loadData(lowerType, item.filename); // index.js로 type과 filename 전달
                     currentFilename = item.filename; // 현재 파일명 저장
                     document.getElementById('slider-container').style.display = 'block'; // 슬라이더 보이기
-                    // 슬라이더 초기화 및 시간 계산
                     const nearestTime = getNearestPreviousTime();
+
                     if (nearestTime) {
                         const hourPart = parseInt(nearestTime.substring(0, 2));
                         const minutePart = parseInt(nearestTime.substring(2, 4));
-                        console.log(`hourPart: ${hourPart}, minutePart: ${minutePart}`); // 로그 추가
-                    
-                        // 기준 시간인 09:20를 분으로 변환
-                        const baseHour = 9;
-                        const baseMinute = 20;
-                        const baseTotalMinutes = baseHour * 60 + baseMinute; // 560분
-                    
-                        // 클릭한 시간 총 분으로 변환
+                        
+                        const baseTotalMinutes = 9 * 60 + 20; // 기준 시간인 09:20을 분으로 변환
                         const currentTotalMinutes = hourPart * 60 + minutePart;
-                    
-                        // 슬라이더 인덱스 계산
-                        const sliderIndex = (currentTotalMinutes - baseTotalMinutes) / 10; // 09:20 기준으로 인덱스를 계산
-                        console.log(`슬라이더 인덱스: ${sliderIndex}`); // 로그 추가
-                    
+                        const sliderIndex = (currentTotalMinutes - baseTotalMinutes) / 10; // 슬라이더 인덱스 계산
+                        
                         $('#time-slider').val(sliderIndex); // 슬라이더 설정
                         updateTimeDisplay(sliderIndex); // 슬라이더의 값을 화면에 업데이트
                         const initialFilename = getFilenameForSliderIndex(sliderIndex); // 초기 파일명 생성
                         loadData(type, initialFilename); // 슬라이더 인덱스에 맞는 파일명 로드
                     } else {
-                        $('#time-slider').val(39); // 15:30 이후인 경우
-                        updateTimeDisplay(39); // 슬라이더의 값을 화면에 업데이트
+                        $('#time-slider').val(39); // 기본 인덱스
+                        updateTimeDisplay(39); 
+                        loadData(type, item.filename); // 기본 파일명 로드
                     }
                 });
             buttonContainer.append(button);
@@ -334,34 +325,30 @@ function loadData(type, filename) {
   }
 }
 
-// 슬라이더의 이벤트 리스너 추가
+// 슬라이더 인덱스에 맞는 파일명 생성 함수
+function getFilenameForSliderIndex(sliderIndex) {
+    const baseFilename = currentFilename.substring(0, currentFilename.length - 10); // "kosdaq_map_data_"와 ".json" 제외
+    const baseDate = currentFilename.slice(-10, -5); // 날짜 부분 추출 (예: "20241101")
+
+    if (sliderIndex === 39) {
+        return currentFilename; // 슬라이더 인덱스가 39일 때는 기본 파일명
+    }
+
+    const totalMinutes = 20 + (sliderIndex * 10);
+    const hour = Math.floor(totalMinutes / 60);
+    const minute = totalMinutes % 60;
+    const hourString = (9 + hour).toString().padStart(2, '0');
+    const minuteString = minute.toString().padStart(2, '0');
+    const timeString = `${baseDate}${hourString}${minuteString}`; // 날짜 + 시 + 분
+
+    return `${baseFilename}${timeString}.json`; // 생성된 파일명 반환
+}
+
+// 슬라이더 이동 시 파일명 변경 및 데이터 로드
 document.getElementById('time-slider').addEventListener('input', function() {
     const sliderValue = parseInt(this.value);
     updateTimeDisplay(sliderValue);
-    
-    // 파일명에서 기본 파일명과 날짜 부분 추출
-    const baseFilename = currentFilename.substring(0, currentFilename.length - 10); // "kosdaq_map_data_"와 ".json"을 제외한 부분
-    const baseDate = currentFilename.slice(-10, -5); // 원래 날짜 부분인 "20241101" 추출
-    let newFilename;
 
-    if (sliderValue === 39) { // 슬라이더 인덱스가 39일 때, 즉 15:50
-        newFilename = currentFilename; // 기존 파일명 사용
-    } else {
-        // 슬라이더 값에 따라 10분씩 증가
-        const totalMinutes = 20 + (sliderValue * 10); // 슬라이더가 0일 때 09:20부터 시작
-        
-        // 시와 분 계산
-        const hour = Math.floor(totalMinutes / 60);
-        const minute = totalMinutes % 60;
-
-        // 새로운 시간 문자열 생성
-        const hourString = (9 + hour).toString().padStart(2, '0'); // 09시부터 시작
-        const minuteString = minute.toString().padStart(2, '0'); // 분을 2자리로 패딩
-        const timeString = `${baseDate}${hourString}${minuteString}`; // 날짜 + 시 + 분
-
-        newFilename = `${baseFilename}${timeString}.json`; // 새로운 파일명 생성
-    }
-
-    // 새 파일로 데이터 로드
+    const newFilename = getFilenameForSliderIndex(sliderValue); // 슬라이더 인덱스에 맞는 파일명 계산
     loadData(currentFilename.toLowerCase().includes('kospi') ? 'KOSPI' : 'KOSDAQ', newFilename);
 });
