@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <title>KOSPI/KOSDAQ Map</title> 
+  <title>KOSPI/KOSDAQ 맵 데모</title> 
   <link rel="stylesheet" href="./style.css"> <!-- CSS 파일 링크 -->
   <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
@@ -19,9 +19,15 @@
         <div id="controls">
           <input type="text" id="search-input" placeholder="검색어를 입력하세요" />
           <input type="range" id="time-slider" min="0" max="39" value="39" />
+          <select id="screenshot-select" onchange="showScreenshot()">
+            <option value="" disabled selected hidden>스크린샷</option> <!-- 기본 선택 옵션 -->
+            <option value="current">현재 화면 스크린샷</option>
+            <option value="overall">전체 흐름 스크린샷(GIF)</option>
+          </select>
         </div>
       </div>
       <div id="chart-container" style="position: relative; margin-top: 40px; height: calc(100vh - 100px);"></div>
+      <div id="screenshot-output" style="margin-top: 20px;"></div> <!-- 스크린샷 결과를 표시할 영역 -->
     </div>
   </div>
   <script src="./index.js"></script> <!-- Uncaught TypeError: document.getElementById(...) is null 오류 방지 -->
