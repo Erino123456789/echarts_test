@@ -74,6 +74,8 @@ function loadJsonList(type) {
                     
                         $('#time-slider').val(sliderIndex); // 슬라이더 설정
                         updateTimeDisplay(sliderIndex); // 슬라이더의 값을 화면에 업데이트
+                        const initialFilename = getFilenameForSliderIndex(sliderIndex); // 초기 파일명 생성
+                        loadData(type, initialFilename); // 슬라이더 인덱스에 맞는 파일명 로드
                     } else {
                         $('#time-slider').val(39); // 15:30 이후인 경우
                         updateTimeDisplay(39); // 슬라이더의 값을 화면에 업데이트
