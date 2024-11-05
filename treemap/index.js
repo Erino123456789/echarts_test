@@ -2,6 +2,22 @@ let currentFilename; // 현재 파일명을 저장할 변수
 let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 
+function calculateSliderIndex(timeString) {
+    // timeString은 "HHMM" 형식의 문자열로, 예를 들어 "0920", "1030" 등의 값을 가짐
+    const hours = parseInt(timeString.slice(0, 2)); // 시간 부분 추출
+    const minutes = parseInt(timeString.slice(2, 4)); // 분 부분 추출
+
+    // 기본 시간인 09:20이 슬라이더의 시작(인덱스 0)에 해당
+    const baseHours = 9;
+    const baseMinutes = 20;
+
+    // 총 분으로 변환하여 슬라이더 인덱스를 계산
+    const totalMinutes = (hours * 60 + minutes) - (baseHours * 60 + baseMinutes);
+    
+    // 10분 단위로 슬라이더 인덱스 계산
+    return Math.floor(totalMinutes / 10);
+}
+
 function getNearestPreviousTime() {
     const currentTime = new Date();
     
@@ -43,7 +59,7 @@ function updateTimeDisplay(sliderValue) {
 
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
-    const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
+    const fileName = lowerType === 'kospi' ? 'kosdaq_json_list.json' : 'kosdaq_json_list.json';
     $.getJSON(fileName, function(data) {
         const buttonContainer = $('#json-button-container');
         buttonContainer.empty(); // 이전 버튼 제거
@@ -51,27 +67,22 @@ function loadJsonList(type) {
             const button = $('<button></button>')
                 .text(item.name)
                 .click(() => {
-                    currentFilename = item.filename; // 현재 파일명 저장
-                    document.getElementById('slider-container').style.display = 'block'; // 슬라이더 보이기
-                    const nearestTime = getNearestPreviousTime();
 
-                    if (nearestTime) {
-                        const hourPart = parseInt(nearestTime.substring(0, 2));
-                        const minutePart = parseInt(nearestTime.substring(2, 4));
+                    currentFilename = item.filename;
+                    document.getElementById('slider-container').style.display = 'block';
+                    
+                    // 첫 시도: 기본 파일명으로 데이터 불러오기
+                    loadData(type, currentFilename, true, () => {
+                        // 불러오기에 실패하면 슬라이더에 맞춘 파일명으로 재시도
+                        const nearestTime = getNearestPreviousTime();
+                        const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
                         
-                        const baseTotalMinutes = 9 * 60 + 20; // 기준 시간인 09:20을 분으로 변환
-                        const currentTotalMinutes = hourPart * 60 + minutePart;
-                        const sliderIndex = (currentTotalMinutes - baseTotalMinutes) / 10; // 슬라이더 인덱스 계산
+                        $('#time-slider').val(sliderIndex);
+                        updateTimeDisplay(sliderIndex);
                         
-                        $('#time-slider').val(sliderIndex); // 슬라이더 설정
-                        updateTimeDisplay(sliderIndex); // 슬라이더의 값을 화면에 업데이트
-                        const initialFilename = getFilenameForSliderIndex(sliderIndex); // 초기 파일명 생성
-                        loadData(type, initialFilename); // 슬라이더 인덱스에 맞는 파일명 로드
-                    } else {
-                        $('#time-slider').val(39); // 기본 인덱스
-                        updateTimeDisplay(39); 
-                        loadData(type, item.filename); // 기본 파일명 로드
-                    }
+                        const initialFilename = getFilenameForSliderIndex(sliderIndex);
+                        loadData(type, initialFilename, false); 
+                    });
                 });
             buttonContainer.append(button);
         });
@@ -80,7 +91,7 @@ function loadJsonList(type) {
     });
 }
 
-function loadData(type, filename, showLoading = true) {
+function loadData(type, filename, showLoading = true, fallbackCallback = null) {
     var dom = document.getElementById('chart-container');
     var myChart = echarts.init(dom, null, {
         renderer: 'canvas',
@@ -289,7 +300,13 @@ function loadData(type, filename, showLoading = true) {
         })
       );
     }
-  );
+  ).fail(function() {
+        if (fallbackCallback) {
+            fallbackCallback(); // 데이터 로드 실패 시 콜백 실행
+        } else {
+            alert("데이터 로드에 실패했습니다.");
+        }
+    });
     
     // 검색어에 따른 데이터 필터링 함수
     $('#search-input').on('input', function() {
