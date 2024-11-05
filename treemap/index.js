@@ -1,5 +1,6 @@
 let currentFilename; // 현재 파일명을 저장할 변수
 let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
+let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 
 function getNearestPreviousTime() {
     const currentTime = new Date();
@@ -79,15 +80,17 @@ function loadJsonList(type) {
     });
 }
 
-function loadData(type, filename) {
+function loadData(type, filename, showLoading = true) {
     var dom = document.getElementById('chart-container');
     var myChart = echarts.init(dom, null, {
         renderer: 'canvas',
         useDirtyRect: false
     });
     var option;
-
-    myChart.showLoading();
+  
+    if (showLoading && initialLoad) {
+        myChart.showLoading();
+    }
   
     const nearestTime = getNearestPreviousTime();
     const currentTime = new Date();
@@ -108,7 +111,10 @@ function loadData(type, filename) {
     '../data/' + filename,
     function (kospi_data) {
       allData = kospi_data; // 검색기능용, 전체 데이터 저장
-      myChart.hideLoading();
+      if (initialLoad) {
+        myChart.hideLoading();
+        initialLoad = false; // 이후부터는 로딩 화면을 표시하지 않음
+      }
       const visualMin = -5;
       const visualMax = 5;
       const visualMinBound = -1;
@@ -350,5 +356,6 @@ document.getElementById('time-slider').addEventListener('input', function() {
     updateTimeDisplay(sliderValue);
 
     const newFilename = getFilenameForSliderIndex(sliderValue); // 슬라이더 인덱스에 맞는 파일명 계산
-    loadData(currentFilename.toLowerCase().includes('kospi') ? 'KOSPI' : 'KOSDAQ', newFilename);
+    // 슬라이더 이동 시에는 로딩 화면을 표시하지 않음
+    loadData(currentFilename.toLowerCase().includes('kospi') ? 'KOSPI' : 'KOSDAQ', newFilename, false);
 });
