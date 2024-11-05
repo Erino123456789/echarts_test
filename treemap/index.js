@@ -264,6 +264,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
               }
             }
           },
+          backgroundColor: '#f8f9fa',
           series: [
             {
               name: `${type.toUpperCase()}`,
