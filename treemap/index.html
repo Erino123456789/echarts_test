@@ -19,7 +19,7 @@
         <div id="controls">
           <input type="text" id="search-input" placeholder="검색어를 입력하세요" />
           <input type="range" id="time-slider" min="0" max="39" value="39" />
-          <select id="screenshot-select" onchange="showScreenshot()">
+          <select id="screenshot-select" onchange="handleScreenshot()">
             <option value="" disabled selected hidden>스크린샷</option> <!-- 기본 선택 옵션 -->
             <option value="current">현재 화면 스크린샷</option>
             <option value="overall">전체 흐름 스크린샷(GIF)</option>
