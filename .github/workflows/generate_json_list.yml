@@ -27,23 +27,24 @@ jobs:
           # KOSPI 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kospi_files; do
             filename=$(basename "$file")
-            date="${filename:15:8}" # YYYYMMDD 형식의 날짜 추출
-            date_formatted="${date:0:4}-${date:4:2}-${date:6:2}" # YYYY-MM-DD 형식으로 변환
-            kospi_date_files["$date_formatted"]="$filename"  # 원본 파일명 저장
+            date="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            # 중복을 피하기 위해 키로 사용
+            kospi_date_files["$date"]="$filename"  # 원본 파일명 저장
           done
 
           # KOSDAQ 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kosdaq_files; do
             filename=$(basename "$file")
-            date="${filename:16:8}" # YYYYMMDD 형식의 날짜 추출
-            date_formatted="${date:0:4}-${date:4:2}-${date:6:2}" # YYYY-MM-DD 형식으로 변환
-            kosdaq_date_files["$date_formatted"]="$filename"  # 원본 파일명 저장
+            date="${filename:16:8}"  # 'kosdaq_map_data_' 이후의 날짜 추출
+            # 중복을 피하기 위해 키로 사용
+            kosdaq_date_files["$date"]="$filename"  # 원본 파일명 저장
           done
 
           # KOSPI JSON 배열 시작
           echo "[" > kospi.json
           for date in $(echo "${!kospi_date_files[@]}" | tr ' ' '\n' | sort -r); do
-            echo "  { \"name\": \"$date\", \"filename\": \"${kospi_date_files[$date]}\" }," >> kospi.json
+            base_name="${kospi_date_files[$date]::15}"  # 'kospi_map_data_' 부분만 추출
+            echo "  { \"name\": \"$date\", \"filename\": \"${base_name}${date}.json\" }," >> kospi.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kospi.json
@@ -52,7 +53,8 @@ jobs:
           # KOSDAQ JSON 배열 시작
           echo "[" > kosdaq.json
           for date in $(echo "${!kosdaq_date_files[@]}" | tr ' ' '\n' | sort -r); do
-            echo "  { \"name\": \"$date\", \"filename\": \"${kosdaq_date_files[$date]}\" }," >> kosdaq.json
+            base_name="${kosdaq_date_files[$date]::16}"  # 'kosdaq_map_data_' 부분만 추출
+            echo "  { \"name\": \"$date\", \"filename\": \"${base_name}${date}.json\" }," >> kosdaq.json
           done
           # 마지막 쉼표 제거
           sed -i '$ s/,$//' kosdaq.json
