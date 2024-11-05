@@ -27,7 +27,10 @@ jobs:
           # KOSPI 파일 목록을 반복하며 날짜를 키로 그룹화
           for file in $kospi_files; do
             filename=$(basename "$file")
-            date="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            date_year="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            date_month="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            date_day="${filename:15:8}"  # 'kospi_map_data_' 이후의 날짜 추출
+            date="${date_year}-${date_month}-${date_day}"
             # 중복을 피하기 위해 키로 사용
             kospi_date_files["$date"]="$filename"  # 원본 파일명 저장
           done
