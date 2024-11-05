@@ -303,6 +303,26 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   ).fail(function() {
         if (fallbackCallback) {
             fallbackCallback(); // 데이터 로드 실패 시 콜백 실행
+        } else {
+            // 기본 파일명 불러오기 실패 시 처리
+            console.error(`Failed to load: ${filename}`);
+            const nearestTime = getNearestPreviousTime();
+            const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
+
+            // 슬라이더를 가장 가까운 시간대로 이동
+            $('#time-slider').val(sliderIndex);
+            updateTimeDisplay(sliderIndex);
+            const newFilename = getFilenameForSliderIndex(sliderIndex);
+
+            // 다시 시도
+            loadData(type, newFilename, false, () => {
+                // 만약 실패하면 한 칸 왼쪽으로 이동하여 재시도
+                let newSliderIndex = Math.max(sliderIndex - 1, 0); // 0보다 작아지지 않도록
+                $('#time-slider').val(newSliderIndex);
+                updateTimeDisplay(newSliderIndex);
+                const fallbackFilename = getFilenameForSliderIndex(newSliderIndex);
+                loadData(type, fallbackFilename, false); // 한 칸 왼쪽으로 재시도
+            });
         }
     });
     
