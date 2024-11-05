@@ -223,10 +223,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
       }
       myChart.setOption(
         (option = {
-          title: {
-            left: 'center',
-            subtext: '테스트 중'
-          },
           tooltip: {
             formatter: function (info) {
               if (info.data.children) {
