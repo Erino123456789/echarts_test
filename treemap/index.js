@@ -337,10 +337,10 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                   '<div class="tooltip-title"><b>' +
                     echarts.format.encodeHTML(info.name) +
                     '</b></div>',
-                  '금일시총: &nbsp;&nbsp;' + now_cap + '<br>',
-                  '전일시총: &nbsp;&nbsp;' + pre_cap + '<br>',
-                  '금일종가: &nbsp;&nbsp;' + now_price + '<br>',
-                  '전일종가: &nbsp;&nbsp;' + pre_price + '<br>',
+                  '전일시총: &nbsp;&nbsp;' + now_cap + '<br>',
+                  '현재시총: &nbsp;&nbsp;' + pre_cap + '<br>',
+                  '전일주가: &nbsp;&nbsp;' + now_price + '<br>',
+                  '현재주가: &nbsp;&nbsp;' + pre_price + '<br>',
                   '변동율: &nbsp;&nbsp;' + change
                 ].join('');
               }
