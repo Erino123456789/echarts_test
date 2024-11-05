@@ -186,7 +186,7 @@ function loadJsonList(type) {
     // 캐시를 방지하기 위해 timestamp를 쿼리 문자열로 추가
     const urlWithTimestamp = fileName + '?_=' + new Date().getTime();
 
-    $.getJSON(fileName, function(data) {
+    $.getJSON(urlWithTimestamp, function(data) {
         const buttonContainer = $('#json-button-container');
         buttonContainer.empty(); // 이전 버튼 제거
         data.forEach(item => {
