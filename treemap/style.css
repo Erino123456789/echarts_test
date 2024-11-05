@@ -1,48 +1,122 @@
-#json-button-container {
-  max-height: 80vh; /* 최대 높이를 설정하여 너무 길어지지 않도록 함 */
-  overflow-y: auto; /* 세로 스크롤 가능하도록 설정 */
-  padding: 5px 0; /* 패딩 추가 */
-}
+    body {
+      background-color: #f8f9fa; /* 연한 회색 배경 */
+      color: #333; /* 어두운 텍스트 */
+      font-family: Arial, sans-serif; /* 기본 폰트 설정 */
+      margin: 0;
+      padding: 0;
+    }
 
-#json-button-container button {
-  font-size: 12px; /* 버튼의 폰트 사이즈 조정 */
-  padding: 5px 0; /* 버튼의 위아래 패딩 조정 */
-  margin: 2px 0; /* 버튼 사이의 여백 조정 */
-  width: 100%; /* 버튼 너비를 100%로 설정하여 일관성 유지 */
-}
+    #json-button-container {
+      max-height: 80vh; /* 최대 높이 설정 */
+      overflow-y: auto; /* 세로 스크롤 가능 */
+      padding: 5px 0; /* 패딩 추가 */
+    }
 
-button {
-  background-color: #007BFF; /* 파란색 */
-  border: none;
-  color: white;
-  padding: 15px 0; /* 위아래 패딩 */
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px; /* 버튼의 폰트 사이즈 조정 */
-  margin: 2px 0; /* 버튼 사이의 여백을 줄임 */
-  cursor: pointer;
-  border-radius: 5px;
-  width: 100%; /* 버튼 너비를 100%로 설정 */
-  font-weight: bold; /* 글씨를 굵게 설정 */
-}
+    #json-button-container button {
+      font-size: 14px; /* 버튼 폰트 사이즈 조정 */
+      padding: 10px; /* 버튼 패딩 조정 */
+      margin: 1px 0; /* 버튼 간격 조정 */
+      width: 100%; /* 버튼 너비를 100%로 설정 */
+      background-color: #6c757d; /* 회색 배경 */
+      border: none;
+      color: white; /* 흰색 글씨 */
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s; /* 배경색 전환 효과 */
+    }
 
+    button {
+      background-color: #333; /* 버튼 배경색 */
+      border: none;
+      color: white;
+      padding: 15px 0; /* 위아래 패딩 */
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px; /* 버튼 폰트 사이즈 조정 */
+      margin: 2px 0; /* 버튼 간격 조정 */
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%; /* 버튼 너비를 100%로 설정 */
+      font-weight: bold; /* 글씨를 굵게 설정 */
+      transition: background-color 0.3s; /* 배경색 전환 효과 */
+    }
 
-div[style*="flex: 1"] {
-  padding: 5px 0; /* 왼쪽 패딩을 줄임 */
-  border-right: 1px solid #ccc; /* 테두리는 유지 */
-}
+    button:hover {
+      background-color: #555; /* 호버 시 배경색 변경 */
+    }
 
-#controls {
-  display: flex; /* Flexbox로 수평 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  margin-top: 10px; /* 위쪽 여백 추가 */
-}
+    #controls {
+      display: flex; /* Flexbox로 수평 정렬 */
+      align-items: center; /* 세로 중앙 정렬 */
+      margin-top: 10px; /* 위쪽 여백 추가 */
+    }
 
-#search-input {
-  margin-right: 10px; /* 슬라이더와의 간격 */
-  padding: 5px; /* 패딩 추가 */
-  width: 200px; /* 적절한 너비 설정 */
-}
+    #search-input {
+      margin-right: 10px; /* 슬라이더와의 간격 */
+      padding: 5px; /* 패딩 추가 */
+      width: 200px; /* 적절한 너비 설정 */
+      border: 1px solid #ccc; /* 테두리 설정 */
+      border-radius: 5px; /* 모서리 둥글게 */
+    }
 
 #time-slider {
   flex-grow: 1; /* 슬라이더가 가능한 공간을 채우도록 설정 */
+  -webkit-appearance: none; /* 기본 스타일 제거 (Safari) */
+  appearance: none; /* 기본 스타일 제거 */
+  height: 8px; /* 슬라이더 두께 */
+  background: #007BFF; /* 슬라이더 배경색: 파란색 */
+  border-radius: 5px; /* 모서리 둥글게 */
+}
+
+#time-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* 기본 thumb 스타일 제거 */
+  appearance: none; /* 기본 thumb 스타일 제거 */
+  width: 20px; /* thumb 너비 */
+  height: 20px; /* thumb 높이 */
+  background: #ffffff; /* thumb 배경색: 흰색 */
+  border: 2px solid #007BFF; /* thumb 테두리 색상: 파란색 */
+  border-radius: 50%; /* thumb 둥글게 */
+  cursor: pointer; /* 포인터 커서 */
+}
+
+#time-slider::-moz-range-thumb {
+  width: 20px; /* thumb 너비 */
+  height: 20px; /* thumb 높이 */
+  background: #ffffff; /* thumb 배경색: 흰색 */
+  border: 2px solid #007BFF; /* thumb 테두리 색상: 파란색 */
+  border-radius: 50%; /* thumb 둥글게 */
+  cursor: pointer; /* 포인터 커서 */
+}
+
+#time-slider::-ms-thumb {
+  width: 20px; /* thumb 너비 */
+  height: 20px; /* thumb 높이 */
+  background: #ffffff; /* thumb 배경색: 흰색 */
+  border: 2px solid #007BFF; /* thumb 테두리 색상: 파란색 */
+  border-radius: 50%; /* thumb 둥글게 */
+}
+
+    #screenshot-select {
+      margin-left: 10px; /* 왼쪽 여백 */
+      padding: 5px; /* 패딩 추가 */
+      border: 1px solid #ccc; /* 테두리 설정 */
+      border-radius: 5px; /* 모서리 둥글게 */
+      background-color: #fff; /* 흰색 배경 */
+      color: #333; /* 어두운 텍스트 */
+    }
+
+  #screenshot-output {
+    margin-top: 20px; /* 위쪽 여백 추가 */
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    flex-direction: column; /* 세로 방향 정렬 */
+  }
+
+    /* 차트 컨테이너 스타일 */
+    #chart-container {
+      background-color: #fff; /* 흰색 배경 */
+      border: 1px solid #ccc; /* 테두리 */
+      border-radius: 5px; /* 모서리 둥글게 */
+      padding: 10px; /* 패딩 추가 */
+    }
