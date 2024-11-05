@@ -489,16 +489,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
             myChart.setOption({ series: [{ data: filteredData }] });
         }, 300));  // 300ms의 딜레이 적용
     
-        const filteredData = filterData(allData); // 필터링된 데이터
-    
-        // 필터링된 데이터를 차트에 업데이트
-        myChart.setOption({
-            series: [{
-                data: filteredData
-            }]
-        });
-    });
-    
   window.addEventListener('resize', debounce(() => myChart.resize(), 200));  // 200ms 딜레이
   if (option && typeof option === 'object') {
     myChart.setOption(option);
