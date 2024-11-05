@@ -303,8 +303,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   ).fail(function() {
         if (fallbackCallback) {
             fallbackCallback(); // 데이터 로드 실패 시 콜백 실행
-        } else {
-            alert("데이터 로드에 실패했습니다.");
         }
     });
     
