@@ -161,7 +161,8 @@ function captureCurrentScreenshot() {
 }
 
 function handleScreenshot() {
-    const selectedOption = document.getElementById('screenshot-select').value;
+    const screenshotSelect = document.getElementById('screenshot-select');
+    const selectedOption = screenshotSelect.value;
 
     if (selectedOption === 'current') {
         captureCurrentScreenshot().then(imgData => {
@@ -169,7 +170,7 @@ function handleScreenshot() {
             link.href = imgData;
             link.download = 'echarts_screenshot.png';
             link.click();
-            
+
             // 스크린샷 다운로드 후 옵션 텍스트 변경
             screenshotSelect.options[0].text = '스크린샷'; // 첫 번째 옵션의 텍스트 변경
             screenshotSelect.value = ''; // 기본 선택으로 설정 (아무것도 선택되지 않도록)
