@@ -180,6 +180,15 @@ function handleScreenshot() {
     }
 }
 
+// debounce 함수 정의
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
 function loadJsonList(type) {
     const lowerType = type.toLowerCase(); // Convert type to lowercase
     const fileName = lowerType === 'kospi' ? 'kospi_json_list.json' : 'kosdaq_json_list.json';
@@ -458,41 +467,30 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         }
     });
     
-    // 검색어에 따른 데이터 필터링 함수
-    $('#search-input').on('input', function() {
-        const query = $(this).val().toLowerCase(); // 입력된 검색어
-    
-        // 재귀적으로 하위 항목을 포함하여 필터링하는 함수
-        function filterData(data) {
-            return data.reduce((acc, item) => {
-                // 상위 항목이 검색어와 일치하는 경우
-                if (item.name.toLowerCase().includes(query)) {
-                    acc.push(item); // 전체 항목 추가
-                } else if (item.children) {
-                    // 하위 항목에 대해 재귀적으로 필터링
-                    const filteredChildren = filterData(item.children);
-                    if (filteredChildren.length) {
-                        acc.push({
-                            ...item, // 상위 항목 정보 유지
-                            children: filteredChildren // 필터링된 하위 항목 추가
-                        });
-                    }
-                }
-                return acc;
-            }, []);
+  // 검색어에 따른 데이터 필터링 함수
+  $('#search-input').on('input', debounce(function() {
+    const query = $(this).val().toLowerCase();
+
+    function filterData(data) {
+      return data.reduce((acc, item) => {
+        if (item.name.toLowerCase().includes(query)) {
+          acc.push(item);
+        } else if (item.children) {
+          const filteredChildren = filterData(item.children);
+          if (filteredChildren.length) {
+            acc.push({ ...item, children: filteredChildren });
+          }
         }
-    
-        const filteredData = filterData(allData); // 필터링된 데이터
-    
-        // 필터링된 데이터를 차트에 업데이트
-        myChart.setOption({
-            series: [{
-                data: filteredData
-            }]
-        });
-    });
-    
-  window.addEventListener('resize', myChart.resize);
+        return acc;
+      }, []);
+    }
+
+    const filteredData = filterData(allData);
+    myChart.setOption({ series: [{ data: filteredData }] });
+  }, 300));  // 300ms의 딜레이 적용
+
+  window.addEventListener('resize', debounce(() => myChart.resize(), 200));  // 200ms 딜레이
+
   if (option && typeof option === 'object') {
     myChart.setOption(option);
   }
