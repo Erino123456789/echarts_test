@@ -224,6 +224,8 @@ function captureCurrentScreenshot() {
   });
 }
 
+let capturing = false;
+
 function captureOverallFlowScreenshots() {
   return new Promise((resolve, reject) => {
     if (capturing) return; // 이미 캡처 중이면 중지
@@ -250,7 +252,7 @@ function captureOverallFlowScreenshots() {
       document.getElementById("time-slider").value = currentIndex;
       document.getElementById("time-slider").dispatchEvent(new Event("input"));
 
-      // 슬라이더 값이 변경된 후 0.2초 후에 캡처를 진행
+      // 슬라이더 값이 변경된 후 0.2초 뒤에 캡처를 진행
       setTimeout(function () {
         captureCurrentScreenshot()
           .then((imageData) => {
@@ -258,7 +260,7 @@ function captureOverallFlowScreenshots() {
             img.src = imageData;
 
             img.onload = function () {
-              const delayTime = (currentIndex === totalSlides - 1) ? 5000 : 500; // 마지막 프레임은 1500ms
+              const delayTime = (currentIndex === totalSlides - 1) ? 5000 : 500; // 마지막 프레임은 5000ms
   
               // 프레임 추가
               gif.addFrame(img, { delay: delayTime, copy: true });
@@ -282,11 +284,10 @@ function captureOverallFlowScreenshots() {
       }, 200); // 0.2초 뒤에 캡처 진행
     }
 
-    captureAndAddFrame(); // 첫 번째 프레임 캡쳐 시작
+    // 첫 번째 프레임 캡처도 0.2초 뒤에 시작
+    setTimeout(captureAndAddFrame, 200);
   });
 }
-
-
 
 // debounce 함수 정의
 function debounce(func, wait) {
