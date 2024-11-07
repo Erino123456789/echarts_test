@@ -192,6 +192,10 @@ function handleScreenshot() {
         link.href = gifData;
         link.download = "flow.gif";
         link.click();
+
+        // 스크린샷 다운로드 후 옵션 텍스트 변경
+        screenshotSelect.options[0].text = "스크린샷"; // 첫 번째 옵션의 텍스트 변경
+        screenshotSelect.value = ""; // 기본 선택으로 설정 (아무것도 선택되지 않도록)
       })
       .catch((error) => {
         console.error("전체 흐름 스크린샷 생성 실패:", error);
