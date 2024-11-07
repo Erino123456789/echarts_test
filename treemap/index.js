@@ -248,6 +248,7 @@ function captureOverallFlowScreenshots() {
     function captureAndAddFrame() {
       // 슬라이더 값을 변경하고 화면 업데이트 대기
       document.getElementById("time-slider").value = currentIndex;
+      document.getElementById("time-slider").dispatchEvent(new Event("input"));
 
       // 슬라이더 값이 변경된 후 0.2초 후에 캡처를 진행
       setTimeout(function () {
