@@ -3,6 +3,61 @@ let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
 
+function togglePanel() {
+  const leftPanel = document.getElementById("left-panel");
+  const overlay = document.getElementById("overlay");
+  const menuButton = document.getElementById("menu-button");
+
+  leftPanel.classList.toggle("open");
+  overlay.classList.toggle("show");
+  menuButton.classList.toggle("open");
+}
+
+function adjustTimeByMinutes(filename, subtractMinutes) {
+  const parts = filename.split("_");
+  let datePart = parts[3].slice(0, 8); // '20241106' 추출
+  let timePart = parts[3].split(".")[0].slice(8); // '0920' 또는 없는 경우 빈 문자열
+
+  // 시간 정보가 없으면 기본값 '1540' 설정
+  if (timePart.length < 4) {
+    timePart = "1540";
+    subtractMinutes = 0; // 기본 시간 사용 시 시간 조정 불필요
+  }
+
+  let hours = parseInt(timePart.slice(0, 2), 10); // '09' -> 9
+  let minutes = parseInt(timePart.slice(2, 4), 10); // '20' -> 20
+
+  // 시간에서 지정한 분 단위 빼기
+  minutes -= subtractMinutes;
+  if (minutes < 0) {
+    minutes += 60;
+    hours -= 1;
+    if (hours < 0) {
+      hours = 23;
+
+      // 날짜 조정 (0시 이전인 경우 하루 전 날짜로 이동)
+      const year = parseInt(datePart.slice(0, 4), 10);
+      const month = parseInt(datePart.slice(4, 6), 10);
+      const day = parseInt(datePart.slice(6, 8), 10);
+
+      const newDate = new Date(year, month - 1, day - 1);
+      datePart = `${newDate.getFullYear()}${String(
+        newDate.getMonth() + 1
+      ).padStart(2, "0")}${String(newDate.getDate()).padStart(2, "0")}`;
+    }
+  }
+
+  // 포맷된 날짜와 시간
+  const formattedDate = `${datePart.slice(0, 4)}.${datePart.slice(
+    4,
+    6
+  )}.${datePart.slice(6, 8)}`;
+  const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+    minutes
+  ).padStart(2, "0")}`;
+  return `${formattedDate}. ${formattedTime}`;
+}
+
 function loadAndCacheData(filePrefix, date) {
   const timeSuffixes = [];
 
@@ -110,98 +165,13 @@ function updateTimeDisplay(sliderValue) {
   console.log(`슬라이더 값: ${sliderValue}, 시간: ${timeString}`);
   // 여기서 timeString을 화면에 표시하는 로직 추가 가능
 }
-// 캡처 기능 추가
-function captureCurrentScreenshot() {
-  const chartContainer = document.getElementById("chart-container");
-  const canvas = chartContainer.getElementsByTagName("canvas")[0];
-
-  return new Promise((resolve, reject) => {
-    if (canvas) {
-      html2canvas(canvas, { backgroundColor: null })
-        .then(function (canvas) {
-          const imgData = canvas.toDataURL("image/png");
-          const image = new Image();
-          image.src = imgData;
-
-          image.onload = function () {
-            const newCanvas = document.createElement("canvas");
-            const ctx = newCanvas.getContext("2d");
-            newCanvas.width = image.width;
-            newCanvas.height = image.height;
-
-            ctx.drawImage(image, 0, 0);
-            const imageData = ctx.getImageData(
-              0,
-              0,
-              newCanvas.width,
-              newCanvas.height
-            );
-            const data = imageData.data;
-
-            for (let i = 0; i < data.length; i += 4) {
-              if (
-                data[i] === 248 &&
-                data[i + 1] === 249 &&
-                data[i + 2] === 250
-              ) {
-                data[i + 3] = 0; // 투명하게 설정
-              }
-            }
-
-            ctx.putImageData(imageData, 0, 0);
-            const croppedCanvas = document.createElement("canvas");
-            const croppedCtx = croppedCanvas.getContext("2d");
-            let xMin = newCanvas.width,
-              xMax = 0,
-              yMin = newCanvas.height,
-              yMax = 0;
-
-            for (let y = 0; y < newCanvas.height; y++) {
-              for (let x = 0; x < newCanvas.width; x++) {
-                const alpha = data[(y * newCanvas.width + x) * 4 + 3];
-                if (alpha > 0) {
-                  xMin = Math.min(xMin, x);
-                  xMax = Math.max(xMax, x);
-                  yMin = Math.min(yMin, y);
-                  yMax = Math.max(yMax, y);
-                }
-              }
-            }
-
-            if (xMax > xMin && yMax > yMin) {
-              croppedCanvas.width = xMax - xMin;
-              croppedCanvas.height = yMax - yMin;
-              croppedCtx.drawImage(
-                newCanvas,
-                xMin,
-                yMin,
-                croppedCanvas.width,
-                croppedCanvas.height,
-                0,
-                0,
-                croppedCanvas.width,
-                croppedCanvas.height
-              );
-              resolve(croppedCanvas.toDataURL("image/png")); // 이미지 데이터 반환
-            } else {
-              reject("투명한 영역이 없습니다.");
-            }
-          };
-        })
-        .catch(function (error) {
-          reject("스크린샷을 찍는 중 오류 발생: " + error);
-        });
-    } else {
-      reject("차트 캔버스를 찾을 수 없습니다.");
-    }
-  });
-}
 
 function handleScreenshot() {
   const screenshotSelect = document.getElementById("screenshot-select");
   const selectedOption = screenshotSelect.value;
 
   if (selectedOption === "current") {
+    // 현재 화면 스크린샷 처리
     captureCurrentScreenshot()
       .then((imgData) => {
         const link = document.createElement("a");
@@ -215,7 +185,93 @@ function handleScreenshot() {
       })
       .catch(console.error);
   } else if (selectedOption === "overall") {
+    // 전체 흐름 스크린샷 처리 (슬라이더 인덱스 0번부터 끝까지)
+    captureOverallFlowScreenshots()
+      .then((gifData) => {
+        const link = document.createElement("a");
+        link.href = gifData;
+        link.download = "flow.gif";
+        link.click();
+      })
+      .catch((error) => {
+        console.error("전체 흐름 스크린샷 생성 실패:", error);
+      });
   }
+}
+
+// 캡처 기능 추가
+function captureCurrentScreenshot() {
+  const chartContainer = document.getElementById("chart-container");
+
+  return new Promise((resolve, reject) => {
+    if (chartContainer) {
+      html2canvas(chartContainer, { backgroundColor: null })
+        .then(function (canvas) {
+          const imgData = canvas.toDataURL("image/png");
+          resolve(imgData); // 이미지 데이터를 바로 반환
+        })
+        .catch(function (error) {
+          reject("스크린샷을 찍는 중 오류 발생: " + error);
+        });
+    } else {
+      reject("차트 컨테이너를 찾을 수 없습니다.");
+    }
+  });
+}
+
+function captureOverallFlowScreenshots() {
+  return new Promise((resolve, reject) => {
+    // 차트 컨테이너의 크기를 동적으로 가져오기
+    const chartContainer = document.getElementById("chart-container");
+    const containerWidth = chartContainer.offsetWidth;
+    const containerHeight = chartContainer.offsetHeight;
+
+    // GIF의 크기를 차트 컨테이너의 크기에 맞춤
+    const gif = new GIF({
+      workers: 2,
+      quality: 10,
+      width: containerWidth, // 차트 컨테이너의 너비
+      height: containerHeight, // 차트 컨테이너의 높이
+      workerScript: "gif.worker.js", // 로컬 경로를 지정
+    });
+
+    const totalSlides = 40;
+    let currentIndex = 0;
+
+    function captureAndAddFrame() {
+      // 슬라이더 인덱스를 변경하고, UI에 반영
+      document.getElementById("time-slider").value = currentIndex;
+      document.getElementById("time-slider").dispatchEvent(new Event("input")); // 슬라이더 값 반영
+
+      captureCurrentScreenshot()
+        .then((imageData) => {
+          const img = new Image();
+          img.src = imageData;
+
+          img.onload = function () {
+            gif.addFrame(img, { delay: 500, copy: true }); // 프레임 추가
+
+            currentIndex++;
+
+            if (currentIndex < totalSlides) {
+              captureAndAddFrame(); // 계속해서 캡쳐
+            } else {
+              // GIF 렌더링이 완료되면 처리
+              gif.on("finished", function (blob) {
+                const gifUrl = URL.createObjectURL(blob);
+                resolve(gifUrl); // GIF URL 반환
+              });
+              gif.render(); // GIF 렌더링 시작
+            }
+          };
+        })
+        .catch((error) => {
+          reject("스크린샷 캡쳐 실패: " + error); // 실패 시 reject
+        });
+    }
+
+    captureAndAddFrame(); // 첫 번째 프레임 캡쳐 시작
+  });
 }
 
 // debounce 함수 정의
@@ -227,49 +283,56 @@ function debounce(func, wait) {
   };
 }
 
+// loadJsonList 함수 정의 (Promise 사용)
 function loadJsonList(type) {
-  const lowerType = type.toLowerCase(); // Convert type to lowercase
-  const fileName =
-    lowerType === "kospi" ? "kospi_json_list.json" : "kosdaq_json_list.json";
-  // 캐시를 방지하기 위해 timestamp를 쿼리 문자열로 추가
-  const urlWithTimestamp = fileName + "?_=" + new Date().getTime();
+  return new Promise((resolve, reject) => {
+    const lowerType = type.toLowerCase(); // Convert type to lowercase
+    const fileName =
+      lowerType === "kospi" ? "kospi_json_list.json" : "kosdaq_json_list.json";
+    // 캐시를 방지하기 위해 timestamp를 쿼리 문자열로 추가
+    const urlWithTimestamp = fileName + "?_=" + new Date().getTime();
 
-  $.getJSON(urlWithTimestamp, function (data) {
-    const buttonContainer = $("#json-button-container");
-    buttonContainer.empty(); // 이전 버튼 제거
-    data.forEach((item) => {
-      const button = $("<button></button>")
-        .text(item.name)
-        .click(() => {
-          currentFilename = item.filename; // 현재 파일명 저장
-          const selectedDate = currentFilename.slice(-13, -5); // 날짜 추출
-          const filePrefix = currentFilename.split("_")[0] + "_map_data"; // kosdaq_map_data 또는 kospi_map_data 형식으로 파일명 설정
-          loadAndCacheData(filePrefix, selectedDate); // 해당 날짜의 모든 JSON 파일 캐시
-          document.getElementById("slider-container").style.display = "block";
-          loadDataFromCache(filePrefix, selectedDate, "0920"); // 초기 데이터 로드
-          document.getElementById("slider-container").style.display = "block";
+    $.getJSON(urlWithTimestamp, function (data) {
+      const buttonContainer = $("#json-button-container");
+      buttonContainer.empty(); // 이전 버튼 제거
 
-          // 첫 시도: 기본 파일명으로 데이터 불러오기
-          loadData(type, currentFilename, true, () => {
-            // 불러오기에 실패하면 슬라이더에 맞춘 파일명으로 재시도
-            const nearestTime = getNearestPreviousTime();
-            const sliderIndex = nearestTime
-              ? calculateSliderIndex(nearestTime)
-              : 39;
+      // 버튼들을 추가
+      data.forEach((item) => {
+        const button = $("<button></button>")
+          .text(item.name) // 버튼 텍스트 설정
+          .click(() => {
+            currentFilename = item.filename; // 현재 파일명 저장
+            const selectedDate = currentFilename.slice(-13, -5); // 날짜 추출
+            const filePrefix = currentFilename.split("_")[0] + "_map_data"; // kosdaq_map_data 또는 kospi_map_data 형식으로 파일명 설정
+            loadAndCacheData(filePrefix, selectedDate); // 해당 날짜의 모든 JSON 파일 캐시
+            document.getElementById("slider-container").style.display = "block";
+            loadDataFromCache(filePrefix, selectedDate, "0920"); // 초기 데이터 로드
+            document.getElementById("slider-container").style.display = "block";
 
-            $("#time-slider").val(sliderIndex);
-            updateTimeDisplay(sliderIndex);
+            // 첫 시도: 기본 파일명으로 데이터 불러오기
+            loadData(type, currentFilename, true, () => {
+              // 불러오기에 실패하면 슬라이더에 맞춘 파일명으로 재시도
+              const nearestTime = getNearestPreviousTime();
+              const sliderIndex = nearestTime
+                ? calculateSliderIndex(nearestTime)
+                : 39;
 
-            const initialFilename = getFilenameForSliderIndex(sliderIndex);
-            loadData(type, initialFilename, false);
+              $("#time-slider").val(sliderIndex);
+              updateTimeDisplay(sliderIndex);
+
+              const initialFilename = getFilenameForSliderIndex(sliderIndex);
+              loadData(type, initialFilename, false);
+            });
           });
-        });
-      buttonContainer.append(button);
+
+        buttonContainer.append(button);
+      });
+
+      // Promise 완료 후 data 반환
+      resolve(data);
+    }).fail(function () {
+      reject("JSON 파일을 불러오는 데 실패했습니다.");
     });
-  }).fail(function () {
-    alert(
-      "JSON 파일을 불러오는 데 실패했습니다. 파일 이름이 올바른지 확인하세요."
-    );
   });
 }
 
@@ -289,17 +352,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   const currentTime = new Date();
   const hours = currentTime.getUTCHours() + 9; // KST로 변환
   const minutes = currentTime.getUTCMinutes();
-
-  // 현재 시간 체크 (09:19 이전 또는 15:30 이후)
-  let finalFilename;
-  if ((hours === 9 && minutes < 20) || (hours === 15 && minutes > 30)) {
-    finalFilename = filename; // 원래 파일명 사용
-  } else if (nearestTime) {
-    finalFilename =
-      filename.substring(0, filename.length - 8) + nearestTime + ".json"; // 날짜 부분 변경
-  } else {
-    finalFilename = filename; // 원래 파일명 사용
-  }
 
   $.get("../data/" + filename, function (kospi_data) {
     allData = kospi_data; // 검색기능용, 전체 데이터 저장
@@ -357,8 +409,13 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
     function isValidNumber(num) {
       return num != null && isFinite(num);
     }
+    const formattedTitleDate = adjustTimeByMinutes(filename, 20);
     myChart.setOption(
       (option = {
+        title: {
+          text: `${type.toUpperCase()} - ${formattedTitleDate}`,
+          left: "center",
+        },
         tooltip: {
           formatter: function (info) {
             if (info.data.children) {
@@ -410,7 +467,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
             name: `${type.toUpperCase()}`,
             width: "100%",
             height: "100%",
-            top: 0,
+            top: 30,
             left: 0,
             right: 0,
             bottom: 0,
@@ -419,6 +476,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
             upperLabel: {
               show: true,
               color: "#fff",
+              borderWidth: 1, // 경계선 추가
             },
             breadcrumb: {
               show: false,
@@ -576,13 +634,30 @@ function getFilenameForSliderIndex(sliderIndex) {
 // 슬라이더 이동 시 파일명 변경 및 데이터 로드
 document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
-  updateTimeDisplay(sliderValue);
+  updateTimeDisplay(sliderValue); // 시간 표시 업데이트
 
   const newFilename = getFilenameForSliderIndex(sliderValue); // 슬라이더 인덱스에 맞는 파일명 계산
-  // 슬라이더 이동 시에는 로딩 화면을 표시하지 않음
+  console.log("새로운 파일명: ", newFilename); // 새로운 파일명이 콘솔에 출력되도록 확인
+
+  // 슬라이더 값에 맞춰 데이터를 로드하는 부분
   loadData(
     currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ",
     newFilename,
-    false
+    false // 슬라이더 인덱스가 변경될 때는 로딩 화면을 표시하지 않음
   );
 });
+
+window.onload = function () {
+  loadJsonList("kospi")
+    .then((data) => {
+      // 첫 번째 항목을 클릭하도록 트리거
+      if (data && data.length > 0) {
+        // 첫 번째 항목을 클릭한 것처럼 이벤트 발생
+        const firstButton = $("#json-button-container button").first();
+        firstButton.click(); // 첫 번째 버튼 클릭
+      }
+    })
+    .catch((error) => {
+      console.error("loadJsonList 오류:", error);
+    });
+};
