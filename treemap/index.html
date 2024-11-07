@@ -1,36 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <title>KOSPI/KOSDAQ 맵 데모</title> 
-  <link rel="preload" href="./style.css" as="style" onload="this.rel='stylesheet'">
-  <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-</head>
-<body>
-  <div style="display: flex; height: 100vh;">
-    <div style="flex: 1; padding: 10px; border-right: 1px solid #ccc;">
+  <head>
+    <meta charset="utf-8" />
+    <title>KOSPI/KOSDAQ 맵 데모</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="gif.min.js"></script>
+  </head>
+  <body>
+    <!-- 메뉴 버튼 -->
+    <div id="menu-button" onclick="togglePanel()">
+      <div class="menu-icon"></div>
+    </div>
+
+    <!-- 왼쪽 패널 -->
+    <div id="left-panel">
       <button onclick="loadJsonList('KOSPI')">KOSPI</button>
       <button onclick="loadJsonList('KOSDAQ')">KOSDAQ</button>
-      <div id="json-button-container" style="margin-top: 20px;"></div>
+      <div id="json-button-container" style="margin-top: 20px"></div>
     </div>
-    <div style="flex: 9; padding: 10px; position: relative;">
-      <div id="slider-container" style="display: none;">
+
+    <!-- 오른쪽 패널 -->
+    <div id="right-panel">
+      <div id="slider-container" style="display: block">
         <div id="controls">
-          <input type="text" id="search-input" placeholder="검색어를 입력하세요" />
+          <input
+            type="text"
+            id="search-input"
+            placeholder="검색어를 입력하세요"
+          />
           <input type="range" id="time-slider" min="0" max="39" value="39" />
           <select id="screenshot-select" onchange="handleScreenshot()">
-            <option value="" disabled selected hidden>스크린샷</option> <!-- 기본 선택 옵션 -->
+            <option value="" disabled selected hidden>스크린샷</option>
             <option value="current">현재 화면 스크린샷</option>
             <option value="overall">전체 흐름 스크린샷(GIF)</option>
           </select>
         </div>
       </div>
-      <div id="chart-container" style="position: relative; margin-top: 10px; height: calc(100vh - 100px);"></div>
-      <div id="screenshot-output" style="margin-top: 20px;"></div> <!-- 스크린샷 결과를 표시할 영역 -->
+      <div
+        id="chart-container"
+        style="margin-top: 10px; height: calc(100vh - 100px)"
+      ></div>
+      <div id="screenshot-output" style="margin-top: 20px"></div>
     </div>
-  </div>
-  <script src="./index.js"></script> <!-- Uncaught TypeError: document.getElementById(...) is null 오류 방지 -->
-</body>
+
+    <!-- 오버레이 -->
+    <div id="overlay" onclick="togglePanel()"></div>
+
+    <script src="./index.js"></script>
+  </body>
 </html>
