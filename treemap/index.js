@@ -250,7 +250,7 @@ function captureOverallFlowScreenshots() {
 
           img.onload = function () {
             // 마지막 프레임에 지연 시간을 더 길게 설정
-            const delayTime = (currentIndex === totalSlides - 1) ? 1500 : 500; // 마지막 프레임은 1500ms
+            const delayTime = (currentIndex === totalSlides - 1) ? 5000 : 500; // 마지막 프레임은 1500ms
 
             // 프레임 추가
             gif.addFrame(img, { delay: delayTime, copy: true });
