@@ -228,7 +228,7 @@ function captureOverallFlowScreenshots() {
 
     // GIF의 크기를 차트 컨테이너의 크기에 맞춤
     const gif = new GIF({
-      workers: 2,
+      workers: 4,
       quality: 10,
       width: containerWidth, // 차트 컨테이너의 너비
       height: containerHeight, // 차트 컨테이너의 높이
