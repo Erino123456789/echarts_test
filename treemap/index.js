@@ -279,6 +279,7 @@ function captureOverallFlowScreenshots() {
           })
           .catch((error) => {
             reject("스크린샷 캡쳐 실패: " + error); // 캡쳐 실패 시
+            capturing = false; // 캡처 완료 후 false로 설정
           });
       }, 200); // 0.2초 뒤에 캡처 진행
     }
