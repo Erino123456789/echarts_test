@@ -466,7 +466,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
           {
             name: `${type.toUpperCase()}`,
             width: "100%",
-            height: "100%",
+            height: "100%" - "30px",
             top: 30,
             left: 0,
             right: 0,
