@@ -239,8 +239,9 @@ function captureOverallFlowScreenshots() {
     let currentIndex = 0;
 
     function captureAndAddFrame() {
-      // 슬라이더 인덱스 변경
+      // 슬라이더 인덱스를 변경하고, UI에 반영
       document.getElementById("time-slider").value = currentIndex;
+      document.getElementById("time-slider").dispatchEvent(new Event("input")); // 슬라이더 값 반영
 
       captureCurrentScreenshot()
         .then((imageData) => {
@@ -248,30 +249,25 @@ function captureOverallFlowScreenshots() {
           img.src = imageData;
 
           img.onload = function () {
-            let delayTime = 500; // 기본적인 지연 시간 (500ms)
+            gif.addFrame(img, { delay: 500, copy: true }); // 프레임 추가
 
-            // 마지막 프레임일 경우 지연 시간을 길게 설정 (예: 1500ms)
-            if (currentIndex === totalSlides - 1) {
-              delayTime = 1500; // 마지막 프레임은 1500ms (1.5초)로 설정
-            }
-
-            // 이미지를 GIF에 추가
-            gif.addFrame(img, { delay: delayTime, copy: true }); // 프레임 추가
             currentIndex++;
 
             if (currentIndex < totalSlides) {
-              captureAndAddFrame(); // 다음 프레임 캡쳐
+              captureAndAddFrame(); // 계속해서 캡쳐
             } else {
-              // GIF 생성 완료 후 다운로드
+              // GIF 렌더링이 완료되면 처리
               gif.on("finished", function (blob) {
                 const gifUrl = URL.createObjectURL(blob);
-                resolve(gifUrl);
+                resolve(gifUrl); // GIF URL 반환
               });
-              gif.render();
+              gif.render(); // GIF 렌더링 시작
             }
           };
         })
-        .catch(reject); // 캡쳐 실패 시 reject
+        .catch((error) => {
+          reject("스크린샷 캡쳐 실패: " + error); // 실패 시 reject
+        });
     }
 
     captureAndAddFrame(); // 첫 번째 프레임 캡쳐 시작
