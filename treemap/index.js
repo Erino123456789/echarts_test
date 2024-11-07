@@ -2,6 +2,7 @@ let currentFilename; // 현재 파일명을 저장할 변수
 let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
+let capturing = false; // 캡처 진행 상태를 추적
 
 function togglePanel() {
   const leftPanel = document.getElementById("left-panel");
@@ -223,29 +224,33 @@ function captureCurrentScreenshot() {
   });
 }
 
+let capturing = false; // 캡처 진행 상태를 추적
+
 function captureOverallFlowScreenshots() {
   return new Promise((resolve, reject) => {
-    // 차트 컨테이너의 크기를 동적으로 가져오기
+    if (capturing) return; // 이미 캡처 중이면 중지
+
+    capturing = true; // 캡처 중 상태로 설정
+
     const chartContainer = document.getElementById("chart-container");
     const containerWidth = chartContainer.offsetWidth;
     const containerHeight = chartContainer.offsetHeight;
 
-    // GIF의 크기를 차트 컨테이너의 크기에 맞춤
     const gif = new GIF({
-      workers: 4,
+      workers: 2,
       quality: 10,
-      width: containerWidth, // 차트 컨테이너의 너비
-      height: containerHeight, // 차트 컨테이너의 높이
-      workerScript: "gif.worker.js", // 로컬 경로를 지정
+      width: containerWidth,
+      height: containerHeight,
+      workerScript: "gif.worker.js",
     });
 
     const totalSlides = 40;
     let currentIndex = 0;
 
     function captureAndAddFrame() {
-      // 슬라이더 인덱스를 변경하고, UI에 반영
+      // 슬라이더 인덱스 변경하고, UI에 반영
       document.getElementById("time-slider").value = currentIndex;
-      document.getElementById("time-slider").dispatchEvent(new Event("input")); // 슬라이더 값 반영
+      document.getElementById("time-slider").dispatchEvent(new Event("input"));
 
       captureCurrentScreenshot()
         .then((imageData) => {
@@ -253,34 +258,31 @@ function captureOverallFlowScreenshots() {
           img.src = imageData;
 
           img.onload = function () {
-            // 마지막 프레임에 지연 시간을 더 길게 설정
-            const delayTime = (currentIndex === totalSlides - 1) ? 5000 : 500; // 마지막 프레임은 1500ms
-
-            // 프레임 추가
-            gif.addFrame(img, { delay: delayTime, copy: true });
-
+            gif.addFrame(img, { delay: 500, copy: true });
             currentIndex++;
 
             if (currentIndex < totalSlides) {
-              captureAndAddFrame(); // 계속해서 캡쳐
+              captureAndAddFrame(); // 다음 프레임 캡쳐
             } else {
-              // GIF 렌더링이 완료되면 처리
               gif.on("finished", function (blob) {
                 const gifUrl = URL.createObjectURL(blob);
                 resolve(gifUrl); // GIF URL 반환
+                capturing = false; // 캡처 완료 후 상태 리셋
               });
               gif.render(); // GIF 렌더링 시작
             }
           };
         })
         .catch((error) => {
-          reject("스크린샷 캡쳐 실패: " + error); // 실패 시 reject
+          reject("스크린샷 캡쳐 실패: " + error);
+          capturing = false; // 캡처 중 오류가 나면 상태 리셋
         });
     }
 
     captureAndAddFrame(); // 첫 번째 프레임 캡쳐 시작
   });
 }
+
 
 
 // debounce 함수 정의
