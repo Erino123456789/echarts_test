@@ -249,7 +249,11 @@ function captureOverallFlowScreenshots() {
           img.src = imageData;
 
           img.onload = function () {
-            gif.addFrame(img, { delay: 500, copy: true }); // 프레임 추가
+            // 마지막 프레임에 지연 시간을 더 길게 설정
+            const delayTime = (currentIndex === totalSlides - 1) ? 1500 : 500; // 마지막 프레임은 1500ms
+
+            // 프레임 추가
+            gif.addFrame(img, { delay: delayTime, copy: true });
 
             currentIndex++;
 
@@ -273,6 +277,7 @@ function captureOverallFlowScreenshots() {
     captureAndAddFrame(); // 첫 번째 프레임 캡쳐 시작
   });
 }
+
 
 // debounce 함수 정의
 function debounce(func, wait) {
