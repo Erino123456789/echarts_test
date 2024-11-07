@@ -271,6 +271,7 @@ function captureOverallFlowScreenshots() {
                 gif.on("finished", function (blob) {
                   const gifUrl = URL.createObjectURL(blob);
                   resolve(gifUrl); // GIF URL 반환
+                  capturing = false; // 캡처 완료 후 false로 설정
                 });
                 gif.render(); // GIF 렌더링 시작
               }
