@@ -224,8 +224,6 @@ function captureCurrentScreenshot() {
   });
 }
 
-let capturing = false; // 캡처 진행 상태를 추적
-
 function captureOverallFlowScreenshots() {
   return new Promise((resolve, reject) => {
     if (capturing) return; // 이미 캡처 중이면 중지
