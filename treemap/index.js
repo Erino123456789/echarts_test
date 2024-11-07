@@ -246,39 +246,39 @@ function captureOverallFlowScreenshots() {
     let currentIndex = 0;
 
     function captureAndAddFrame() {
-      // 슬라이더 인덱스 변경하고, UI에 반영
+      // 슬라이더 값을 변경하고 화면 업데이트 대기
       document.getElementById("time-slider").value = currentIndex;
-      document.getElementById("time-slider").dispatchEvent(new Event("input"));
 
-      captureCurrentScreenshot()
-        .then((imageData) => {
-          const img = new Image();
-          img.src = imageData;
+      // 슬라이더 값이 변경된 후 0.2초 후에 캡처를 진행
+      setTimeout(function () {
+        captureCurrentScreenshot()
+          .then((imageData) => {
+            const img = new Image();
+            img.src = imageData;
 
-          img.onload = function () {
-            // 마지막 프레임에 지연 시간을 더 길게 설정
-            const delayTime = (currentIndex === totalSlides - 1) ? 5000 : 500; // 마지막 프레임은 1500ms
+            img.onload = function () {
+              const delayTime = (currentIndex === totalSlides - 1) ? 5000 : 500; // 마지막 프레임은 1500ms
+  
+              // 프레임 추가
+              gif.addFrame(img, { delay: delayTime, copy: true });
+              currentIndex++;
 
-            // 프레임 추가
-            gif.addFrame(img, { delay: delayTime, copy: true });
-            currentIndex++;
-
-            if (currentIndex < totalSlides) {
-              captureAndAddFrame(); // 다음 프레임 캡쳐
-            } else {
-              gif.on("finished", function (blob) {
-                const gifUrl = URL.createObjectURL(blob);
-                resolve(gifUrl); // GIF URL 반환
-                capturing = false; // 캡처 완료 후 상태 리셋
-              });
-              gif.render(); // GIF 렌더링 시작
-            }
-          };
-        })
-        .catch((error) => {
-          reject("스크린샷 캡쳐 실패: " + error);
-          capturing = false; // 캡처 중 오류가 나면 상태 리셋
-        });
+              if (currentIndex < totalSlides) {
+                captureAndAddFrame(); // 다음 프레임 캡쳐
+              } else {
+                // GIF 렌더링 완료 후 처리
+                gif.on("finished", function (blob) {
+                  const gifUrl = URL.createObjectURL(blob);
+                  resolve(gifUrl); // GIF URL 반환
+                });
+                gif.render(); // GIF 렌더링 시작
+              }
+            };
+          })
+          .catch((error) => {
+            reject("스크린샷 캡쳐 실패: " + error); // 캡쳐 실패 시
+          });
+      }, 200); // 0.2초 뒤에 캡처 진행
     }
 
     captureAndAddFrame(); // 첫 번째 프레임 캡쳐 시작
