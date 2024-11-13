@@ -55,7 +55,11 @@ var option = {
     orient: "vertical", // 범례를 세로로 배치
     top: "5%", // 범례를 차트 위쪽에 배치
     left: "left", // 범례를 차트의 왼쪽에 배치
-    itemGap: 1, // 범례 항목 간의 간격을 조정
+    itemGap: 5, // 범례 항목 간의 간격을 조정
+    formatter: function (name) {
+      // 범례 텍스트를 줄바꿈 처리하기 위해 각 항목을 적절히 나누기
+      return name.length > 5 ? name.slice(0, 4) + "\n" + name.slice(4) : name;
+    },
   },
   xAxis: {
     type: "value", // 시가총액 등의 값을 나타내는 가로 축
@@ -223,31 +227,38 @@ async function updateChart() {
     const startQuarter = document.getElementById("startQuarterInput").value;
     const endYear = document.getElementById("endYearQuarterInput").value;
     const endQuarter = document.getElementById("endQuarterInput").value;
-    // 분기별 데이터 처리
+
+    // 분기별 처리 (2021년 2분기부터 2024년 3분기까지)
     for (let year = parseInt(startYear); year <= parseInt(endYear); year++) {
-      for (let quarter = 1; quarter <= 4; quarter++) {
+      let startQuarterLoop =
+        year === parseInt(startYear) ? parseInt(startQuarter) : 1;
+      let endQuarterLoop =
+        year === parseInt(endYear) ? parseInt(endQuarter) : 4;
+
+      for (
+        let quarter = startQuarterLoop;
+        quarter <= endQuarterLoop;
+        quarter++
+      ) {
         const quarterData = await fetchDataForQuarter(year, quarter);
         const quarterlyData = processQuarterlyData(quarterData);
 
+        // Q1, Q2, Q3, Q4 표시
         yAxisData.push(`${year} Q${quarter}`);
 
         // 카테고리별로 항목 처리
         for (let category in categoryGroups) {
           let categoryTotal = 0;
-
-          // 카테고리 내 항목의 데이터를 누적
           categoryGroups[category].forEach((item) => {
             if (quarterlyData[item]) {
-              categoryTotal += quarterlyData[item]; // 항목들의 값을 누적
+              categoryTotal += quarterlyData[item];
             }
           });
 
-          // 카테고리가 이미 범례에 없다면 추가
           if (!legendData.includes(category)) {
             legendData.push(category);
           }
 
-          // 카테고리별로 누적된 값을 저장
           if (!seriesData[category]) {
             seriesData[category] = [];
           }
@@ -482,7 +493,7 @@ async function fetchDataForYear(year) {
 async function getMarketData(market, date) {
   let data = null;
   while (!data) {
-    const jsonUrl = `../data/${market}_map_data_${date.getFullYear()}${String(
+    const jsonUrl = `https://erino123456789.github.io/echarts_test/data/${market}_map_data_${date.getFullYear()}${String(
       date.getMonth() + 1
     ).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}.json`;
     const response = await fetch(jsonUrl);
