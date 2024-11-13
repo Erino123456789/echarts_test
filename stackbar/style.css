@@ -1,27 +1,21 @@
-/* 전체 페이지와 body에 height 설정 */
 html,
 body {
   height: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 차트 컨테이너와 차트의 크기를 가득 차게 설정 */
-#chart-container {
-  width: 100%;
-  height: 100%; /* 부모 요소의 100% 크기 */
-}
-
-#main {
-  width: 100%;
-  height: 100%; /* 부모 요소에 맞춰 차트 크기 설정 */
-}
-
+/* controls 영역을 고정된 크기로 설정 */
 #controls {
   margin: 20px;
   text-align: center;
+  z-index: 10; /* 차트 위에 버튼들이 보이도록 설정 */
+  flex-shrink: 0; /* 버튼 영역이 축소되지 않도록 설정 */
 }
 
+/* 버튼 스타일 */
 button {
   margin: 5px;
   padding: 10px 20px;
@@ -29,8 +23,22 @@ button {
   cursor: pointer;
 }
 
-input {
-  padding: 5px;
+/* 차트 영역의 크기를 설정 */
+#chart-container {
+  width: 100%;
+  flex-grow: 1; /* 차트 영역이 남은 공간을 차지하도록 설정 */
+  height: calc(100% - 100px); /* 버튼 영역을 제외한 나머지 공간 차지 */
+  padding-top: 20px; /* 차트 위쪽 여백 */
+}
+
+#main {
+  width: 100%;
+  height: 100%; /* 차트 영역에 맞게 크기 설정 */
+}
+
+input,
+select,
+label {
   margin: 5px;
   font-size: 14px;
 }
