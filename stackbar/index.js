@@ -482,7 +482,7 @@ async function fetchDataForYear(year) {
 async function getMarketData(market, date) {
   let data = null;
   while (!data) {
-    const jsonUrl = `https://erino123456789.github.io/echarts_test/data/${market}_map_data_${date.getFullYear()}${String(
+    const jsonUrl = `../data/${market}_map_data_${date.getFullYear()}${String(
       date.getMonth() + 1
     ).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}.json`;
     const response = await fetch(jsonUrl);
