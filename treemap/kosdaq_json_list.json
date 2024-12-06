@@ -1,5 +1,9 @@
 [
     {
+        "name": "2024-12-06",
+        "filename": "kosdaq_map_data_20241206.json"
+    },
+    {
         "name": "2024-12-05",
         "filename": "kosdaq_map_data_20241205.json"
     },
