@@ -1,5 +1,6 @@
 let currentFilename; // 현재 파일명을 저장할 변수
 let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
+let processedData = [];
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
 let capturing = false; // 캡처 진행 상태를 추적
@@ -258,8 +259,8 @@ function captureOverallFlowScreenshots() {
             img.src = imageData;
 
             img.onload = function () {
-              const delayTime = (currentIndex === totalSlides - 1) ? 5000 : 500; // 마지막 프레임은 5000ms
-  
+              const delayTime = currentIndex === totalSlides - 1 ? 5000 : 500; // 마지막 프레임은 5000ms
+
               // 프레임 추가
               gif.addFrame(img, { delay: delayTime, copy: true });
               currentIndex++;
@@ -370,6 +371,8 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
 
   $.get("../data/" + filename, function (kospi_data) {
     allData = kospi_data; // 검색기능용, 전체 데이터 저장
+    processedData = groupJsonData(kospi_data); // JSON 데이터 가공
+
     if (initialLoad) {
       myChart.hideLoading();
       initialLoad = false; // 이후부터는 로딩 화면을 표시하지 않음
@@ -557,7 +560,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 },
               },
             ],
-            data: kospi_data,
+            data: processedData,
           },
         ],
       })
@@ -608,7 +611,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         }, []);
       }
 
-      const filteredData = filterData(allData);
+      const filteredData = filterData(processedData);
       myChart.setOption({ series: [{ data: filteredData }] });
     }, 300)
   ); // 300ms의 딜레이 적용
@@ -676,3 +679,111 @@ window.onload = function () {
       console.error("loadJsonList 오류:", error);
     });
 };
+
+// 그룹과 카테고리 매핑
+const categoryGroups = {
+  자동차: ["자동차", "자동차부품"],
+  반도체: ["반도체와반도체장비"],
+  은행: ["은행", "카드"],
+  헬스케어: [
+    "건강관리업체및서비스",
+    "건강관리장비와용품",
+    "생명과학도구및서비스",
+    "생물공학",
+    "제약",
+    "건강관리기술",
+  ],
+  철강: ["철강", "비철금속"],
+  건설: ["건설", "건축자재"],
+  증권: ["증권", "창업투자"],
+  IT: [
+    "IT서비스",
+    "소프트웨어",
+    "통신장비",
+    "인터넷과카탈로그소매",
+    "무선통신서비스",
+    "다각화된통신서비스",
+  ],
+  "미디어&엔터테인먼트": [
+    "게임엔터테인먼트",
+    "방송과엔터테인먼트",
+    "양방향미디어와서비스",
+    "광고",
+  ],
+  에너지화학: [
+    "에너지장비및서비스",
+    "석유와가스",
+    "가스유틸리티",
+    "전기유틸리티",
+    "화학",
+  ],
+  운송: ["항공사", "항공화물운송과물류", "해운사"],
+  기계장비: [
+    "기계",
+    "전기장비",
+    "전자장비와기기",
+    "전기제품",
+    "우주항공과국방",
+    "조선",
+  ],
+  필수소비재: ["식품", "음료", "담배", "화장품"],
+  경기소비재: [
+    "가정용기기와용품",
+    "가구",
+    "호텔,레스토랑,레저",
+    "백화점과일반상점",
+    "섬유,의류,신발,호화품",
+    "전자제품",
+  ],
+  보험: ["생명보험", "손해보험"],
+  기타: [
+    "교육서비스",
+    "전기제품",
+    "종이와목재",
+    "포장재",
+    "무역회사와판매업체",
+    "복합기업",
+    "핸드셋",
+    "상업서비스와공급품",
+    "디스플레이장비및부품",
+    "디스플레이패널",
+  ],
+};
+
+// JSON 데이터를 그룹화하는 함수
+function groupJsonData(data) {
+  const groupedData = {}; // 그룹화된 데이터를 저장할 객체
+
+  // JSON 데이터 순회
+  data.forEach((sector) => {
+    const sectorName = sector.name; // 현재 섹터 이름 (예: "IT서비스")
+
+    // 해당 그룹 찾기
+    const groupName = Object.keys(categoryGroups).find((group) =>
+      categoryGroups[group].includes(sectorName)
+    );
+
+    // 그룹이 존재하면 그룹에 추가
+    if (groupName) {
+      if (!groupedData[groupName]) {
+        groupedData[groupName] = {
+          name: groupName,
+          children: [],
+        };
+      }
+      groupedData[groupName].children.push(...sector.children);
+    } else {
+      // 그룹이 없으면 '기타' 그룹에 추가
+      if (!groupedData["기타"]) {
+        groupedData["기타"] = {
+          name: "기타",
+          children: [],
+        };
+      }
+      groupedData["기타"].children.push(...sector.children);
+    }
+  });
+
+  // 객체를 배열 형태로 변환해서 반환
+  return Object.values(groupedData);
+}
