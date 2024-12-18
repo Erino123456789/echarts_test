@@ -557,14 +557,14 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 },
                 {
                   itemStyle: {
-                    borderWidth: 1,
+                    borderWidth: 2,
                     gapWidth: 1,
                     borderColor: "#666",
                   },
                 },
                 {
                   itemStyle: {
-                    borderWidth: 3,
+                    borderWidth: 2,
                     borderColor: "#999",
                   },
                 },
