@@ -552,17 +552,20 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                   itemStyle: {
                     borderWidth: 1,
                     gapWidth: 3,
+                    borderColor: "#333"
                   },
                 },
                 {
                   itemStyle: {
                     borderWidth: 3,
                     gapWidth: 3,
+                    borderColor: "#666",
                   },
                 },
                 {
                   itemStyle: {
                     borderWidth: 3,
+                    borderColor: "#999",
                   },
                 },
               ],
