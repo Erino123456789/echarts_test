@@ -550,9 +550,19 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
               levels: [
                 {
                   itemStyle: {
-                    borderWidth: 3,
-                    borderColor: "#333",
+                    borderWidth: 1,
                     gapWidth: 3,
+                  },
+                },
+                {
+                  itemStyle: {
+                    borderWidth: 3,
+                    gapWidth: 3,
+                  },
+                },
+                {
+                  itemStyle: {
+                    borderWidth: 3,
                   },
                 },
               ],
