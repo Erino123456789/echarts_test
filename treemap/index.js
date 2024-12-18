@@ -557,8 +557,8 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 },
                 {
                   itemStyle: {
-                    borderWidth: 3,
-                    gapWidth: 3,
+                    borderWidth: 1,
+                    gapWidth: 1,
                     borderColor: "#666",
                   },
                 },
