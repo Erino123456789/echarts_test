@@ -27,7 +27,7 @@ document.querySelectorAll('input[name="viewMode"]').forEach((radio) => {
 
 // 숫자 형식 포맷 (백만원 단위로)
 function formatNumber(value) {
-  const valueInMillion = value / 1000; // 1000으로 나누어 백만원 단위로 변환
+  const valueInMillion = value; // 1000으로 나누어 백만원 단위로 변환-필요없음. 원 데이터가 백만원 단위임
   return valueInMillion.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 쉼표 구분자 추가
 }
 
@@ -285,7 +285,7 @@ async function updateChart() {
 
         const monthData = await fetchDataForMonth(year, month);
         const monthlyData = processYearlyData(monthData);
-
+        console.log(monthlyData);
         for (let category in categoryGroups) {
           let categoryTotal = 0;
           categoryGroups[category].forEach((item) => {
@@ -410,7 +410,6 @@ async function fetchDataForMonth(year, month) {
   } else {
     data = await getMarketData(market, date);
   }
-
   return data;
 }
 
@@ -493,7 +492,7 @@ async function fetchDataForYear(year) {
 async function getMarketData(market, date) {
   let data = null;
   while (!data) {
-    const jsonUrl = `https://erino123456789.github.io/echarts_test/data/${market}_map_data_${date.getFullYear()}${String(
+    const jsonUrl = `../data/${market}_map_data_${date.getFullYear()}${String(
       date.getMonth() + 1
     ).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}.json`;
     const response = await fetch(jsonUrl);
@@ -553,9 +552,9 @@ const categoryGroups = {
     "기계",
     "전기장비",
     "전자장비와기기",
-    "전기제품",
     "우주항공과국방",
     "조선",
+    "전기제품",
   ],
   필수소비재: ["식품", "음료", "담배", "화장품"],
   경기소비재: [
@@ -569,7 +568,6 @@ const categoryGroups = {
   보험: ["생명보험", "손해보험"],
   기타: [
     "교육서비스",
-    "전기제품",
     "종이와목재",
     "포장재",
     "무역회사와판매업체",
@@ -578,5 +576,6 @@ const categoryGroups = {
     "상업서비스와공급품",
     "디스플레이장비및부품",
     "디스플레이패널",
+    "기타",
   ],
 };
