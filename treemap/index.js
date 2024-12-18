@@ -85,10 +85,13 @@ function loadAndCacheData(filePrefix, date) {
       return;
     }
 
-    $.getJSON(`../data/${filename}`, function (data) {
-      if (!cachedFiles[date]) cachedFiles[date] = {};
-      cachedFiles[date][timeSuffix] = data;
-    }).fail(function () {
+    $.getJSON(
+      `https://erino123456789.github.io/echarts_test/data/${filename}`,
+      function (data) {
+        if (!cachedFiles[date]) cachedFiles[date] = {};
+        cachedFiles[date][timeSuffix] = data;
+      }
+    ).fail(function () {
       console.warn(`Failed to load: ${filename}`); // 실패 시 경고 메시지
     });
   });
@@ -369,203 +372,197 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   const hours = currentTime.getUTCHours() + 9; // KST로 변환
   const minutes = currentTime.getUTCMinutes();
 
-  $.get("../data/" + filename, function (kospi_data) {
-    allData = kospi_data; // 검색기능용, 전체 데이터 저장
-    processedData = groupJsonData(kospi_data); // JSON 데이터 가공
-
-    if (initialLoad) {
-      myChart.hideLoading();
-      initialLoad = false; // 이후부터는 로딩 화면을 표시하지 않음
-    }
-    const visualMin = -5;
-    const visualMax = 5;
-    const visualMinBound = -1;
-    const visualMaxBound = 1;
-    convertData(kospi_data);
-    function convertData(originList) {
-      let min = Infinity;
-      let max = -Infinity;
-      for (let i = 0; i < originList.length; i++) {
-        let node = originList[i];
-        if (node) {
-          let value = node.value;
-          value[4] != null && value[4] < min && (min = value[4]);
-          value[4] != null && value[4] > max && (max = value[4]);
-        }
+  $.get(
+    "https://erino123456789.github.io/echarts_test/data/" + filename,
+    function (kospi_data) {
+      allData = kospi_data; // 검색기능용, 전체 데이터 저장
+      processedData = groupJsonData(kospi_data); // JSON 데이터 가공
+      console.log(processedData);
+      if (initialLoad) {
+        myChart.hideLoading();
+        initialLoad = false; // 이후부터는 로딩 화면을 표시하지 않음
       }
-      for (let i = 0; i < originList.length; i++) {
-        let node = originList[i];
-        if (node) {
-          let value = node.value;
-          // Scale value for visual effect
-          if (value[4] != null && value[4] > 0) {
-            value[5] = echarts.number.linearMap(
-              value[4],
-              [0, 5],
-              [visualMaxBound, visualMax],
-              true
-            );
-          } else if (value[4] != null && value[4] < 0) {
-            value[5] = echarts.number.linearMap(
-              value[4],
-              [-5, 0],
-              [visualMin, visualMinBound],
-              true
-            );
-          } else {
-            value[5] = 0;
-          }
-          if (!isFinite(value[3])) {
-            value[5] = 0;
-          }
-          if (node.children) {
-            convertData(node.children);
+      const visualMin = -5;
+      const visualMax = 5;
+      const visualMinBound = -1;
+      const visualMaxBound = 1;
+      convertData(kospi_data);
+      function convertData(originList) {
+        let min = Infinity;
+        let max = -Infinity;
+        for (let i = 0; i < originList.length; i++) {
+          let node = originList[i];
+          if (node) {
+            let value = node.value;
+            value[4] != null && value[4] < min && (min = value[4]);
+            value[4] != null && value[4] > max && (max = value[4]);
           }
         }
-      }
-    }
-    function isValidNumber(num) {
-      return num != null && isFinite(num);
-    }
-    const formattedTitleDate = adjustTimeByMinutes(filename, 20);
-    myChart.setOption(
-      (option = {
-        title: {
-          text: `${type.toUpperCase()} - ${formattedTitleDate}`,
-          left: "center",
-        },
-        tooltip: {
-          formatter: function (info) {
-            if (info.data.children) {
-              let totalValue = isValidNumber(info.data.value)
-                ? echarts.format.addCommas(info.data.value) + " 백만원"
-                : "-";
-              return [
-                '<div class="tooltip-title"><b>' +
-                  echarts.format.encodeHTML(info.name) +
-                  "</b></div>",
-                "총 합계: &nbsp;&nbsp;" + totalValue,
-              ].join("");
+        for (let i = 0; i < originList.length; i++) {
+          let node = originList[i];
+          if (node) {
+            let value = node.value;
+            // Scale value for visual effect
+            if (value[4] != null && value[4] > 0) {
+              value[5] = echarts.number.linearMap(
+                value[4],
+                [0, 5],
+                [visualMaxBound, visualMax],
+                true
+              );
+            } else if (value[4] != null && value[4] < 0) {
+              value[5] = echarts.number.linearMap(
+                value[4],
+                [-5, 0],
+                [visualMin, visualMinBound],
+                true
+              );
             } else {
-              let value = info.value;
-              let now_cap = value[0];
-              now_cap = isValidNumber(now_cap)
-                ? echarts.format.addCommas(now_cap) + " 백만원"
-                : "-";
-              let pre_cap = value[1];
-              pre_cap = isValidNumber(pre_cap)
-                ? echarts.format.addCommas(pre_cap) + " 백만원"
-                : "-";
-              let now_price = value[2];
-              now_price = isValidNumber(now_price)
-                ? echarts.format.addCommas(now_price) + " 원"
-                : "-";
-              let pre_price = value[3];
-              pre_price = isValidNumber(pre_price)
-                ? echarts.format.addCommas(pre_price) + " 원"
-                : "-";
-              let change = value[4];
-              change = isValidNumber(change) ? change.toFixed(2) + " %" : "-";
-              return [
-                '<div class="tooltip-title"><b>' +
-                  echarts.format.encodeHTML(info.name) +
-                  "</b></div>",
-                "전일시총: &nbsp;&nbsp;" + now_cap + "<br>",
-                "현재시총: &nbsp;&nbsp;" + pre_cap + "<br>",
-                "전일주가: &nbsp;&nbsp;" + now_price + "<br>",
-                "현재주가: &nbsp;&nbsp;" + pre_price + "<br>",
-                "변동율: &nbsp;&nbsp;" + change,
-              ].join("");
+              value[5] = 0;
             }
+            if (!isFinite(value[3])) {
+              value[5] = 0;
+            }
+            if (node.children) {
+              convertData(node.children);
+            }
+          }
+        }
+      }
+      function isValidNumber(num) {
+        return num != null && isFinite(num);
+      }
+      const formattedTitleDate = adjustTimeByMinutes(filename, 20);
+      myChart.setOption(
+        (option = {
+          title: {
+            text: `${type.toUpperCase()} - ${formattedTitleDate}`,
+            left: "center",
           },
-        },
-        backgroundColor: "#f8f9fa",
-        series: [
-          {
-            name: `${type.toUpperCase()}`,
-            width: "100%",
-            height: "100%" - "30px",
-            top: 30,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            type: "treemap",
-            animation: true,
-            upperLabel: {
-              show: true,
-              color: "#fff",
-              borderWidth: 1, // 경계선 추가
-            },
-            breadcrumb: {
-              show: false,
-            },
-            labelLayout: function (params) {
-              if (params.rect.width < 5 || params.rect.height < 5) {
-                return { fontSize: 0 };
+          tooltip: {
+            formatter: function (info) {
+              if (info.data.children) {
+                let totalValue = isValidNumber(info.data.value)
+                  ? echarts.format.addCommas(info.data.value) + " 백만원"
+                  : "-";
+                return [
+                  '<div class="tooltip-title"><b>' +
+                    echarts.format.encodeHTML(info.name) +
+                    "</b></div>",
+                  "총 합계: &nbsp;&nbsp;" + totalValue,
+                ].join("");
+              } else {
+                let value = info.value;
+                let now_cap = value[0];
+                now_cap = isValidNumber(now_cap)
+                  ? echarts.format.addCommas(now_cap) + " 백만원"
+                  : "-";
+                let pre_cap = value[1];
+                pre_cap = isValidNumber(pre_cap)
+                  ? echarts.format.addCommas(pre_cap) + " 백만원"
+                  : "-";
+                let now_price = value[2];
+                now_price = isValidNumber(now_price)
+                  ? echarts.format.addCommas(now_price) + " 원"
+                  : "-";
+                let pre_price = value[3];
+                pre_price = isValidNumber(pre_price)
+                  ? echarts.format.addCommas(pre_price) + " 원"
+                  : "-";
+                let change = value[4];
+                change = isValidNumber(change) ? change.toFixed(2) + " %" : "-";
+                return [
+                  '<div class="tooltip-title"><b>' +
+                    echarts.format.encodeHTML(info.name) +
+                    "</b></div>",
+                  "전일시총: &nbsp;&nbsp;" + now_cap + "<br>",
+                  "현재시총: &nbsp;&nbsp;" + pre_cap + "<br>",
+                  "전일주가: &nbsp;&nbsp;" + now_price + "<br>",
+                  "현재주가: &nbsp;&nbsp;" + pre_price + "<br>",
+                  "변동율: &nbsp;&nbsp;" + change,
+                ].join("");
               }
-              return {
-                fontSize: Math.min(
-                  Math.sqrt(params.rect.width * params.rect.height) / 10,
-                  20
-                ),
-              };
             },
-            label: {
-              show: true,
-              formatter: function (params) {
-                if (params.data.children) {
-                  return `${params.name}`; // 상위 항목은 일반 텍스트
-                } else {
-                  return `${params.name}\n${params.value[4]}%`; // 하위 항목은 굵게 표시
-                }
-              },
-              color: "#fff", // 텍스트 색상 설정
-              textShadowColor: "black", // 그림자 색상 설정 (테두리 효과용)
-              textShadowBlur: 4, // 그림자 블러 정도 설정
-              textShadowOffsetX: 0,
-              textShadowOffsetY: 0,
-              fontWeight: "bold",
-            },
-            itemStyle: {
-              borderColor: "black",
-            },
-            visualMin: visualMin,
-            visualMax: visualMax,
-            visualDimension: 5,
-            levels: [
-              {
-                itemStyle: {
-                  borderWidth: 3,
-                  borderColor: "#333",
-                  gapWidth: 3,
-                },
-              },
-              {
-                color: [
-                  "#942e38",
-                  "#98464e",
-                  "#9c5f65",
-                  "#a1787c",
-                  "#a59193",
-                  "#aaaaaa",
-                  "#8fa793",
-                  "#75a57d",
-                  "#5aa368",
-                  "#40a151",
-                  "#269f3c",
-                ],
-                colorMappingBy: "value",
-                itemStyle: {
-                  gapWidth: 1,
-                },
-              },
-            ],
-            data: processedData,
           },
-        ],
-      })
-    );
-  }).fail(function () {
+          backgroundColor: "#f8f9fa",
+          visualMap: {
+            type: "continuous", // 연속형 색상 매핑
+            min: -5, // 최소 퍼센트 값
+            max: 5, // 최대 퍼센트 값
+            dimension: 4, // value 배열에서 다섯 번째 값을 기준으로 색상 매핑
+            inRange: {
+              color: ["#942e38", "#aaaaaa", "#269f3c"], // -5, 0, +5에 대응하는 색상
+            },
+            show: true, // 범례 표시
+          },
+          series: [
+            {
+              name: `${type.toUpperCase()}`,
+              width: "100%",
+              height: "100%" - "30px",
+              top: 30,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              type: "treemap",
+              animation: true,
+              upperLabel: {
+                show: true,
+                color: "#fff",
+                borderWidth: 1, // 경계선 추가
+              },
+              breadcrumb: {
+                show: false,
+              },
+              labelLayout: function (params) {
+                if (params.rect.width < 5 || params.rect.height < 5) {
+                  return { fontSize: 0 };
+                }
+                return {
+                  fontSize: Math.min(
+                    Math.sqrt(params.rect.width * params.rect.height) / 10,
+                    20
+                  ),
+                };
+              },
+              label: {
+                show: true,
+                formatter: function (params) {
+                  if (params.data.children) {
+                    return `${params.name}`; // 상위 항목은 일반 텍스트
+                  } else {
+                    return `${params.name}\n${params.value[4]}%`; // 하위 항목은 굵게 표시
+                  }
+                },
+                color: "#fff", // 텍스트 색상 설정
+                textShadowColor: "black", // 그림자 색상 설정 (테두리 효과용)
+                textShadowBlur: 4, // 그림자 블러 정도 설정
+                textShadowOffsetX: 0,
+                textShadowOffsetY: 0,
+                fontWeight: "bold",
+              },
+              itemStyle: {
+                borderColor: "black",
+              },
+              visualMin: visualMin,
+              visualMax: visualMax,
+              visualDimension: 5,
+              levels: [
+                {
+                  itemStyle: {
+                    borderWidth: 3,
+                    borderColor: "#333",
+                    gapWidth: 3,
+                  },
+                },
+              ],
+              data: processedData,
+            },
+          ],
+        })
+      );
+    }
+  ).fail(function () {
     if (fallbackCallback) {
       fallbackCallback(); // 데이터 로드 실패 시 콜백 실행
     } else {
@@ -722,9 +719,9 @@ const categoryGroups = {
     "기계",
     "전기장비",
     "전자장비와기기",
-    "전기제품",
     "우주항공과국방",
     "조선",
+    "전기제품",
   ],
   필수소비재: ["식품", "음료", "담배", "화장품"],
   경기소비재: [
@@ -738,7 +735,6 @@ const categoryGroups = {
   보험: ["생명보험", "손해보험"],
   기타: [
     "교육서비스",
-    "전기제품",
     "종이와목재",
     "포장재",
     "무역회사와판매업체",
@@ -747,16 +743,17 @@ const categoryGroups = {
     "상업서비스와공급품",
     "디스플레이장비및부품",
     "디스플레이패널",
+    "기타",
   ],
 };
 
-// JSON 데이터를 그룹화하는 함수
 function groupJsonData(data) {
-  const groupedData = {}; // 그룹화된 데이터를 저장할 객체
+  // 그룹 데이터를 저장할 객체
+  const groupedData = {};
 
-  // JSON 데이터 순회
+  // 원본 데이터를 순회
   data.forEach((sector) => {
-    const sectorName = sector.name; // 현재 섹터 이름 (예: "IT서비스")
+    const sectorName = sector.name; // 예: IT서비스
 
     // 해당 그룹 찾기
     const groupName = Object.keys(categoryGroups).find((group) =>
@@ -768,22 +765,76 @@ function groupJsonData(data) {
       if (!groupedData[groupName]) {
         groupedData[groupName] = {
           name: groupName,
+          totalPreviousMarketCap: 0, // 그룹 전체 전일시총
+          totalCurrentMarketCap: 0, // 그룹 전체 현재시총
+          changeRate: 0, // 그룹 전체 변동률
           children: [],
         };
       }
-      groupedData[groupName].children.push(...sector.children);
+
+      // 중간 그룹 생성 및 초기화
+      const subGroup = {
+        name: sectorName,
+        totalPreviousMarketCap: 0, // 중간 그룹 전일시총
+        totalCurrentMarketCap: 0, // 중간 그룹 현재시총
+        changeRate: 0, // 중간 그룹 변동률
+        children: [],
+      };
+
+      // 각 하위 데이터 처리
+      sector.children.forEach((child) => {
+        const [prevMarketCap, currMarketCap] = child.value;
+
+        // 하위 데이터를 중간 그룹에 추가
+        subGroup.children.push(child);
+
+        // 중간 그룹의 전일시총 및 현재시총 합계 계산
+        subGroup.totalPreviousMarketCap += prevMarketCap;
+        subGroup.totalCurrentMarketCap += currMarketCap;
+      });
+
+      // 중간 그룹의 변동률 계산
+      if (subGroup.totalPreviousMarketCap > 0) {
+        subGroup.changeRate =
+          ((subGroup.totalCurrentMarketCap - subGroup.totalPreviousMarketCap) /
+            subGroup.totalPreviousMarketCap) *
+          100;
+      }
+
+      // 중간 그룹 데이터를 최상위 그룹에 추가
+      groupedData[groupName].children.push(subGroup);
+
+      // 최상위 그룹의 전일시총 및 현재시총 합계 계산
+      groupedData[groupName].totalPreviousMarketCap +=
+        subGroup.totalPreviousMarketCap;
+      groupedData[groupName].totalCurrentMarketCap +=
+        subGroup.totalCurrentMarketCap;
     } else {
-      // 그룹이 없으면 '기타' 그룹에 추가
+      // 그룹이 없으면 기타로 추가
       if (!groupedData["기타"]) {
         groupedData["기타"] = {
           name: "기타",
+          totalPreviousMarketCap: 0,
+          totalCurrentMarketCap: 0,
+          changeRate: 0,
           children: [],
         };
       }
-      groupedData["기타"].children.push(...sector.children);
+
+      groupedData["기타"].children.push(sector);
     }
   });
 
-  // 객체를 배열 형태로 변환해서 반환
+  // 최상위 그룹의 변동률 계산
+  Object.values(groupedData).forEach((group) => {
+    if (group.totalPreviousMarketCap > 0) {
+      group.changeRate =
+        ((group.totalCurrentMarketCap - group.totalPreviousMarketCap) /
+          group.totalPreviousMarketCap) *
+        100;
+    }
+  });
+
+  // 객체를 배열 형태로 변환
   return Object.values(groupedData);
 }
