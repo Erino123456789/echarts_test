@@ -510,7 +510,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 show: true,
                 color: "#fff",
                 borderWidth: 1, // 경계선 추가
-                fontWeight: "bold"
+                fontWeight: "bold",
               },
               breadcrumb: {
                 show: false,
@@ -560,14 +560,13 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                   itemStyle: {
                     borderWidth: 2,
                     gapWidth: 1,
-                    borderColor: "#666",
+                    borderColor: "#555",
                   },
                 },
                 {
                   itemStyle: {
                     borderWidth: 2,
-                    borderColor: "#999",
-                    color: "black"
+                    borderColor: "#777",
                   },
                 },
               ],
