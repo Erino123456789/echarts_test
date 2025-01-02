@@ -761,76 +761,61 @@ const categoryGroups = {
   ],
 };
 
+
 function groupJsonData(data) {
-  // 그룹 데이터를 저장할 객체
   const groupedData = {};
 
-  // 원본 데이터를 순회
   data.forEach((sector) => {
-    const sectorName = sector.name; // 예: IT서비스
+    const sectorName = sector.name;
 
-    // 해당 그룹 찾기
     const groupName = Object.keys(categoryGroups).find((group) =>
       categoryGroups[group].includes(sectorName)
     );
 
-    // 그룹이 존재하면 그룹에 추가
     if (groupName) {
       if (!groupedData[groupName]) {
         groupedData[groupName] = {
           name: groupName,
-          totalPreviousMarketCap: 0, // 그룹 전체 전일시총
-          totalCurrentMarketCap: 0, // 그룹 전체 현재시총
-          changeRate: 0, // 그룹 전체 변동률
+          id: groupName, // id를 name으로 설정
+          discretion: null, // 기본값 null
+          value: [0, 0, null, null, null, null],
           children: [],
         };
       }
 
-      // 중간 그룹 생성 및 초기화
       const subGroup = {
         name: sectorName,
-        totalPreviousMarketCap: 0, // 중간 그룹 전일시총
-        totalCurrentMarketCap: 0, // 중간 그룹 현재시총
-        changeRate: 0, // 중간 그룹 변동률
+        id: sectorName, // id를 name으로 설정
+        discretion: null, // 기본값 null
+        value: [0, 0, null, null, null, null],
         children: [],
       };
 
-      // 각 하위 데이터 처리
       sector.children.forEach((child) => {
         const [prevMarketCap, currMarketCap] = child.value;
 
-        // 하위 데이터를 중간 그룹에 추가
         subGroup.children.push(child);
 
-        // 중간 그룹의 전일시총 및 현재시총 합계 계산
-        subGroup.totalPreviousMarketCap += prevMarketCap;
-        subGroup.totalCurrentMarketCap += currMarketCap;
+        subGroup.value[0] += prevMarketCap;
+        subGroup.value[1] += currMarketCap;
       });
 
-      // 중간 그룹의 변동률 계산
-      if (subGroup.totalPreviousMarketCap > 0) {
-        subGroup.changeRate =
-          ((subGroup.totalCurrentMarketCap - subGroup.totalPreviousMarketCap) /
-            subGroup.totalPreviousMarketCap) *
-          100;
+      if (subGroup.value[0] > 0) {
+        subGroup.value[4] =
+          ((subGroup.value[1] - subGroup.value[0]) / subGroup.value[0]) * 100;
       }
 
-      // 중간 그룹 데이터를 최상위 그룹에 추가
       groupedData[groupName].children.push(subGroup);
 
-      // 최상위 그룹의 전일시총 및 현재시총 합계 계산
-      groupedData[groupName].totalPreviousMarketCap +=
-        subGroup.totalPreviousMarketCap;
-      groupedData[groupName].totalCurrentMarketCap +=
-        subGroup.totalCurrentMarketCap;
+      groupedData[groupName].value[0] += subGroup.value[0];
+      groupedData[groupName].value[1] += subGroup.value[1];
     } else {
-      // 그룹이 없으면 기타로 추가
       if (!groupedData["기타"]) {
         groupedData["기타"] = {
           name: "기타",
-          totalPreviousMarketCap: 0,
-          totalCurrentMarketCap: 0,
-          changeRate: 0,
+          id: "기타", // 기타 그룹의 id 설정
+          discretion: null,
+          value: [0, 0, null, null, null, null],
           children: [],
         };
       }
@@ -839,16 +824,12 @@ function groupJsonData(data) {
     }
   });
 
-  // 최상위 그룹의 변동률 계산
   Object.values(groupedData).forEach((group) => {
-    if (group.totalPreviousMarketCap > 0) {
-      group.changeRate =
-        ((group.totalCurrentMarketCap - group.totalPreviousMarketCap) /
-          group.totalPreviousMarketCap) *
-        100;
+    if (group.value[0] > 0) {
+      group.value[4] =
+        ((group.value[1] - group.value[0]) / group.value[0]) * 100;
     }
   });
 
-  // 객체를 배열 형태로 변환
   return Object.values(groupedData);
 }
