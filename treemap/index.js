@@ -643,6 +643,21 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
     }, 300)
   ); // 300ms의 딜레이 적용
 
+  // 깊이 변경 함수
+  $("#depth-select").on("change", function () {
+    const selectedDepth = parseInt($(this).val(), 10); // 선택된 값 가져오기
+
+    if (!isNaN(selectedDepth)) {
+      myChart.setOption({
+        series: [
+          {
+            leafDepth: selectedDepth, // 선택된 깊이 적용
+          },
+        ],
+      });
+    }
+  });
+
   window.addEventListener(
     "resize",
     debounce(() => myChart.resize(), 200)
