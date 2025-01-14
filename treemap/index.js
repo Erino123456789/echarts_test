@@ -86,7 +86,7 @@ function loadAndCacheData(filePrefix, date) {
     }
 
     $.getJSON(
-      `https://erino123456789.github.io/echarts_test/data/${filename}`,
+      `../data/${filename}`,
       function (data) {
         if (!cachedFiles[date]) cachedFiles[date] = {};
         cachedFiles[date][timeSuffix] = data;
@@ -373,7 +373,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   const minutes = currentTime.getUTCMinutes();
 
   $.get(
-    "https://erino123456789.github.io/echarts_test/data/" + filename,
+    "../data/" + filename,
     function (kospi_data) {
       allData = kospi_data; // 검색기능용, 전체 데이터 저장
       processedData = groupJsonData(kospi_data); // JSON 데이터 가공
@@ -442,14 +442,24 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
           tooltip: {
             formatter: function (info) {
               if (info.data.children) {
-                let totalValue = isValidNumber(info.data.value)
-                  ? echarts.format.addCommas(info.data.value) + " 백만원"
+                let value = info.value;
+                let now_cap = value[0];
+                now_cap = isValidNumber(now_cap)
+                  ? echarts.format.addCommas(now_cap) + " 백만원"
                   : "-";
+                let pre_cap = value[1];
+                pre_cap = isValidNumber(pre_cap)
+                  ? echarts.format.addCommas(pre_cap) + " 백만원"
+                  : "-";
+                let change = value[4];
+                change = isValidNumber(change) ? change.toFixed(2) + " %" : "-";
                 return [
                   '<div class="tooltip-title"><b>' +
                     echarts.format.encodeHTML(info.name) +
                     "</b></div>",
-                  "총 합계: &nbsp;&nbsp;" + totalValue,
+                  "전일시총: &nbsp;&nbsp;" + now_cap + "<br>",
+                  "현재시총: &nbsp;&nbsp;" + pre_cap + "<br>",
+                  "변동율: &nbsp;&nbsp;" + change,
                 ].join("");
               } else {
                 let value = info.value;
@@ -504,6 +514,8 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
               left: 0,
               right: 0,
               bottom: 0,
+              leafDepth: 3,
+              drillDownIcon: "",
               type: "treemap",
               animation: true,
               upperLabel: {
@@ -511,6 +523,10 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 color: "#fff",
                 borderWidth: 1, // 경계선 추가
                 fontWeight: "bold",
+                formatter: function (info) {
+                  let name = info.name; // 이름
+                  return [name].join("");
+                },
               },
               breadcrumb: {
                 show: false,
@@ -529,11 +545,11 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
               label: {
                 show: true,
                 formatter: function (params) {
-                  if (params.data.children) {
-                    return `${params.name}`; // 상위 항목은 일반 텍스트
-                  } else {
-                    return `${params.name}\n${params.value[4]}%`; // 하위 항목은 굵게 표시
-                  }
+                  let changeleaf = params.value[4];
+                  changeleaf = isValidNumber(changeleaf)
+                    ? changeleaf.toFixed(2) + " %"
+                    : "-";
+                  return `${params.name}\n${changeleaf}`; // 하위 항목은 굵게 표시
                 },
                 color: "#fff", // 텍스트 색상 설정
                 textShadowColor: "black", // 그림자 색상 설정 (테두리 효과용)
@@ -553,7 +569,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                   itemStyle: {
                     borderWidth: 1,
                     gapWidth: 3,
-                    borderColor: "#333"
+                    borderColor: "#333",
                   },
                 },
                 {
@@ -760,7 +776,6 @@ const categoryGroups = {
     "기타",
   ],
 };
-
 
 function groupJsonData(data) {
   const groupedData = {};
