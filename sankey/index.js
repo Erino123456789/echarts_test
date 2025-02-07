@@ -9,7 +9,7 @@ var option;
 
 myChart.showLoading();
 $.get(
-  "https://erino123456789.github.io/echarts_test/sankey/test.json",
+  "https://erino123456789.github.io/echarts_test/sankey/sankey.json",
   function (data) {
     myChart.hideLoading();
     myChart.setOption(
