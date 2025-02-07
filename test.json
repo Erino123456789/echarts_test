@@ -40,7 +40,7 @@
 {"source": "Cost of revenue", "target": "Service and other", "value": 16805},
 {"source": "Gross margin", "target": "Operating income", "value": 30552},
 {"source": "Gross margin", "target": "Operating Expenses", "value": 14934},
-{"source": "Operating income", "target": "Net income ", "value": 24667},
+{"source": "Operating income", "target": "Net income", "value": 24667},
 {"source": "Operating income", "target": "Provision for income taxes", "value": 5602},
 {"source": "Operating income", "target": "Other income (expense), net", "value": 283}
 ]
