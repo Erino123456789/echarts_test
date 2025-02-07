@@ -35,16 +35,16 @@
 {"source": "Microsoft 365 Consumer products and cloud services", "target": "Revenue", "value": 1727},
 {"source": "Other ", "target": "Revenue", "value": 10},
 {"source": "Revenue", "target": "Gross margin", "value": 45486},
-{"source": "Revenue", "target": "Cost of revenue", "value": 20099},
-{"source": "Cost of revenue", "target": "Product", "value": 3294},
-{"source": "Cost of revenue", "target": "Service and other", "value": 16805},
+{"source": "Revenue", "target": "Cost of revenue", "value": -20099},
+{"source": "Cost of revenue", "target": "Product", "value": -3294},
+{"source": "Cost of revenue", "target": "Service and other", "value": -16805},
 {"source": "Gross margin", "target": "Operating income", "value": 30552},
-{"source": "Gross margin", "target": "Operating Expenses", "value": 14934},
-{"source": "Operating Expenses", "target": "Research and development", "value": 7544},
-{"source": "Operating Expenses", "target": "Sales and marketing", "value": 5717},
-{"source": "Operating Expenses", "target": "General and administrative", "value": 1673},
+{"source": "Gross margin", "target": "Operating Expenses", "value": -14934},
+{"source": "Operating Expenses", "target": "Research and development", "value": -7544},
+{"source": "Operating Expenses", "target": "Sales and marketing", "value": -5717},
+{"source": "Operating Expenses", "target": "General and administrative", "value": -1673},
 {"source": "Operating income", "target": "Net income", "value": 24667},
-{"source": "Operating income", "target": "Provision for income taxes", "value": 5602},
-{"source": "Operating income", "target": "Other income (expense), net", "value": 283}
+{"source": "Operating income", "target": "Provision for income taxes", "value": -5602},
+{"source": "Operating income", "target": "Other income (expense), net", "value": -283}
 ]
 }
