@@ -1,0 +1,118 @@
+{
+  "nodes": [
+    {
+      "name": "매출액",
+      "value": 13276844204872.0
+    },
+    {
+      "name": "매출원가",
+      "value": 11480694731911.0
+    },
+    {
+      "name": "매출총이익",
+      "value": 1796149472961.0
+    },
+    {
+      "name": "판매비와관리비",
+      "value": 987918526367.0
+    },
+    {
+      "name": "영업이익",
+      "value": 808230946594.0
+    },
+    {
+      "name": "기타수익",
+      "value": 74712692832.0
+    },
+    {
+      "name": "기타비용",
+      "value": 51359876856.0
+    },
+    {
+      "name": "금융수익",
+      "value": 286501829275.0
+    },
+    {
+      "name": "금융비용",
+      "value": 138970736852.0
+    },
+    {
+      "name": "ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod",
+      "value": 0
+    },
+    {
+      "name": "법인세차감전순이익",
+      "value": 985508371366.0
+    },
+    {
+      "name": "법인세비용",
+      "value": 284182610344.0
+    },
+    {
+      "name": "당기순이익",
+      "value": 701325761022.0
+    }
+  ],
+  "links": [
+    {
+      "source": "매출액",
+      "target": "매출원가",
+      "value": 11480694731911.0
+    },
+    {
+      "source": "매출액",
+      "target": "매출총이익",
+      "value": 1796149472961.0
+    },
+    {
+      "source": "매출총이익",
+      "target": "판매비와관리비",
+      "value": 987918526367.0
+    },
+    {
+      "source": "매출총이익",
+      "target": "영업이익",
+      "value": 808230946594.0
+    },
+    {
+      "source": "영업이익",
+      "target": "기타수익",
+      "value": 74712692832.0
+    },
+    {
+      "source": "영업이익",
+      "target": "기타비용",
+      "value": 51359876856.0
+    },
+    {
+      "source": "금융수익",
+      "target": "영업이익",
+      "value": 286501829275.0
+    },
+    {
+      "source": "영업이익",
+      "target": "금융비용",
+      "value": 138970736852.0
+    },
+    {
+      "source": "영업이익",
+      "target": "ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod",
+      "value": 0
+    },
+    {
+      "source": "영업이익",
+      "target": "법인세차감전순이익",
+      "value": 985508371366.0
+    },
+    {
+      "source": "법인세차감전순이익",
+      "target": "법인세비용",
+      "value": 284182610344.0
+    },
+    {
+      "source": "법인세차감전순이익",
+      "target": "당기순이익",
+      "value": 701325761022.0
+    }
+  ]
+}

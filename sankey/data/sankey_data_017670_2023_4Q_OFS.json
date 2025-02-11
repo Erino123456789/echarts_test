@@ -1,0 +1,118 @@
+{
+  "nodes": [
+    {
+      "name": "영업수익",
+      "value": 12589220000000.0
+    },
+    {
+      "name": "ifrs-full_CostOfSales",
+      "value": 0
+    },
+    {
+      "name": "ifrs-full_GrossProfit",
+      "value": 0
+    },
+    {
+      "name": "dart_TotalSellingGeneralAdministrativeExpenses",
+      "value": 0
+    },
+    {
+      "name": "영업이익",
+      "value": 1455870000000.0
+    },
+    {
+      "name": "기타영업외수익",
+      "value": 40844000000.0
+    },
+    {
+      "name": "기타영업외비용",
+      "value": 24019000000.0
+    },
+    {
+      "name": "금융수익",
+      "value": 342646000000.0
+    },
+    {
+      "name": "금융비용",
+      "value": 441390000000.0
+    },
+    {
+      "name": "ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod",
+      "value": 0
+    },
+    {
+      "name": "법인세차감전순이익",
+      "value": 1354939000000.0
+    },
+    {
+      "name": "법인세비용(수익)",
+      "value": 295189000000.0
+    },
+    {
+      "name": "당기연결순이익",
+      "value": 1059750000000.0
+    }
+  ],
+  "links": [
+    {
+      "source": "영업수익",
+      "target": "ifrs-full_CostOfSales",
+      "value": 0
+    },
+    {
+      "source": "영업수익",
+      "target": "ifrs-full_GrossProfit",
+      "value": 0
+    },
+    {
+      "source": "ifrs-full_GrossProfit",
+      "target": "dart_TotalSellingGeneralAdministrativeExpenses",
+      "value": 0
+    },
+    {
+      "source": "ifrs-full_GrossProfit",
+      "target": "영업이익",
+      "value": 1455870000000.0
+    },
+    {
+      "source": "영업이익",
+      "target": "기타영업외수익",
+      "value": 40844000000.0
+    },
+    {
+      "source": "영업이익",
+      "target": "기타영업외비용",
+      "value": 24019000000.0
+    },
+    {
+      "source": "금융수익",
+      "target": "영업이익",
+      "value": 342646000000.0
+    },
+    {
+      "source": "영업이익",
+      "target": "금융비용",
+      "value": 441390000000.0
+    },
+    {
+      "source": "영업이익",
+      "target": "ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod",
+      "value": 0
+    },
+    {
+      "source": "영업이익",
+      "target": "법인세차감전순이익",
+      "value": 1354939000000.0
+    },
+    {
+      "source": "법인세차감전순이익",
+      "target": "법인세비용(수익)",
+      "value": 295189000000.0
+    },
+    {
+      "source": "법인세차감전순이익",
+      "target": "당기연결순이익",
+      "value": 1059750000000.0
+    }
+  ]
+}
