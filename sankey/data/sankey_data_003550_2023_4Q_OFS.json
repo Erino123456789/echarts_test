@@ -1,0 +1,118 @@
+{
+  "nodes": [
+    {
+      "name": "매출및지분법손익",
+      "value": 1030586000000.0
+    },
+    {
+      "name": "ifrs-full_CostOfSales",
+      "value": 0
+    },
+    {
+      "name": "ifrs-full_GrossProfit",
+      "value": 0
+    },
+    {
+      "name": "dart_TotalSellingGeneralAdministrativeExpenses",
+      "value": 0
+    },
+    {
+      "name": "영업이익(손실)",
+      "value": 751375000000.0
+    },
+    {
+      "name": "영업외손익",
+      "value": 52882000000.0
+    },
+    {
+      "name": "dart_OtherLosses",
+      "value": 0
+    },
+    {
+      "name": "금융수익",
+      "value": 72600000000.0
+    },
+    {
+      "name": "금융비용",
+      "value": 15502000000.0
+    },
+    {
+      "name": "ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod",
+      "value": 0
+    },
+    {
+      "name": "법인세비용차감전계속영업이익",
+      "value": 804257000000.0
+    },
+    {
+      "name": "계속영업법인세비용",
+      "value": 85883000000.0
+    },
+    {
+      "name": "당기순이익",
+      "value": 718374000000.0
+    }
+  ],
+  "links": [
+    {
+      "source": "매출및지분법손익",
+      "target": "ifrs-full_CostOfSales",
+      "value": 0
+    },
+    {
+      "source": "매출및지분법손익",
+      "target": "ifrs-full_GrossProfit",
+      "value": 0
+    },
+    {
+      "source": "ifrs-full_GrossProfit",
+      "target": "dart_TotalSellingGeneralAdministrativeExpenses",
+      "value": 0
+    },
+    {
+      "source": "ifrs-full_GrossProfit",
+      "target": "영업이익(손실)",
+      "value": 751375000000.0
+    },
+    {
+      "source": "영업이익(손실)",
+      "target": "영업외손익",
+      "value": 52882000000.0
+    },
+    {
+      "source": "영업이익(손실)",
+      "target": "dart_OtherLosses",
+      "value": 0
+    },
+    {
+      "source": "금융수익",
+      "target": "영업이익(손실)",
+      "value": 72600000000.0
+    },
+    {
+      "source": "영업이익(손실)",
+      "target": "금융비용",
+      "value": 15502000000.0
+    },
+    {
+      "source": "영업이익(손실)",
+      "target": "ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod",
+      "value": 0
+    },
+    {
+      "source": "영업이익(손실)",
+      "target": "법인세비용차감전계속영업이익",
+      "value": 804257000000.0
+    },
+    {
+      "source": "법인세비용차감전계속영업이익",
+      "target": "계속영업법인세비용",
+      "value": 85883000000.0
+    },
+    {
+      "source": "법인세비용차감전계속영업이익",
+      "target": "당기순이익",
+      "value": 718374000000.0
+    }
+  ]
+}
