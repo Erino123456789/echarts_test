@@ -1188,12 +1188,26 @@ function filterData(
         var currentChange = item.value[4];
         var condition1 = changeFilter
           ? checkCondition(currentChange, changeFilter, changeOp)
-          : false;
+          : null;
         var condition2 = changeFilter2
           ? checkCondition(currentChange, changeFilter2, changeOp2)
-          : false;
-        passesChange = condition1 || condition2;
+          : null;
+
+        if (changeFilter && changeFilter2) {
+          if (changeFilter.value <= changeFilter2.value) {
+            // 범위 검색: 예: >=3 AND <=5
+            passesChange = condition1 && condition2;
+          } else {
+            // 상승/하락 검색: 예: >=3 OR <=-3
+            passesChange = condition1 || condition2;
+          }
+        } else if (changeFilter) {
+          passesChange = condition1;
+        } else if (changeFilter2) {
+          passesChange = condition2;
+        }
       }
+
       if (passesName && passesMarketCap && passesChange) {
         filtered.push(item);
       }
