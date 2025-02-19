@@ -10,34 +10,16 @@
     <script src="gif.min.js"></script>
   </head>
   <body>
-    <!-- 메뉴 버튼 -->
-    <div id="menu-button" onclick="togglePanel()">
-      <div class="menu-icon"></div>
-    </div>
-
-    <!-- 왼쪽 패널 -->
-    <div id="left-panel">
-      <button onclick="loadJsonList('KOSPI')">KOSPI</button>
-      <button onclick="loadJsonList('KOSDAQ')">KOSDAQ</button>
-      <div id="json-button-container" style="margin-top: 20px"></div>
+    <!-- 상단 메뉴 및 검색 버튼 -->
+    <div id="open-filter-btn">
+      <div class="index-icon"><b>🔍 검색 조건</b></div>
     </div>
 
     <!-- 오른쪽 패널 -->
     <div id="right-panel">
-      <div id="slider-container" style="display: block">
+      <div id="slider-container">
         <div id="controls">
-          <input
-            type="text"
-            id="search-input"
-            placeholder="검색어를 입력하세요"
-          />
           <input type="range" id="time-slider" min="0" max="39" value="39" />
-          <select id="depth-select" onchange="handleDepth()">
-            <option value="" disabled selected hidden>깊이</option>
-            <option value="1">1단계</option>
-            <option value="2">2단계</option>
-            <option value="3">3단계</option>
-          </select>
           <select id="screenshot-select" onchange="handleScreenshot()">
             <option value="" disabled selected hidden>스크린샷</option>
             <option value="current">현재 화면 스크린샷</option>
@@ -50,6 +32,86 @@
         style="margin-top: 10px; height: calc(100vh - 100px)"
       ></div>
       <div id="screenshot-output" style="margin-top: 20px"></div>
+    </div>
+
+    <!-- 검색 조건 팝업 -->
+    <div id="filter-popup" class="popup">
+      <div class="popup-content">
+        <h3>검색 조건</h3>
+        <div class="row-group">
+          <div class="input-group">
+            <label>시장 구분: <span class="required">*</span></label>
+            <select id="market-select">
+              <option value="" disabled selected hidden>시장 선택</option>
+              <option value="KOSPI">KOSPI</option>
+              <option value="KOSDAQ">KOSDAQ</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>시작 날짜: <span class="required">*</span></label>
+            <select id="start-date-select" disabled>
+              <option value="" disabled selected hidden>시작 날짜 선택</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>종료 날짜:</label>
+            <select id="end-date-select" disabled>
+              <option value="" selected>단일 검색 (종료 날짜 없음)</option>
+            </select>
+          </div>
+        </div>
+        <label>깊이: <span class="required">*</span></label>
+        <select id="depth-select">
+          <option value="" disabled selected hidden>깊이 선택</option>
+          <option value="1">1단계 (대분류)</option>
+          <option value="2">2단계 (중분류)</option>
+          <option value="3">3단계 (개별종목)</option>
+        </select>
+        <label>검색어:</label>
+        <input type="text" id="search-input" placeholder="검색어 입력" />
+        <label>시가총액:</label>
+        <div class="select-input-group">
+          <select id="market-cap-select">
+            <option value="gt">>=</option>
+            <option value="gte">></option>
+            <option value="eq">=</option>
+            <option value="lte"><</option>
+            <option value="lt"><=</option>
+          </select>
+          <input
+            type="text"
+            id="market-cap-input"
+            placeholder="예: 1000 또는 1000~2000"
+          />
+        </div>
+        <label>변동률:</label>
+        <div class="select-input-group">
+          <select id="change-select">
+            <option value="gt">>=</option>
+            <option value="gte">></option>
+            <option value="eq">=</option>
+            <option value="lte"><</option>
+            <option value="lt"><=</option>
+          </select>
+          <input type="text" id="change-input" placeholder="예: 3 또는 3~5" />
+        </div>
+        <label>추가 변동률 조건 (선택):</label>
+        <div class="select-input-group">
+          <select id="change-select2">
+            <option value="gt">>=</option>
+            <option value="gte">></option>
+            <option value="eq">=</option>
+            <option value="lte"><</option>
+            <option value="lt"><=</option>
+          </select>
+          <input type="text" id="change-input2" placeholder="예: -3" />
+        </div>
+        <div class="popup-buttons">
+          <button id="apply-filter-btn">✅ 적용</button>
+          <button id="reset-filter-btn">🔄 초기화</button>
+          <button id="close-filter-btn">❌ 닫기</button>
+        </div>
+      </div>
     </div>
 
     <!-- 오버레이 -->
