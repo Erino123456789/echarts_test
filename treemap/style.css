@@ -1,3 +1,8 @@
+/* style.css */
+
+/* --------------------------------------
+   전체 페이지 스타일
+--------------------------------------- */
 body {
   background-color: #f8f9fa; /* 연한 회색 배경 */
   color: #333; /* 어두운 텍스트 */
@@ -25,6 +30,7 @@ body {
   transition: background-color 0.3s; /* 배경색 전환 효과 */
 }
 
+/* 기본 버튼 스타일 */
 button {
   background-color: #333; /* 버튼 배경색 */
   border: none;
@@ -45,21 +51,39 @@ button:hover {
   background-color: #555; /* 호버 시 배경색 변경 */
 }
 
+/* --------------------------------------
+   상단 컨트롤 (검색, 슬라이더 등)
+--------------------------------------- */
 #controls {
   display: flex; /* Flexbox로 수평 정렬 */
   align-items: center; /* 세로 중앙 정렬 */
   margin-top: 10px; /* 위쪽 여백 추가 */
-  padding-left: 80px;
+  padding-left: 175px;
 }
 
+/* 검색어 입력 - 팝업 내부 인풋과 스타일 통일 */
 #search-input {
   margin-right: 10px; /* 슬라이더와의 간격 */
-  padding: 5px; /* 패딩 추가 */
-  width: 200px; /* 적절한 너비 설정 */
-  border: 1px solid #ccc; /* 테두리 설정 */
-  border-radius: 5px; /* 모서리 둥글게 */
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
+#search-input::placeholder {
+  color: #999;
+}
+
+#search-input:focus {
+  border-color: #66afe9;
+  outline: none;
+}
+
+/* 시간 슬라이더 */
 #time-slider {
   flex-grow: 1; /* 슬라이더가 가능한 공간을 채우도록 설정 */
   -webkit-appearance: none; /* 기본 스타일 제거 (Safari) */
@@ -95,8 +119,10 @@ button:hover {
   background: #ffffff; /* thumb 배경색: 흰색 */
   border: 2px solid #007bff; /* thumb 테두리 색상: 파란색 */
   border-radius: 50%; /* thumb 둥글게 */
+  cursor: pointer;
 }
 
+/* 스크린샷 드롭다운 */
 #screenshot-select {
   margin-left: 10px; /* 왼쪽 여백 */
   padding: 5px; /* 패딩 추가 */
@@ -104,15 +130,7 @@ button:hover {
   border-radius: 5px; /* 모서리 둥글게 */
   background-color: #fff; /* 흰색 배경 */
   color: #333; /* 어두운 텍스트 */
-}
-
-#depth-select {
-  margin-left: 10px; /* 왼쪽 여백 */
-  padding: 5px; /* 패딩 추가 */
-  border: 1px solid #ccc; /* 테두리 설정 */
-  border-radius: 5px; /* 모서리 둥글게 */
-  background-color: #fff; /* 흰색 배경 */
-  color: #333; /* 어두운 텍스트 */
+  margin-right: 10px;
 }
 
 #screenshot-output {
@@ -131,7 +149,9 @@ button:hover {
   padding: 10px; /* 패딩 추가 */
 }
 
-/* 메뉴 버튼 */
+/* --------------------------------------
+   메뉴 버튼
+--------------------------------------- */
 #menu-button {
   position: fixed;
   top: 5px;
@@ -195,7 +215,9 @@ button:hover {
   top: 0;
 }
 
-/* 왼쪽 패널 */
+/* --------------------------------------
+   왼쪽 패널
+--------------------------------------- */
 #left-panel {
   width: 250px;
   padding: 10px;
@@ -220,7 +242,156 @@ button:hover {
   transition: margin-left 0.3s ease;
 }
 
-/* 오버레이 */
+/* 🔍 검색 버튼 스타일 */
+#open-filter-btn {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  left: 10px;
+  width: 150px;
+  height: 40px;
+  top: 5px;
+  background-color: #333;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.index-icon {
+  color: white;
+}
+
+/* --------------------------------------
+   검색 조건 팝업 (모던 스타일)
+--------------------------------------- */
+
+.popup {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  width: 360px; /* 팝업 너비 */
+  max-width: 90%; /* 화면이 작을 때는 90%까지 줄어듦 */
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.popup.show {
+  display: block; /* 팝업 열기 시 .show 클래스로 표시 */
+}
+
+.popup-content {
+  /* 전체 패딩 및 요소 간격 조정 */
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px; /* 요소 간 세로 간격 조금 줄임 */
+}
+
+.popup-content h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.popup-content label {
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 2px; /* 라벨과 입력창 사이 간격을 더 줄임 */
+  display: block;
+}
+
+/* 인풋, 셀렉트 스타일 통일 */
+.popup-content input[type="text"],
+.popup-content select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.popup-content input[type="text"]::placeholder {
+  color: #999;
+}
+
+.popup-content input[type="text"]:focus,
+.popup-content select:focus {
+  border-color: #66afe9;
+  outline: none;
+}
+
+/* 시가총액, 변동률 조건처럼 연산자+입력을 나란히 배치할 때 */
+.select-input-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px; /* 연산자 셀렉트와 입력창 사이 간격 */
+  align-items: center;
+}
+
+.select-input-group select {
+  width: 80px; /* 연산자 선택 셀렉트는 좁게 */
+}
+
+/* 팝업 내 버튼들 (적용, 초기화, 닫기) 컨테이너 */
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px; /* 버튼 위쪽 간격 약간 */
+}
+
+.popup-buttons button {
+  flex: 1;
+  margin: 0 4px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+/* 적용(✅) 버튼 */
+#apply-filter-btn {
+  background-color: #28a745; /* 녹색 */
+  color: #fff;
+}
+
+/* 초기화(🔄) 버튼 */
+#reset-filter-btn {
+  background-color: #17a2b8; /* 청록색 */
+  color: #fff;
+}
+
+/* 닫기(❌) 버튼 */
+#close-filter-btn {
+  background-color: #dc3545; /* 빨강 */
+  color: #fff;
+}
+
+/* 버튼 호버 및 클릭 효과 */
+.popup-buttons button:hover {
+  filter: brightness(0.9);
+}
+.popup-buttons button:active {
+  transform: scale(0.97);
+}
+
+/* 팝업 배경 오버레이 */
 #overlay {
   position: fixed;
   top: 0;
@@ -228,10 +399,35 @@ button:hover {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: none;
+  display: none; /* 기본적으로 숨김 */
   z-index: 998;
+  transition: opacity 0.3s ease;
 }
 
 #overlay.show {
   display: block;
+  opacity: 1;
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .popup {
+    width: 90%;
+  }
+}
+
+.row-group {
+  display: flex;
+  gap: 10px;
+}
+
+.row-group .input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.required {
+  color: red;
+  font-size: 0.9rem;
 }
