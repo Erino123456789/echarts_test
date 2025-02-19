@@ -1183,6 +1183,7 @@ function filterData(
           marketCapOp
         );
       }
+      // 변동률 조건 처리 (기존 filterData 함수 내)
       var passesChange = true;
       if ((changeFilter || changeFilter2) && Array.isArray(item.value)) {
         var currentChange = item.value[4];
@@ -1194,11 +1195,17 @@ function filterData(
           : null;
 
         if (changeFilter && changeFilter2) {
-          if (changeFilter.value <= changeFilter2.value) {
-            // 범위 검색: 예: >=3 AND <=5
-            passesChange = condition1 && condition2;
+          // 만약 두 조건의 값이 모두 양수이거나 모두 음수라면 범위 검색 (AND 조건)
+          if (
+            (changeFilter.value >= 0 && changeFilter2.value >= 0) ||
+            (changeFilter.value < 0 && changeFilter2.value < 0)
+          ) {
+            var lowerBound = Math.min(changeFilter.value, changeFilter2.value);
+            var upperBound = Math.max(changeFilter.value, changeFilter2.value);
+            passesChange =
+              currentChange >= lowerBound && currentChange <= upperBound;
           } else {
-            // 상승/하락 검색: 예: >=3 OR <=-3
+            // 부호가 다르면 기존처럼 OR 조건
             passesChange = condition1 || condition2;
           }
         } else if (changeFilter) {
