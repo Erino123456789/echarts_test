@@ -404,11 +404,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         let node = originList[i];
         if (node) {
           let value = node.value;
-          // ★ 여기서 value[0]를 value[1]로 수정하여 면적 계산 기준을 변경합니다.
-          if (Array.isArray(value)) {
-            value[0] = value[1];
-          }
-          // 아래 코드는 시각적 효과(색상 매핑 등)를 위한 처리입니다.
+          // Scale value for visual effect
           if (value[4] != null && value[4] > 0) {
             value[5] = echarts.number.linearMap(
               value[4],
@@ -435,7 +431,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         }
       }
     }
-
     function isValidNumber(num) {
       return num != null && isFinite(num);
     }
@@ -617,7 +612,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
             },
             visualMin: visualMin,
             visualMax: visualMax,
-            visualDimension: 0,
+            visualDimension: 5,
             levels: [
               {
                 itemStyle: {
