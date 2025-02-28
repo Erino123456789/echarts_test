@@ -666,55 +666,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
     }
   });
 
-  /*
-  // 검색어에 따른 데이터 필터링 함수
-  $("#search-input").on(
-    "input",
-    debounce(function () {
-      const query = $(this).val().toLowerCase();
-
-      function filterData(data) {
-        return data.reduce((acc, item) => {
-          if (item.name.toLowerCase().includes(query)) {
-            acc.push(item);
-          } else if (item.children) {
-            const filteredChildren = filterData(item.children);
-            if (filteredChildren.length) {
-              acc.push({ ...item, children: filteredChildren });
-            }
-          }
-          return acc;
-        }, []);
-      }
-
-      const filteredData = filterData(processedData);
-      myChart.setOption({ series: [{ data: filteredData }] });
-    }, 300)
-  ); // 300ms의 딜레이 적용
-  */
-
-  /*
-  // 깊이 변경 함수
-  $("#depth-select").on("change", function () {
-    const selectedDepth = parseInt($(this).val(), 10); // 선택된 값 가져오기
-
-    if (!isNaN(selectedDepth)) {
-      myChart.setOption({
-        series: [
-          {
-            leafDepth: selectedDepth, // 선택된 깊이 적용
-          },
-        ],
-      });
-    }
-  });
-  */
-
-  window.addEventListener(
-    "resize",
-    debounce(() => myChart.resize(), 200)
-  ); // 200ms 딜레이
-
   if (option && typeof option === "object") {
     myChart.setOption(option);
   }
@@ -1300,7 +1251,26 @@ $("#apply-filter-btn").on("click", function () {
       });
   } else {
     window.isRangeSearch = false;
-    $.getJSON("../data/" + startDateFile, function (newData) {
+    // 파일명에 시간값이 없는 경우(오늘 날짜) 시간값 추가 처리
+    let fileToLoad = startDateFile;
+    const dateMatch = startDateFile.match(/(\d{8})(\d{4})?\.json$/);
+    if (dateMatch && !dateMatch[2]) {
+      const selectedDate = dateMatch[1]; // YYYYMMDD
+      const today = new Date();
+      const yyyy = today.getFullYear().toString();
+      const mm = (today.getMonth() + 1).toString().padStart(2, '0');
+      const dd = today.getDate().toString().padStart(2, '0');
+      const todayStr = yyyy + mm + dd;
+      // 선택한 날짜가 오늘이면
+      if (selectedDate === todayStr) {
+        const filePrefix = startDateFile.split("_")[0] + "_map_data";
+        const nearestTime = getNearestPreviousTime() || "1540";
+        fileToLoad = `${filePrefix}_${selectedDate}${nearestTime}.json`;
+        console.log("시간값 추가된 파일명:", fileToLoad);
+      }
+    }
+    
+    $.getJSON("../data/" + fileToLoad, function (newData) {
       var processedData = groupJsonData(newData);
       var filteredData = filterData(
         processedData,
