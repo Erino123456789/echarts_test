@@ -1,0 +1,38 @@
+[
+    {
+        "code": "ifrs-full_Revenue",
+        "name": "영업수익",
+        "value": 10781801944,
+        "flag": "income"
+    },
+    {
+        "code": "dart_OperatingIncomeLoss",
+        "name": "영업이익(손실)",
+        "value": -97545683018,
+        "flag": "loss"
+    },
+    {
+        "code": "영업외이익(손실)",
+        "name": "영업외이익(손실)",
+        "value": 97545683018,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_IncomeTaxExpenseContinuingOperations",
+        "name": "ifrs-full_IncomeTaxExpenseContinuingOperations",
+        "value": 38740747436,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ProfitLoss",
+        "name": "당기순이익(손실)",
+        "value": -38740747436,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ComprehensiveIncome",
+        "name": "총포괄손실",
+        "value": -38740747436,
+        "flag": "loss"
+    }
+]
