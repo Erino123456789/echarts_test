@@ -66,15 +66,19 @@ function selectCompany(company) {
   checkAvailableOptions(company.stock_code, true);
 }
 
-document.getElementById("companyInput").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    const matches = filterCompanies(this.value.trim());
-    if (matches.length === 1) {
-      selectCompany(matches[0]);
+document
+  .getElementById("companyInput")
+  .addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      const matches = filterCompanies(this.value.trim());
+      if (matches.length === 1) {
+        selectCompany(matches[0]);
+      }
     }
-  }
-});
-document.getElementById("companyInput").addEventListener("input", showSuggestions);
+  });
+document
+  .getElementById("companyInput")
+  .addEventListener("input", showSuggestions);
 
 // (3) 파일 존재 여부 체크 및 옵션 버튼 활성화
 // autoDefault가 true이면 최신 연도와 CFS를 우선 자동 선택
@@ -149,7 +153,9 @@ function enableButtonsFromAvailable(available, autoDefault) {
 document.querySelectorAll(".year-btn").forEach((btn) => {
   btn.addEventListener("click", function () {
     if (this.disabled) return;
-    document.querySelectorAll(".year-btn").forEach((b) => b.classList.remove("active"));
+    document
+      .querySelectorAll(".year-btn")
+      .forEach((b) => b.classList.remove("active"));
     this.classList.add("active");
     selectedYear = parseInt(this.dataset.year, 10);
 
@@ -179,7 +185,9 @@ document.querySelectorAll(".year-btn").forEach((btn) => {
 });
 
 function autoSelectQuarterAndType() {
-  const optionsForYear = currentAvailableOptions.filter((o) => o.year === selectedYear);
+  const optionsForYear = currentAvailableOptions.filter(
+    (o) => o.year === selectedYear
+  );
   let defaultQuarter = null;
   // 우선 Full Year("11011") 선택
   if (optionsForYear.some((o) => o.quarter === "11011")) {
@@ -207,7 +215,9 @@ function autoSelectQuarterAndType() {
 document.querySelectorAll(".quarter-btn").forEach((btn) => {
   btn.addEventListener("click", function () {
     if (this.disabled) return;
-    document.querySelectorAll(".quarter-btn").forEach((b) => b.classList.remove("active"));
+    document
+      .querySelectorAll(".quarter-btn")
+      .forEach((b) => b.classList.remove("active"));
     this.classList.add("active");
     selectedQuarter = this.dataset.quarter;
 
@@ -244,7 +254,9 @@ document.querySelectorAll(".quarter-btn").forEach((btn) => {
 document.querySelectorAll(".type-btn").forEach((btn) => {
   btn.addEventListener("click", function () {
     if (this.disabled) return;
-    document.querySelectorAll(".type-btn").forEach((b) => b.classList.remove("active"));
+    document
+      .querySelectorAll(".type-btn")
+      .forEach((b) => b.classList.remove("active"));
     this.classList.add("active");
     selectedType = this.dataset.type;
     // 모든 선택이 완료되면 바로 데이터 로드
@@ -297,72 +309,67 @@ function generateSankeyLinks(nodes) {
       mainChainIndices.push(i);
     }
   });
+  // 값이 0인 노드의 flag를 다음 메인체인 노드의 flag로 설정
   for (let j = 0; j < mainChainIndices.length - 1; j++) {
     const idx = mainChainIndices[j];
     if (nodes[idx].value === 0) {
       nodes[idx].flag = nodes[mainChainIndices[j + 1]].flag;
     }
   }
-  const normalLinks = [];
-  const diffLinks = [];
+  const links = [];
   for (let i = 0; i < mainChainIndices.length - 1; i++) {
     const leftIndex = mainChainIndices[i];
     const rightIndex = mainChainIndices[i + 1];
     const leftNode = nodes[leftIndex];
     const rightNode = nodes[rightIndex];
+    // 메인 체인 사이의 서브 노드들(메인 코드 제외)
     const subNodes = nodes
       .slice(leftIndex + 1, rightIndex)
       .filter((node) => !mainChainCodes.includes(node.code));
+
     if (leftNode.flag === rightNode.flag) {
-      if (subNodes.length > 0) {
-        subNodes.forEach((sub) => {
-          if (sub.flag === leftNode.flag) {
-            normalLinks.push({
-              source: leftNode.name,
-              target: rightNode.name,
-              value: Math.abs(leftNode.value),
-            });
-            normalLinks.push({
-              source: sub.name,
-              target: rightNode.name,
-              value: Math.abs(sub.value),
-            });
-          } else {
-            normalLinks.push({
-              source: leftNode.name,
-              target: rightNode.name,
-              value: Math.abs(rightNode.value),
-            });
-            diffLinks.push({
-              source: leftNode.name,
-              target: sub.name,
-              value: Math.abs(sub.value),
-            });
-          }
-        });
-      } else {
-        normalLinks.push({
-          source: leftNode.name,
-          target: rightNode.name,
-          value: Math.abs(leftNode.value),
-        });
-      }
+      // 메인 체인 링크는 한 번만 추가
+      links.push({
+        source: leftNode.name,
+        target: rightNode.name,
+        value: Math.abs(rightNode.value),
+      });
+
+      // 각 서브 노드에 따라 추가 링크 생성
+      subNodes.forEach((sub) => {
+        if (sub.flag === leftNode.flag) {
+          // 서브 노드의 flag가 메인과 같으면 서브에서 오른쪽으로 흐름
+          links.push({
+            source: sub.name,
+            target: rightNode.name,
+            value: Math.abs(sub.value),
+          });
+        } else {
+          // flag가 다르면 왼쪽에서 서브로 흐름
+          links.push({
+            source: leftNode.name,
+            target: sub.name,
+            value: Math.abs(sub.value),
+          });
+        }
+      });
     } else {
       if (subNodes.length > 0) {
+        // 메인 노드의 flag가 다를 경우, 각 서브 노드를 통해 흐름 분리
         subNodes.forEach((sub) => {
-          normalLinks.push({
+          links.push({
             source: leftNode.name,
             target: sub.name,
             value: Math.abs(leftNode.value),
           });
-          normalLinks.push({
+          links.push({
             source: sub.name,
             target: rightNode.name,
             value: Math.abs(rightNode.value),
           });
         });
       } else {
-        normalLinks.push({
+        links.push({
           source: leftNode.name,
           target: rightNode.name,
           value: Math.abs(rightNode.value),
@@ -370,7 +377,7 @@ function generateSankeyLinks(nodes) {
       }
     }
   }
-  return normalLinks.concat(diffLinks.reverse());
+  return links;
 }
 
 function renderChart(data) {
@@ -449,9 +456,7 @@ function renderChart(data) {
       triggerOn: "mousemove",
       formatter: function (params) {
         if (params.dataType === "node") {
-          return (
-            "<b>" + params.name + "</b>: " + params.value.toLocaleString()
-          );
+          return "<b>" + params.name + "</b>: " + params.value.toLocaleString();
         }
         return (
           params.data.source +
@@ -480,7 +485,7 @@ function renderChart(data) {
           textShadowColor: "rgba(0, 0, 0, 0.5)",
           textShadowBlur: 4,
           textShadowOffsetX: 2,
-          textShadowOffsetY: 2
+          textShadowOffsetY: 2,
         },
         emphasis: { focus: "adjacency" },
         lineStyle: { curveness: 0.5 },
