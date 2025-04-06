@@ -1,0 +1,50 @@
+[
+    {
+        "code": "ifrs-full_Revenue",
+        "name": "영업수익",
+        "value": 21174133586717,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_OperatingExpense",
+        "name": "영업비용",
+        "value": -19974409461830,
+        "flag": "income"
+    },
+    {
+        "code": "영업외이익(손실)",
+        "name": "영업외이익(손실)",
+        "value": 1398899622999,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_ProfitLossBeforeTax",
+        "name": "법인세비용차감전순이익",
+        "value": 1398899622999,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_IncomeTaxExpenseContinuingOperations",
+        "name": "법인세수익(비용)",
+        "value": 353030981060,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ProfitLoss",
+        "name": "당기순이익",
+        "value": 1045868641939,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_OtherComprehensiveIncome",
+        "name": "기타포괄손익",
+        "value": 398707428537,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_ComprehensiveIncome",
+        "name": "당기총포괄손익",
+        "value": 1444576070476,
+        "flag": "income"
+    }
+]
