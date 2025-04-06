@@ -1,6 +1,7 @@
 // ECharts 인스턴스 생성
 var chart = echarts.init(document.getElementById("main"));
 var useGradient = true;
+var currentChartData = null;
 
 // 전역 변수
 var companiesData = [];
@@ -373,6 +374,7 @@ function generateSankeyLinks(nodes) {
 }
 
 function renderChart(data) {
+  currentChartData = data;
   // 컨테이너의 실제 너비(픽셀)를 구합니다.
   var container = document.getElementById("main");
   var containerWidth = container.clientWidth;
@@ -487,5 +489,11 @@ function renderChart(data) {
   });
 }
 
+window.addEventListener("resize", function () {
+  if (currentChartData) {
+    renderChart(currentChartData);
+    chart.resize();
+  }
+});
 // 페이지 로드 시 CSV 파싱
 loadCompanyData();
