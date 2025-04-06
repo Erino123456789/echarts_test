@@ -1,0 +1,79 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#header {
+  padding: 10px;
+  background: #f0f0f0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* 검색창 & 자동완성 목록 */
+#companyInput {
+  width: 250px;
+  padding: 5px;
+}
+
+#companySuggestions {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 250px;
+  z-index: 1000;
+  display: none;
+  top: 42px;
+  left: 0;
+}
+
+#companySuggestions div {
+  padding: 5px;
+  cursor: pointer;
+}
+
+#companySuggestions div:hover {
+  background: #eee;
+}
+
+/* 버튼 그룹 스타일 */
+.btn-group {
+  display: inline-flex;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.btn-group button {
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.btn-group button:hover {
+  background: #eee;
+}
+
+.btn-group button.active {
+  background: #ccc;
+}
+
+.btn-group button:disabled {
+  background: #f8f8f8;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* 차트 영역 */
+#main {
+  width: 100%;
+  height: calc(100% - 100px);
+}
