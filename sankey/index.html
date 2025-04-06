@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sankey Chart with ECharts - 실적보고서</title>
+    <!-- ECharts 라이브러리 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <!-- PapaParse 라이브러리 CDN (CSV 파싱용) -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <!-- 분리된 CSS 파일 불러오기 -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="header">
+      <!-- 검색 영역 -->
+      <div style="position: relative">
+        <label for="companyInput">회사검색:</label>
+        <input
+          type="text"
+          id="companyInput"
+          placeholder="종목명 또는 종목코드 입력"
+          autocomplete="off"
+        />
+        <div id="companySuggestions"></div>
+      </div>
+
+      <!-- 연도 버튼 그룹 -->
+      <div class="btn-group" id="yearButtons">
+        <button class="year-btn" data-year="2021" disabled>2021</button>
+        <button class="year-btn" data-year="2022" disabled>2022</button>
+        <button class="year-btn" data-year="2023" disabled>2023</button>
+        <button class="year-btn" data-year="2024" disabled>2024</button>
+      </div>
+
+      <!-- 분기 버튼 그룹 -->
+      <div class="btn-group" id="quarterButtons">
+        <button class="quarter-btn" data-quarter="11013" disabled>Q1</button>
+        <button class="quarter-btn" data-quarter="11012" disabled>Q2</button>
+        <button class="quarter-btn" data-quarter="11014" disabled>Q3</button>
+        <button class="quarter-btn" data-quarter="11011" disabled>Full Year</button>
+      </div>
+
+      <!-- 타입 버튼 그룹 -->
+      <div class="btn-group" id="typeButtons">
+        <button class="type-btn" data-type="OFS" disabled>OFS</button>
+        <button class="type-btn" data-type="CFS" disabled>CFS</button>
+      </div>
+    </div>
+
+    <div id="main"></div>
+
+    <!-- 분리된 JavaScript 파일 불러오기 -->
+    <script src="index.js"></script>
+  </body>
+</html>
