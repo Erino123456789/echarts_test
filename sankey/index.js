@@ -303,14 +303,14 @@ function generateSankeyLinks(nodes) {
     "ifrs-full_ProfitLoss",
     "ifrs-full_ComprehensiveIncome",
   ];
-  // 메인체인 노드의 인덱스를 찾음
+  // 메인체인 노드의 인덱스 수집
   let mainChainIndices = [];
   nodes.forEach((node, i) => {
     if (mainChainCodes.includes(node.code)) {
       mainChainIndices.push(i);
     }
   });
-  // 값이 0인 메인체인 노드의 flag는 바로 다음 메인체인 노드의 flag로 설정
+  // 값이 0인 메인 노드의 flag는 바로 다음 메인체인 노드의 flag로 설정
   for (let j = 0; j < mainChainIndices.length - 1; j++) {
     const idx = mainChainIndices[j];
     if (nodes[idx].value === 0) {
@@ -325,67 +325,51 @@ function generateSankeyLinks(nodes) {
     const rightIndex = mainChainIndices[i + 1];
     const leftNode = nodes[leftIndex];
     const rightNode = nodes[rightIndex];
+
+    // 메인 노드 사이의 서브 노드들(메인코드가 아닌 노드)
     const subNodes = nodes
       .slice(leftIndex + 1, rightIndex)
       .filter((node) => !mainChainCodes.includes(node.code));
 
-    // 메인체인 양쪽의 flag가 같은 경우에 한해 아래 방식 적용
     if (leftNode.flag === rightNode.flag) {
-      // 그룹 분류
-      let groupA = []; // A에서 분기되는 서브 노드 (flag가 다름)
-      let groupB = []; // B로 연결되는 서브 노드 (flag가 같음)
-      subNodes.forEach((sub) => {
-        if (sub.flag === leftNode.flag) {
-          groupB.push(sub);
-        } else {
-          groupA.push(sub);
-        }
-      });
-
-      // 각 그룹의 총 흐름(절대값)
-      const sumA = groupA.reduce((acc, sub) => acc + Math.abs(sub.value), 0);
-      const sumB = groupB.reduce((acc, sub) => acc + Math.abs(sub.value), 0);
-
-      // 직접 연결되는 메인체인 링크의 값 계산
-      // - 그룹 A의 경우, A의 직접 흐름 = A.value - sumA
-      // - 그룹 B의 경우, B로 들어오는 직접 흐름 = B.value - sumB
-      let directValue;
-      if (groupA.length > 0 && groupB.length > 0) {
-        directValue = (leftNode.value - sumA + (rightNode.value - sumB)) / 2;
-      } else if (groupA.length > 0) {
-        directValue = leftNode.value - sumA;
-      } else if (groupB.length > 0) {
-        directValue = rightNode.value - sumB;
+      // 같은 flag인 경우, 메인체인 링크 값은
+      // 서브 노드 중에 left와 같은 flag가 있다면 leftNode.value의 절대값,
+      // 없으면 rightNode.value의 절대값으로 결정합니다.
+      let mainLinkValue;
+      if (subNodes.some((sub) => sub.flag === leftNode.flag)) {
+        mainLinkValue = Math.abs(leftNode.value);
       } else {
-        directValue = leftNode.value; // 서브 노드가 없으면 그냥 전체 흐름
+        mainLinkValue = Math.abs(rightNode.value);
       }
-
-      // 메인체인 직접 링크 추가
+      // 메인체인 A -> B 링크를 한 번만 추가
       links.push({
         source: leftNode.name,
         target: rightNode.name,
-        value: Math.abs(directValue),
+        value: mainLinkValue,
       });
 
-      // 그룹 A의 서브 노드: A에서 해당 서브 노드로 흐름
-      groupA.forEach((sub) => {
-        links.push({
-          source: leftNode.name,
-          target: sub.name,
-          value: Math.abs(sub.value),
-        });
-      });
-
-      // 그룹 B의 서브 노드: 해당 서브 노드에서 B로 흐름
-      groupB.forEach((sub) => {
-        links.push({
-          source: sub.name,
-          target: rightNode.name,
-          value: Math.abs(sub.value),
-        });
+      // 각 서브 노드에 대해 flag에 따라 연결 결정
+      subNodes.forEach((sub) => {
+        if (sub.flag === leftNode.flag) {
+          // 서브 노드가 메인체인 B(오른쪽)으로 연결되어야 하는 경우:
+          // 서브 노드 -> 메인체인B
+          links.push({
+            source: sub.name,
+            target: rightNode.name,
+            value: Math.abs(sub.value),
+          });
+        } else {
+          // 서브 노드가 메인체인 A(왼쪽)에서 분기되어 나오는 경우:
+          // 메인체인A -> 서브 노드
+          links.push({
+            source: leftNode.name,
+            target: sub.name,
+            value: Math.abs(sub.value),
+          });
+        }
       });
     } else {
-      // 메인체인 노드의 flag가 다른 경우(예외 처리 – 기존 로직)
+      // 메인체인 노드의 flag가 다른 경우는 기존 로직 그대로 처리
       if (subNodes.length > 0) {
         subNodes.forEach((sub) => {
           links.push({
@@ -408,7 +392,6 @@ function generateSankeyLinks(nodes) {
       }
     }
   }
-
   return links;
 }
 
