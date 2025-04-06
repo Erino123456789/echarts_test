@@ -1,0 +1,38 @@
+[
+    {
+        "code": "영업외이익(손실)",
+        "name": "영업외이익(손실)",
+        "value": -35031000000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ProfitLossBeforeTax",
+        "name": "법인세비용차감전순이익",
+        "value": -35031000000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_IncomeTaxExpenseContinuingOperations",
+        "name": "법인세비용",
+        "value": 1259000000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ProfitLoss",
+        "name": "반기순이익",
+        "value": -36290000000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_OtherComprehensiveIncome",
+        "name": "반기기타포괄손익",
+        "value": -1537000000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ComprehensiveIncome",
+        "name": "반기총포괄이익",
+        "value": -37827000000,
+        "flag": "loss"
+    }
+]
