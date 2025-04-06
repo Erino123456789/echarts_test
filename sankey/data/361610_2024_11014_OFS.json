@@ -1,0 +1,80 @@
+[
+    {
+        "code": "ifrs-full_Revenue",
+        "name": "매출액",
+        "value": 26845283000,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_CostOfSales",
+        "name": "매출원가",
+        "value": 56530102000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_GrossProfit",
+        "name": "매출총이익(손실)",
+        "value": -29684819000,
+        "flag": "loss"
+    },
+    {
+        "code": "dart_TotalSellingGeneralAdministrativeExpenses",
+        "name": "판매비와관리비",
+        "value": 21262686000,
+        "flag": "loss"
+    },
+    {
+        "code": "dart_OperatingIncomeLoss",
+        "name": "영업이익(손실)",
+        "value": -50947505000,
+        "flag": "loss"
+    },
+    {
+        "code": "영업외이익(손실)",
+        "name": "영업외이익(손실)",
+        "value": -15430710000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ProfitLossBeforeTax",
+        "name": "법인세비용차감전계속영업이익(손실)",
+        "value": -66378215000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_IncomeTaxExpenseContinuingOperations",
+        "name": "계속영업법인세비용(효익)",
+        "value": -13609292000,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_ProfitLossFromContinuingOperations",
+        "name": "계속영업연결순이익(손실)",
+        "value": -52768923000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ProfitLossFromDiscontinuedOperations",
+        "name": "중단영업손실",
+        "value": -21226000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ProfitLoss",
+        "name": "연결순이익(손실)",
+        "value": -52790149000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_OtherComprehensiveIncome",
+        "name": "연결기타포괄손익",
+        "value": -700599000,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ComprehensiveIncome",
+        "name": "연결총포괄이익(손실)",
+        "value": -53490748000,
+        "flag": "loss"
+    }
+]
