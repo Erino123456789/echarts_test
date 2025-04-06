@@ -1,0 +1,68 @@
+[
+    {
+        "code": "ifrs-full_Revenue",
+        "name": "매출액",
+        "value": 20596828186,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_CostOfSales",
+        "name": "매출원가",
+        "value": 19711707374,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_GrossProfit",
+        "name": "매출총이익",
+        "value": 885120812,
+        "flag": "income"
+    },
+    {
+        "code": "dart_TotalSellingGeneralAdministrativeExpenses",
+        "name": "판매비와관리비",
+        "value": 29593226865,
+        "flag": "loss"
+    },
+    {
+        "code": "dart_OperatingIncomeLoss",
+        "name": "영업이익",
+        "value": -28708106053,
+        "flag": "loss"
+    },
+    {
+        "code": "영업외이익(손실)",
+        "name": "영업외이익(손실)",
+        "value": 3492146183,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_ProfitLossBeforeTax",
+        "name": "법인세비용차감전순이익",
+        "value": -25215959870,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_IncomeTaxExpenseContinuingOperations",
+        "name": "법인세비용",
+        "value": -11397583729,
+        "flag": "income"
+    },
+    {
+        "code": "ifrs-full_ProfitLoss",
+        "name": "당기순이익(손실)",
+        "value": -13818376141,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_OtherComprehensiveIncome",
+        "name": "기타포괄손익",
+        "value": -79962011,
+        "flag": "loss"
+    },
+    {
+        "code": "ifrs-full_ComprehensiveIncome",
+        "name": "당기총포괄이익",
+        "value": -13898338152,
+        "flag": "loss"
+    }
+]
