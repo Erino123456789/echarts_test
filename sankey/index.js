@@ -442,7 +442,7 @@ function renderChart(data) {
       link.lineStyle = { color: colorMapping[link.target] };
     }
   });
-
+  console.log(links);
   chart.setOption({
     tooltip: {
       trigger: "item",
