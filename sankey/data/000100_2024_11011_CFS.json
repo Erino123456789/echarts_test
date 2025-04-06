@@ -24,6 +24,12 @@
         "flag": "loss"
     },
     {
+        "code": "dart_OrdinaryDevelopmentExpense",
+        "name": "연구개발비",
+        "value": 224758194800,
+        "flag": "loss"
+    },
+    {
         "code": "dart_OperatingIncomeLoss",
         "name": "영업이익",
         "value": 54880319609,
