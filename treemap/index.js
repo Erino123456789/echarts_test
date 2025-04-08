@@ -4,6 +4,7 @@ let processedData = [];
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
 let capturing = false; // 캡처 진행 상태를 추적
+
 // 기존 변수 아래에 추가
 let currentFilters = {
   searchQuery: "",
@@ -450,7 +451,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
           {
             name: `${type.toUpperCase()}`,
             width: "100%",
-            height: "calc(100% - 30px)", // calc()를 이용한 높이 조정
+            height: "calc(100% - 30px)",
             top: 30,
             left: 0,
             right: 0,
@@ -528,11 +529,12 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
       })
     );
   }).fail(function () {
-    // fallbackCallback이 있으면 호출하고, 그렇지 않으면 재시도
+    // fallback: 슬라이더에서 현재 값보다 하나 낮은 값부터 재시도합니다.
     if (fallbackCallback) {
       fallbackCallback();
     } else {
-      tryLoadFallback(type, filename);
+      let currentSliderVal = parseInt(document.getElementById("time-slider").value);
+      tryLoadFallbackFromSlider(type, currentSliderVal - 1);
     }
   });
   if (option && typeof option === "object") {
@@ -564,6 +566,24 @@ document.getElementById("time-slider").addEventListener("input", function () {
   console.log("현재 시장:", currentMarket, "새 파일명:", newFilename);
   loadData(currentMarket, newFilename, false);
 });
+
+// fallback 함수: 슬라이더 값을 하나씩 낮춰서 재시도
+function tryLoadFallbackFromSlider(type, sliderIndex) {
+  if (sliderIndex < 0) {
+    alert("더 이상 이전 데이터가 없습니다.");
+    return;
+  }
+  const fallbackFilename = getFilenameForSliderIndex(sliderIndex);
+  console.log("Fallback trying slider index:", sliderIndex, "filename:", fallbackFilename);
+  $.getJSON("../data/" + fallbackFilename, function (data) {
+    // 성공하면 슬라이더 값을 업데이트하고 로드합니다.
+    document.getElementById("time-slider").value = sliderIndex;
+    updateTimeDisplay(sliderIndex);
+    loadData(type, fallbackFilename, false);
+  }).fail(function () {
+    tryLoadFallbackFromSlider(type, sliderIndex - 1);
+  });
+}
 
 window.onload = function () {
   initializeFilters();
@@ -990,8 +1010,9 @@ $("#apply-filter-btn").on("click", function () {
       };
       myChart.setOption(option);
     }).fail(function () {
-      // 실패 시 재귀적 fallback 호출
-      tryLoadFallback($("#market-select").val(), startDateFile);
+      // 실패 시 슬라이더 값 fallback으로 재시도 (slider 값에서 -1)
+      let sliderVal = parseInt(document.getElementById("time-slider").value);
+      tryLoadFallbackFromSlider($("#market-select").val(), sliderVal - 1);
     });
   } else {
     window.isRangeSearch = false;
@@ -1020,50 +1041,28 @@ $("#apply-filter-btn").on("click", function () {
       };
       myChart.setOption(option);
     }).fail(function () {
-      // 실패 시 재귀적 fallback 호출
-      tryLoadFallback($("#market-select").val(), startDateFile);
+      let sliderVal = parseInt(document.getElementById("time-slider").value);
+      tryLoadFallbackFromSlider($("#market-select").val(), sliderVal - 1);
     });
   }
 });
 
 // ------------------------------
-// tryLoadFallback 함수: 파일이 존재하지 않을 경우 10분씩 감소하면서 재시도 (최대 5회)
+// tryLoadFallbackFromSlider 함수
+// 슬라이더 값을 하나씩 낮춰서, 해당 파일이 존재하는지 재시도합니다.
 // ------------------------------
-function tryLoadFallback(type, filename, fallbackAttempts = 0) {
-  const MAX_FALLBACK_ATTEMPTS = 5;
-  if (fallbackAttempts >= MAX_FALLBACK_ATTEMPTS) {
-    alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
-    return;
-  }
-  const dateMatch = filename.match(/(\d{8})(\d{4})?\.json$/);
-  if (!dateMatch) {
-    alert("파일명 형식이 올바르지 않습니다.");
-    return;
-  }
-  
-  let datePart = dateMatch[1];
-  let timePart = dateMatch[2] || "0920";
-  
-  // 시간을 10분 감소
-  let hours = parseInt(timePart.slice(0, 2), 10);
-  let minutes = parseInt(timePart.slice(2), 10);
-  let totalMinutes = hours * 60 + minutes;
-  if (totalMinutes - 10 >= 9 * 60 + 20) { // 09:20 이상이어야 함
-    totalMinutes -= 10;
-  } else {
+function tryLoadFallbackFromSlider(type, sliderIndex) {
+  if (sliderIndex < 0) {
     alert("더 이상 이전 데이터가 없습니다.");
     return;
   }
-  
-  const newHoursStr = Math.floor(totalMinutes / 60).toString().padStart(2, "0");
-  const newMinutesStr = (totalMinutes % 60).toString().padStart(2, "0");
-  const newTimePart = newHoursStr + newMinutesStr;
-  const fallbackFilename = filename.replace(/(\d{8})(\d{4})?\.json$/, `${datePart}${newTimePart}.json`);
-  console.log("404 발생, 재시도:", fallbackFilename);
-  
-  $.getJSON("../data/" + fallbackFilename, function (newData2) {
+  const fallbackFilename = getFilenameForSliderIndex(sliderIndex);
+  console.log("Fallback trying slider index:", sliderIndex, "filename:", fallbackFilename);
+  $.getJSON("../data/" + fallbackFilename, function (data) {
+    document.getElementById("time-slider").value = sliderIndex;
+    updateTimeDisplay(sliderIndex);
     loadData(type, fallbackFilename, false);
   }).fail(function () {
-    tryLoadFallback(type, fallbackFilename, fallbackAttempts + 1);
+    tryLoadFallbackFromSlider(type, sliderIndex - 1);
   });
 }
