@@ -611,12 +611,10 @@ document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
   updateTimeDisplay(sliderValue);
   const newFilename = getFilenameForSliderIndex(sliderValue);
-  console.log("새로운 파일명: ", newFilename);
-  loadData(
-    currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ",
-    newFilename,
-    false
-  );
+  // 직접 DOM에서 현재 선택된 시장 값을 읽어 사용
+  const currentMarket = $("#market-select").val();
+  console.log("현재 시장:", currentMarket, "새 파일명:", newFilename);
+  loadData(currentMarket, newFilename, false);
 });
 
 window.onload = function () {
@@ -868,8 +866,10 @@ $("#market-select").on("change", function () {
     });
     $startDateSelect.prop("disabled", false);
     $endDateSelect.prop("disabled", false);
+    // 여기서 첫 번째 선택 항목으로 currentFilename을 업데이트
     if ($startDateSelect.find("option").length > 1) {
       $startDateSelect.prop("selectedIndex", 1);
+      currentFilename = $startDateSelect.val();
     }
   }).fail(function () {
     alert("날짜 목록을 불러오는데 실패했습니다.");
@@ -1134,7 +1134,6 @@ $("#apply-filter-btn").on("click", function () {
       };
       myChart.setOption(option);
     }).fail(function () {
-      // 404 오류 발생 시, 시간값 추가해서 재시도
       const dateMatch = startDateFile.match(/(\d{8})(\d{4})?\.json$/);
       if (dateMatch && !dateMatch[2]) {
         const selectedDate = dateMatch[1];
@@ -1147,23 +1146,7 @@ $("#apply-filter-btn").on("click", function () {
             fileWithTime
           );
           $.getJSON("../data/" + fileWithTime, function (newData2) {
-            var processedData = groupJsonData(newData2);
-            var filteredData = filterData(
-              processedData,
-              1,
-              targetDepth,
-              query,
-              marketCapFilter,
-              marketCapOp,
-              changeFilter,
-              changeOp,
-              changeFilter2,
-              changeOp2
-            );
-            var option = myChart.getOption();
-            option.series[0].leafDepth = targetDepth;
-            option.series[0].data = filteredData;
-            myChart.setOption(option);
+            // 재시도 성공 시 처리...
           }).fail(function () {
             alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
           });
