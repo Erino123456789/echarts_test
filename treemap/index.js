@@ -1,17 +1,9 @@
-// ========================
-// index.js (수정 버전)
-// ========================
-
-// ---------------------------------------------------------
-// 0. 전역 변수들
-// ---------------------------------------------------------
 let currentFilename; // 현재 파일명을 저장할 변수
 let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
 let processedData = [];
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
 let capturing = false; // 캡처 진행 상태를 추적
-
 // 기존 변수 아래에 추가
 let currentFilters = {
   searchQuery: "",
@@ -20,9 +12,6 @@ let currentFilters = {
   changeRate: { operator: null, value: null },
 };
 
-// ---------------------------------------------------------
-// 1. 패널/오버레이 토글
-// ---------------------------------------------------------
 function togglePanel() {
   const leftPanel = document.getElementById("left-panel");
   const overlay = document.getElementById("overlay");
@@ -33,9 +22,6 @@ function togglePanel() {
   menuButton.classList.toggle("open");
 }
 
-// ---------------------------------------------------------
-// 2. 날짜/시간 포맷 관련 유틸
-// ---------------------------------------------------------
 function adjustTimeByMinutes(filename, subtractMinutes) {
   const parts = filename.split("_");
   let datePart = parts[3].slice(0, 8); // '20241106' 추출
@@ -76,9 +62,6 @@ function adjustTimeByMinutes(filename, subtractMinutes) {
   return `${formattedDate}. ${formattedTime}`;
 }
 
-// ---------------------------------------------------------
-// 3. 파일 캐싱 로직
-// ---------------------------------------------------------
 function loadAndCacheData(filePrefix, date) {
   const timeSuffixes = [];
   for (let hour = 9; hour <= 15; hour++) {
@@ -114,12 +97,8 @@ function loadDataFromCache(filePrefix, date, timeSuffix) {
     return;
   }
   const data = cachedFiles[date] && cachedFiles[date][timeSuffix];
-  // (실제로 어떤 처리를 할지는 자유)
 }
 
-// ---------------------------------------------------------
-// 4. 시간 슬라이더 관련 함수
-// ---------------------------------------------------------
 function calculateSliderIndex(timeString) {
   const hours = parseInt(timeString.slice(0, 2));
   const minutes = parseInt(timeString.slice(2, 4));
@@ -142,7 +121,7 @@ function getNearestPreviousTime() {
     (hours === 9 && minutes < 20) ||
     (hours === 15 && minutes > 50)
   ) {
-    return null;
+    return null; // 범위 밖이면 null 반환
   }
   console.log(
     `${hours.toString().padStart(2, "0")}${minutes.toString().padStart(2, "0")}`
@@ -167,9 +146,6 @@ function updateTimeDisplay(sliderValue) {
   console.log(`슬라이더 값: ${sliderValue}, 시간: ${timeString}`);
 }
 
-// ---------------------------------------------------------
-// 5. 차트 캡처 관련 로직
-// ---------------------------------------------------------
 function handleScreenshot() {
   const screenshotSelect = document.getElementById("screenshot-select");
   const selectedOption = screenshotSelect.value;
@@ -268,9 +244,14 @@ function captureOverallFlowScreenshots() {
   });
 }
 
-// ---------------------------------------------------------
-// 6. JSON 리스트 로드 (KOSPI/KOSDAQ)
-// ---------------------------------------------------------
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
 function loadJsonList(type) {
   return new Promise((resolve, reject) => {
     const lowerType = type.toLowerCase();
@@ -311,9 +292,6 @@ function loadJsonList(type) {
   });
 }
 
-// ---------------------------------------------------------
-// 7. (중요) 기존 로드 함수 (오류 처리 부분 수정)
-// ---------------------------------------------------------
 function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   var dom = document.getElementById("chart-container");
   var myChart = echarts.init(dom, null, {
@@ -321,29 +299,26 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
     useDirtyRect: false,
   });
   var option;
-
   if (showLoading && initialLoad) {
     myChart.showLoading();
   }
-
+  const nearestTime = getNearestPreviousTime();
+  const currentTime = new Date();
+  const hours = currentTime.getUTCHours() + 9;
+  const minutes = currentTime.getUTCMinutes();
   $.get("../data/" + filename, function (kospi_data) {
-    // 파일 로드 성공 시
     allData = kospi_data;
     processedData = groupJsonData(kospi_data);
     console.log(processedData);
-
     if (initialLoad) {
       myChart.hideLoading();
       initialLoad = false;
     }
-
     const visualMin = -5;
     const visualMax = 5;
     const visualMinBound = -1;
     const visualMaxBound = 1;
-
     convertData(kospi_data);
-
     function convertData(originList) {
       let min = Infinity;
       let max = -Infinity;
@@ -385,13 +360,10 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         }
       }
     }
-
     function isValidNumber(num) {
       return num != null && isFinite(num);
     }
-
     const formattedTitleDate = adjustTimeByMinutes(filename, 20);
-
     myChart.setOption(
       (option = {
         title: {
@@ -402,7 +374,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
           formatter: function (info) {
             var value = info.value;
             if (window.isRangeSearch) {
-              // [range 검색 부분 로직... 생략]
               if (info.data.children) {
                 let start_cap = isValidNumber(value[0])
                   ? echarts.format.addCommas(value[0]) + " 백만원"
@@ -449,7 +420,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 ].join("");
               }
             } else {
-              // [단일 검색 로직... 생략]
               if (info.data.children) {
                 let now_cap = isValidNumber(value[0])
                   ? echarts.format.addCommas(value[0]) + " 백만원"
@@ -596,35 +566,35 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
       })
     );
   }).fail(function () {
-    // =============================
-    // [CHANGED!] 오류 발생 시
-    // =============================
-    console.error(`Failed to load: ${filename}`);
-
-    // 1) 우선 현재 시각(혹은 파일명)에서 인덱스를 구해야 함
-    //    여기서는 기존처럼 "nearestTime → sliderIndex"로 일단 설정
-    const nearestTime = getNearestPreviousTime();
-    const startIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
-
-    // 2) loadDataWithRetry()로 "startIndex~0"까지 줄여가며 재시도
-    loadDataWithRetry(type, startIndex);
+    if (fallbackCallback) {
+      fallbackCallback();
+    } else {
+      console.error(`Failed to load: ${filename}`);
+      const nearestTime = getNearestPreviousTime();
+      const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
+      $("#time-slider").val(sliderIndex);
+      updateTimeDisplay(sliderIndex);
+      const newFilename = getFilenameForSliderIndex(sliderIndex);
+      loadData(type, newFilename, false, () => {
+        let newSliderIndex = Math.max(sliderIndex - 1, 0);
+        $("#time-slider").val(newSliderIndex);
+        updateTimeDisplay(newSliderIndex);
+        const fallbackFilename = getFilenameForSliderIndex(newSliderIndex);
+        loadData(type, fallbackFilename, false);
+      });
+    }
   });
-
   if (option && typeof option === "object") {
     myChart.setOption(option);
   }
 }
 
-// ---------------------------------------------------------
-// 8. "슬라이더 인덱스 → 파일명" 함수
-// ---------------------------------------------------------
 function getFilenameForSliderIndex(sliderIndex) {
   const baseFilename = currentFilename.substring(
     0,
     currentFilename.length - 10
   );
   const baseDate = currentFilename.slice(-10, -5);
-
   if (sliderIndex >= 39) {
     return currentFilename;
   }
@@ -633,80 +603,22 @@ function getFilenameForSliderIndex(sliderIndex) {
   const minute = totalMinutes % 60;
   const hourString = (9 + hour).toString().padStart(2, "0");
   const minuteString = minute.toString().padStart(2, "0");
-  const timeString = `${baseDate}${hourString}${minuteString}.json`;
-  return `${baseFilename}${timeString}`;
+  const timeString = `${baseDate}${hourString}${minuteString}`;
+  return `${baseFilename}${timeString}.json`;
 }
 
-// ---------------------------------------------------------
-// 9. "슬라이더 0까지" 재시도 함수 (새로 추가된 핵심)
-// ---------------------------------------------------------
-function loadDataWithRetry(type, sliderIndex) {
-  // 만약 인덱스가 0 미만이면, "더 이상 유효한 파일이 없다"고 판단
-  if (sliderIndex < 0) {
-    alert("해당 일자에 유효한 JSON 데이터가 없습니다.");
-    return;
-  }
+document.getElementById("time-slider").addEventListener("input", function () {
+  const sliderValue = parseInt(this.value);
+  updateTimeDisplay(sliderValue);
+  const newFilename = getFilenameForSliderIndex(sliderValue);
+  console.log("새로운 파일명: ", newFilename);
+  loadData(
+    currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ",
+    newFilename,
+    false
+  );
+});
 
-  // 슬라이더를 해당 인덱스로 맞추고, 시각도 표시
-  $("#time-slider").val(sliderIndex);
-  updateTimeDisplay(sliderIndex);
-
-  // 인덱스 → 파일명
-  const retryFilename = getFilenameForSliderIndex(sliderIndex);
-
-  console.log("[Retry] 파일 재시도:", retryFilename);
-
-  // 여기서 Ajax로 시도
-  $.get("../data/" + retryFilename, (data) => {
-    console.log("[Retry] 성공, 차트 갱신:", retryFilename);
-
-    // 차트 세팅 로직
-    let dom = document.getElementById("chart-container");
-    let myChart = echarts.init(dom);
-
-    allData = data;
-    processedData = groupJsonData(data);
-
-    const formattedTitleDate = adjustTimeByMinutes(retryFilename, 20);
-
-    myChart.setOption({
-      title: {
-        text: `${type.toUpperCase()} - ${formattedTitleDate}`,
-        left: "center",
-      },
-      tooltip: {
-        // 필요시, loadData에서 쓰던 formatter 그대로 가져오셔도 됩니다
-      },
-      backgroundColor: "#f8f9fa",
-      visualMap: {
-        type: "continuous",
-        min: -5,
-        max: 5,
-        dimension: 4,
-        inRange: {
-          color: ["#942e38", "#aaaaaa", "#269f3c"],
-        },
-        show: true,
-      },
-      series: [
-        {
-          name: `${type.toUpperCase()}`,
-          type: "treemap",
-          data: processedData,
-          // 필요한 설정(leafDepth, label 등)도 loadData에서 복사 가능
-          leafDepth: 3,
-        },
-      ],
-    });
-  }).fail(() => {
-    console.log("[Retry] 실패, sliderIndex를 1 감소:", sliderIndex - 1);
-    loadDataWithRetry(type, sliderIndex - 1);
-  });
-}
-
-// ---------------------------------------------------------
-// 10. 페이지 온로드 시 초기 실행
-// ---------------------------------------------------------
 window.onload = function () {
   initializeFilters();
   loadJsonList("kospi")
@@ -735,9 +647,6 @@ window.onload = function () {
     });
 };
 
-// ---------------------------------------------------------
-// 11. 섹터 분류 데이터 가공 로직
-// ---------------------------------------------------------
 const categoryGroups = {
   자동차: ["자동차", "자동차부품"],
   반도체: ["반도체와반도체장비"],
@@ -867,9 +776,6 @@ function groupJsonData(data) {
   return Object.values(groupedData);
 }
 
-// ---------------------------------------------------------
-// 12. 검색 조건 팝업 로직 (그대로)
-// ---------------------------------------------------------
 document
   .getElementById("open-filter-btn")
   .addEventListener("click", function () {
@@ -1160,9 +1066,7 @@ $("#apply-filter-btn").on("click", function () {
     console.error("차트 인스턴스를 찾을 수 없습니다.");
     return;
   }
-
   if (endDateFile) {
-    // range 검색
     window.isRangeSearch = true;
     $.when(
       $.getJSON("../data/" + startDateFile),
@@ -1189,6 +1093,7 @@ $("#apply-filter-btn").on("click", function () {
         var option = myChart.getOption();
         option.series[0].leafDepth = targetDepth;
         option.series[0].data = filteredData;
+        // 제목 업데이트 추가
         var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
         var marketType = $("#market-select").val();
         option.title = {
@@ -1201,8 +1106,8 @@ $("#apply-filter-btn").on("click", function () {
         alert("선택한 날짜 범위의 데이터를 불러오는데 실패했습니다.");
       });
   } else {
-    // 단일 검색
     window.isRangeSearch = false;
+    // 단일 검색(종료 날짜 없음)인 경우
     $.getJSON("../data/" + startDateFile, function (newData) {
       var processedData = groupJsonData(newData);
       var filteredData = filterData(
@@ -1220,32 +1125,54 @@ $("#apply-filter-btn").on("click", function () {
       var option = myChart.getOption();
       option.series[0].leafDepth = targetDepth;
       option.series[0].data = filteredData;
+      // 여기에 제목 업데이트 추가
       var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
-      var marketType = $("#market-select").val();
+      var marketType = $("#market-select").val(); // KOSPI 또는 KOSDAQ
       option.title = {
         text: `${marketType.toUpperCase()} - ${formattedTitleDate}`,
         left: "center",
       };
       myChart.setOption(option);
     }).fail(function () {
-      // =============================
-      // [CHANGED!] 오류 발생 시
-      // =============================
-      console.error(`Failed to load: ${filename}`);
-
-      // 1) 우선 현재 시각(혹은 파일명)에서 인덱스를 구해야 함
-      //    여기서는 기존처럼 "nearestTime → sliderIndex"로 일단 설정
-      const nearestTime = getNearestPreviousTime();
-      const startIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
-
-      // 2) loadDataWithRetry()로 "startIndex~0"까지 줄여가며 재시도
-      loadDataWithRetry(type, startIndex);
+      // 404 오류 발생 시, 시간값 추가해서 재시도
+      const dateMatch = startDateFile.match(/(\d{8})(\d{4})?\.json$/);
+      if (dateMatch && !dateMatch[2]) {
+        const selectedDate = dateMatch[1];
+        const filePrefix = startDateFile.split("_")[0] + "_map_data";
+        const nearestTime = getNearestPreviousTime();
+        if (nearestTime) {
+          const fileWithTime = `${filePrefix}_${selectedDate}${nearestTime}.json`;
+          console.log(
+            "404 발생, 시간값 추가된 파일명으로 재시도:",
+            fileWithTime
+          );
+          $.getJSON("../data/" + fileWithTime, function (newData2) {
+            var processedData = groupJsonData(newData2);
+            var filteredData = filterData(
+              processedData,
+              1,
+              targetDepth,
+              query,
+              marketCapFilter,
+              marketCapOp,
+              changeFilter,
+              changeOp,
+              changeFilter2,
+              changeOp2
+            );
+            var option = myChart.getOption();
+            option.series[0].leafDepth = targetDepth;
+            option.series[0].data = filteredData;
+            myChart.setOption(option);
+          }).fail(function () {
+            alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+          });
+        } else {
+          alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+        }
+      } else {
+        alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+      }
     });
   }
 });
-
-// ---------------------------------------------------------
-// 끝
-// ---------------------------------------------------------
-
-// index.js (수정 완료)
