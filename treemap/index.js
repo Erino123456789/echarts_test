@@ -334,25 +334,8 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         let node = originList[i];
         if (node) {
           let value = node.value;
-          if (value[4] != null && value[4] > 0) {
-            value[5] = echarts.number.linearMap(
-              value[4],
-              [0, 5],
-              [visualMaxBound, visualMax],
-              true
-            );
-          } else if (value[4] != null && value[4] < 0) {
-            value[5] = echarts.number.linearMap(
-              value[4],
-              [-5, 0],
-              [visualMin, visualMinBound],
-              true
-            );
-          } else {
-            value[5] = 0;
-          }
-          if (!isFinite(value[3])) {
-            value[5] = 0;
+          if (value.length > 5) {
+            node.value = value.slice(0, 5);
           }
           if (node.children) {
             convertData(node.children);
