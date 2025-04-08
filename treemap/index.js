@@ -1131,6 +1131,7 @@ $("#apply-filter-btn").on("click", function () {
         changeFilter2,
         changeOp2
       );
+      console.log("디스플레이 데이터:", filteredData);
       var option = myChart.getOption();
       option.series[0].leafDepth = targetDepth;
       option.series[0].data = filteredData;
