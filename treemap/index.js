@@ -1,10 +1,9 @@
 let currentFilename; // 현재 파일명을 저장할 변수
-let allData = []; // 검색기능용, 차트 데이터 저장용 변수
+let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
 let processedData = [];
-let initialLoad = true; // 첫 로딩 여부 확인 변수
-let cachedFiles = {}; // 캐시 데이터 저장용 객체
-let capturing = false; // 캡처 진행 상태 추적
-
+let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
+let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
+let capturing = false; // 캡처 진행 상태를 추적
 // 기존 변수 아래에 추가
 let currentFilters = {
   searchQuery: "",
@@ -12,8 +11,6 @@ let currentFilters = {
   marketCap: { operator: null, value: null },
   changeRate: { operator: null, value: null },
 };
-
-// (defaultSliderValue는 시장 선택 시 기본값으로 업데이트되지만 fallback에서는 사용하지 않습니다.)
 
 function togglePanel() {
   const leftPanel = document.getElementById("left-panel");
@@ -27,12 +24,13 @@ function togglePanel() {
 
 function adjustTimeByMinutes(filename, subtractMinutes) {
   const parts = filename.split("_");
-  let datePart = parts[3].slice(0, 8); // 예: '20241106'
-  let timePart = parts[3].split(".")[0].slice(8); // 예: '0920' 또는 빈 문자열
+  let datePart = parts[3].slice(0, 8); // '20241106' 추출
+  let timePart = parts[3].split(".")[0].slice(8); // '0920' 또는 없는 경우 빈 문자열
 
+  // 시간 정보가 없으면 기본값 '1540' 설정
   if (timePart.length < 4) {
     timePart = "1540";
-    subtractMinutes = 0;
+    subtractMinutes = 0; // 기본 시간 사용 시 시간 조정 불필요
   }
 
   let hours = parseInt(timePart.slice(0, 2), 10);
@@ -123,7 +121,7 @@ function getNearestPreviousTime() {
     (hours === 9 && minutes < 20) ||
     (hours === 15 && minutes > 50)
   ) {
-    return null;
+    return null; // 범위 밖이면 null 반환
   }
   console.log(
     `${hours.toString().padStart(2, "0")}${minutes.toString().padStart(2, "0")}`
@@ -274,14 +272,11 @@ function loadJsonList(type) {
             document.getElementById("slider-container").style.display = "block";
             loadDataFromCache(filePrefix, selectedDate, "0920");
             document.getElementById("slider-container").style.display = "block";
-            // 파일 로드 후 기본 슬라이더 값 재설정
             loadData(type, currentFilename, true, () => {
               const nearestTime = getNearestPreviousTime();
               const sliderIndex = nearestTime
                 ? calculateSliderIndex(nearestTime)
                 : 39;
-              // 기본 슬라이더 값 업데이트
-              defaultSliderValue = sliderIndex;
               $("#time-slider").val(sliderIndex);
               updateTimeDisplay(sliderIndex);
               const initialFilename = getFilenameForSliderIndex(sliderIndex);
@@ -307,6 +302,10 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   if (showLoading && initialLoad) {
     myChart.showLoading();
   }
+  const nearestTime = getNearestPreviousTime();
+  const currentTime = new Date();
+  const hours = currentTime.getUTCHours() + 9;
+  const minutes = currentTime.getUTCMinutes();
   $.get("../data/" + filename, function (kospi_data) {
     allData = kospi_data;
     processedData = groupJsonData(kospi_data);
@@ -484,7 +483,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
           {
             name: `${type.toUpperCase()}`,
             width: "100%",
-            height: "calc(100% - 30px)",
+            height: "100%" - "30px",
             top: 30,
             left: 0,
             right: 0,
@@ -503,7 +502,9 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 return [name].join("");
               },
             },
-            breadcrumb: { show: false },
+            breadcrumb: {
+              show: false,
+            },
             labelLayout: function (params) {
               if (params.rect.width < 5 || params.rect.height < 5) {
                 return { fontSize: 0 };
@@ -531,18 +532,33 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
               textShadowOffsetY: 0,
               fontWeight: "bold",
             },
-            itemStyle: { borderColor: "black" },
+            itemStyle: {
+              borderColor: "black",
+            },
             visualMin: visualMin,
             visualMax: visualMax,
             visualDimension: 5,
             levels: [
               {
-                itemStyle: { borderWidth: 1, gapWidth: 3, borderColor: "#333" },
+                itemStyle: {
+                  borderWidth: 1,
+                  gapWidth: 3,
+                  borderColor: "#333",
+                },
               },
               {
-                itemStyle: { borderWidth: 2, gapWidth: 1, borderColor: "#555" },
+                itemStyle: {
+                  borderWidth: 2,
+                  gapWidth: 1,
+                  borderColor: "#555",
+                },
               },
-              { itemStyle: { borderWidth: 2, borderColor: "#777" } },
+              {
+                itemStyle: {
+                  borderWidth: 2,
+                  borderColor: "#777",
+                },
+              },
             ],
             data: processedData,
           },
@@ -550,15 +566,22 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
       })
     );
   }).fail(function () {
-    // 파일 로드 실패 시 fallback: 슬라이더 값을 1씩 낮춰 재시도합니다.
     if (fallbackCallback) {
       fallbackCallback();
     } else {
-      let currentSliderVal = parseInt(
-        document.getElementById("time-slider").value
-      );
-      // slider가 0 미만이면 더 이상 시도하지 않습니다.
-      tryLoadFallbackFromSlider(type, currentSliderVal - 1);
+      console.error(`Failed to load: ${filename}`);
+      const nearestTime = getNearestPreviousTime();
+      const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
+      $("#time-slider").val(sliderIndex);
+      updateTimeDisplay(sliderIndex);
+      const newFilename = getFilenameForSliderIndex(sliderIndex);
+      loadData(type, newFilename, false, () => {
+        let newSliderIndex = Math.max(sliderIndex - 1, 0);
+        $("#time-slider").val(newSliderIndex);
+        updateTimeDisplay(newSliderIndex);
+        const fallbackFilename = getFilenameForSliderIndex(newSliderIndex);
+        loadData(type, fallbackFilename, false);
+      });
     }
   });
   if (option && typeof option === "object") {
@@ -584,40 +607,17 @@ function getFilenameForSliderIndex(sliderIndex) {
   return `${baseFilename}${timeString}.json`;
 }
 
-// 슬라이더 이벤트 핸들러: 현재 선택된 시장 정보를 직접 사용합니다.
 document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
   updateTimeDisplay(sliderValue);
   const newFilename = getFilenameForSliderIndex(sliderValue);
-  const currentMarket =
-    $("#market-select").val() ||
-    (currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ");
-  console.log("현재 시장:", currentMarket, "새 파일명:", newFilename);
-  loadData(currentMarket, newFilename, false);
-});
-
-// fallback 함수: 슬라이더 값을 하나씩 낮춰 해당 파일을 재시도합니다.
-function tryLoadFallbackFromSlider(type, sliderIndex) {
-  // sliderIndex가 0 미만이면 더 이상 재시도하지 않습니다.
-  if (sliderIndex < 0) {
-    alert("더 이상 이전 데이터가 없습니다.");
-    return;
-  }
-  const fallbackFilename = getFilenameForSliderIndex(sliderIndex);
-  console.log(
-    "Fallback trying slider index:",
-    sliderIndex,
-    "filename:",
-    fallbackFilename
+  console.log("새로운 파일명: ", newFilename);
+  loadData(
+    currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ",
+    newFilename,
+    false
   );
-  $.getJSON("../data/" + fallbackFilename, function (data) {
-    document.getElementById("time-slider").value = sliderIndex;
-    updateTimeDisplay(sliderIndex);
-    loadData(type, fallbackFilename, false);
-  }).fail(function () {
-    tryLoadFallbackFromSlider(type, sliderIndex - 1);
-  });
-}
+});
 
 window.onload = function () {
   initializeFilters();
@@ -635,8 +635,6 @@ window.onload = function () {
           const sliderIndex = nearestTime
             ? calculateSliderIndex(nearestTime)
             : 39;
-          // 기본 슬라이더 값 업데이트
-          defaultSliderValue = sliderIndex;
           $("#time-slider").val(sliderIndex);
           updateTimeDisplay(sliderIndex);
           const initialFilename = getFilenameForSliderIndex(sliderIndex);
@@ -847,7 +845,6 @@ $(document).ready(function () {
   $("#market-select").val("KOSPI").trigger("change");
 });
 
-// 시장 선택 이벤트 핸들러 보완: start-date 목록 갱신 후, currentFilename과 기본 슬라이더 값을 재설정합니다.
 $("#market-select").on("change", function () {
   var market = $(this).val();
   var jsonFile =
@@ -873,13 +870,6 @@ $("#market-select").on("change", function () {
     $endDateSelect.prop("disabled", false);
     if ($startDateSelect.find("option").length > 1) {
       $startDateSelect.prop("selectedIndex", 1);
-      currentFilename = $startDateSelect.val();
-      // 새 시장에 맞춰 기본 슬라이더 값 재설정
-      const nearestTime = getNearestPreviousTime();
-      const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
-      defaultSliderValue = sliderIndex;
-      $("#time-slider").val(sliderIndex);
-      updateTimeDisplay(sliderIndex);
     }
   }).fail(function () {
     alert("날짜 목록을 불러오는데 실패했습니다.");
@@ -1103,6 +1093,7 @@ $("#apply-filter-btn").on("click", function () {
         var option = myChart.getOption();
         option.series[0].leafDepth = targetDepth;
         option.series[0].data = filteredData;
+        // 제목 업데이트 추가
         var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
         var marketType = $("#market-select").val();
         option.title = {
@@ -1112,11 +1103,11 @@ $("#apply-filter-btn").on("click", function () {
         myChart.setOption(option);
       })
       .fail(function () {
-        let sliderVal = parseInt(document.getElementById("time-slider").value);
-        tryLoadFallbackFromSlider($("#market-select").val(), sliderVal - 1);
+        alert("선택한 날짜 범위의 데이터를 불러오는데 실패했습니다.");
       });
   } else {
     window.isRangeSearch = false;
+    // 단일 검색(종료 날짜 없음)인 경우
     $.getJSON("../data/" + startDateFile, function (newData) {
       var processedData = groupJsonData(newData);
       var filteredData = filterData(
@@ -1134,16 +1125,54 @@ $("#apply-filter-btn").on("click", function () {
       var option = myChart.getOption();
       option.series[0].leafDepth = targetDepth;
       option.series[0].data = filteredData;
+      // 여기에 제목 업데이트 추가
       var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
-      var marketType = $("#market-select").val();
+      var marketType = $("#market-select").val(); // KOSPI 또는 KOSDAQ
       option.title = {
         text: `${marketType.toUpperCase()} - ${formattedTitleDate}`,
         left: "center",
       };
       myChart.setOption(option);
     }).fail(function () {
-      let sliderVal = parseInt(document.getElementById("time-slider").value);
-      tryLoadFallbackFromSlider($("#market-select").val(), sliderVal - 1);
+      // 404 오류 발생 시, 시간값 추가해서 재시도
+      const dateMatch = startDateFile.match(/(\d{8})(\d{4})?\.json$/);
+      if (dateMatch && !dateMatch[2]) {
+        const selectedDate = dateMatch[1];
+        const filePrefix = startDateFile.split("_")[0] + "_map_data";
+        const nearestTime = getNearestPreviousTime();
+        if (nearestTime) {
+          const fileWithTime = `${filePrefix}_${selectedDate}${nearestTime}.json`;
+          console.log(
+            "404 발생, 시간값 추가된 파일명으로 재시도:",
+            fileWithTime
+          );
+          $.getJSON("../data/" + fileWithTime, function (newData2) {
+            var processedData = groupJsonData(newData2);
+            var filteredData = filterData(
+              processedData,
+              1,
+              targetDepth,
+              query,
+              marketCapFilter,
+              marketCapOp,
+              changeFilter,
+              changeOp,
+              changeFilter2,
+              changeOp2
+            );
+            var option = myChart.getOption();
+            option.series[0].leafDepth = targetDepth;
+            option.series[0].data = filteredData;
+            myChart.setOption(option);
+          }).fail(function () {
+            alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+          });
+        } else {
+          alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+        }
+      } else {
+        alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+      }
     });
   }
 });
