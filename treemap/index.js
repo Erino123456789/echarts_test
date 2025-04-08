@@ -611,12 +611,9 @@ document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
   updateTimeDisplay(sliderValue);
   const newFilename = getFilenameForSliderIndex(sliderValue);
-  console.log("새로운 파일명: ", newFilename);
-  loadData(
-    currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ",
-    newFilename,
-    false
-  );
+  const currentMarket = $("#market-select").val();
+  console.log("현재 시장:", currentMarket, "새 파일명:", newFilename);
+  loadData(currentMarket, newFilename, false);
 });
 
 window.onload = function () {
@@ -868,8 +865,10 @@ $("#market-select").on("change", function () {
     });
     $startDateSelect.prop("disabled", false);
     $endDateSelect.prop("disabled", false);
+    // 여기서 첫 번째 선택 항목으로 currentFilename을 업데이트
     if ($startDateSelect.find("option").length > 1) {
       $startDateSelect.prop("selectedIndex", 1);
+      currentFilename = $startDateSelect.val();
     }
   }).fail(function () {
     alert("날짜 목록을 불러오는데 실패했습니다.");
