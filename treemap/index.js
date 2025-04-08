@@ -1,11 +1,11 @@
 let currentFilename; // 현재 파일명을 저장할 변수
-let allData = []; // 검색기능용, 차트 데이터 저장을 위한 변수
+let allData = []; // 검색기능용, 차트 데이터 저장용 변수
 let processedData = [];
-let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
-let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
-let capturing = false; // 캡처 진행 상태를 추적
+let initialLoad = true; // 첫 로딩 여부 확인 변수
+let cachedFiles = {}; // 캐시 데이터 저장용 객체
+let capturing = false; // 캡처 진행 상태 추적
 
-// 기존 변수 아래에 추가
+// 기존 변수 아래 추가
 let currentFilters = {
   searchQuery: "",
   depth: 3,
@@ -13,11 +13,13 @@ let currentFilters = {
   changeRate: { operator: null, value: null },
 };
 
+// 신규 전역 변수: 시장 전환 시 슬라이더 기본값
+let defaultSliderValue = 39; // 초기값, 이후 시장 변경 시 업데이트
+
 function togglePanel() {
   const leftPanel = document.getElementById("left-panel");
   const overlay = document.getElementById("overlay");
   const menuButton = document.getElementById("menu-button");
-
   leftPanel.classList.toggle("open");
   overlay.classList.toggle("show");
   menuButton.classList.toggle("open");
@@ -25,18 +27,14 @@ function togglePanel() {
 
 function adjustTimeByMinutes(filename, subtractMinutes) {
   const parts = filename.split("_");
-  let datePart = parts[3].slice(0, 8); // '20241106' 추출
-  let timePart = parts[3].split(".")[0].slice(8); // '0920' 또는 없는 경우 빈 문자열
-
-  // 시간 정보가 없으면 기본값 '1540' 설정
+  let datePart = parts[3].slice(0, 8); // 예: '20241106'
+  let timePart = parts[3].split(".")[0].slice(8); // 예: '0920' 또는 빈 문자열
   if (timePart.length < 4) {
     timePart = "1540";
-    subtractMinutes = 0; // 기본 시간 사용 시 시간 조정 불필요
+    subtractMinutes = 0;
   }
-
   let hours = parseInt(timePart.slice(0, 2), 10);
   let minutes = parseInt(timePart.slice(2, 4), 10);
-
   minutes -= subtractMinutes;
   if (minutes < 0) {
     minutes += 60;
@@ -47,12 +45,18 @@ function adjustTimeByMinutes(filename, subtractMinutes) {
       const month = parseInt(datePart.slice(4, 6), 10);
       const day = parseInt(datePart.slice(6, 8), 10);
       const newDate = new Date(year, month - 1, day - 1);
-      datePart = `${newDate.getFullYear()}${String(newDate.getMonth() + 1).padStart(2, "0")}${String(newDate.getDate()).padStart(2, "0")}`;
+      datePart = `${newDate.getFullYear()}${String(
+        newDate.getMonth() + 1
+      ).padStart(2, "0")}${String(newDate.getDate()).padStart(2, "0")}`;
     }
   }
-
-  const formattedDate = `${datePart.slice(0, 4)}.${datePart.slice(4, 6)}.${datePart.slice(6, 8)}`;
-  const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  const formattedDate = `${datePart.slice(0, 4)}.${datePart.slice(
+    4,
+    6
+  )}.${datePart.slice(6, 8)}`;
+  const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+    minutes
+  ).padStart(2, "0")}`;
   return `${formattedDate}. ${formattedTime}`;
 }
 
@@ -60,7 +64,9 @@ function loadAndCacheData(filePrefix, date) {
   const timeSuffixes = [];
   for (let hour = 9; hour <= 15; hour++) {
     for (let minute = 0; minute < 60; minute += 10) {
-      const timeString = `${hour.toString().padStart(2, "0")}${minute.toString().padStart(2, "0")}`;
+      const timeString = `${hour.toString().padStart(2, "0")}${minute
+        .toString()
+        .padStart(2, "0")}`;
       if (hour === 9 && minute < 20) continue;
       if (hour === 15 && minute > 40) break;
       timeSuffixes.push(timeString);
@@ -83,7 +89,9 @@ function loadAndCacheData(filePrefix, date) {
 
 function loadDataFromCache(filePrefix, date, timeSuffix) {
   if (timeSuffix > "1540") {
-    console.warn(`15:50 이후 데이터 요청 제한: ${filePrefix}_${date}${timeSuffix}.json`);
+    console.warn(
+      `15:50 이후 데이터 요청 제한: ${filePrefix}_${date}${timeSuffix}.json`
+    );
     return;
   }
   const data = cachedFiles[date] && cachedFiles[date][timeSuffix];
@@ -101,15 +109,24 @@ function calculateSliderIndex(timeString) {
 function getNearestPreviousTime() {
   const currentTime = new Date();
   const utcOffset = 9 * 60;
-  const localTimeInMinutes = currentTime.getUTCHours() * 60 + currentTime.getUTCMinutes() + utcOffset;
+  const localTimeInMinutes =
+    currentTime.getUTCHours() * 60 + currentTime.getUTCMinutes() + utcOffset;
   let hours = Math.floor(localTimeInMinutes / 60) % 24;
   let minutes = localTimeInMinutes % 60;
   minutes = Math.floor(minutes / 10) * 10;
-  if (hours < 9 || (hours === 9 && minutes < 20) || (hours === 15 && minutes > 50)) {
-    return null; // 범위 밖이면 null 반환
+  if (
+    hours < 9 ||
+    (hours === 9 && minutes < 20) ||
+    (hours === 15 && minutes > 50)
+  ) {
+    return null;
   }
-  console.log(`${hours.toString().padStart(2, "0")}${minutes.toString().padStart(2, "0")}`);
-  return `${hours.toString().padStart(2, "0")}${minutes.toString().padStart(2, "0")}`;
+  console.log(
+    `${hours.toString().padStart(2, "0")}${minutes.toString().padStart(2, "0")}`
+  );
+  return `${hours.toString().padStart(2, "0")}${minutes
+    .toString()
+    .padStart(2, "0")}`;
 }
 
 function updateTimeDisplay(sliderValue) {
@@ -236,7 +253,8 @@ function debounce(func, wait) {
 function loadJsonList(type) {
   return new Promise((resolve, reject) => {
     const lowerType = type.toLowerCase();
-    const fileName = lowerType === "kospi" ? "kospi_json_list.json" : "kosdaq_json_list.json";
+    const fileName =
+      lowerType === "kospi" ? "kospi_json_list.json" : "kosdaq_json_list.json";
     const urlWithTimestamp = fileName + "?_=" + new Date().getTime();
     $.getJSON(urlWithTimestamp, function (data) {
       const buttonContainer = $("#json-button-container");
@@ -252,9 +270,14 @@ function loadJsonList(type) {
             document.getElementById("slider-container").style.display = "block";
             loadDataFromCache(filePrefix, selectedDate, "0920");
             document.getElementById("slider-container").style.display = "block";
+            // 파일 로드 후 기본 슬라이더 값 재설정
             loadData(type, currentFilename, true, () => {
               const nearestTime = getNearestPreviousTime();
-              const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
+              const sliderIndex = nearestTime
+                ? calculateSliderIndex(nearestTime)
+                : 39;
+              // 기본값 업데이트
+              defaultSliderValue = sliderIndex;
               $("#time-slider").val(sliderIndex);
               updateTimeDisplay(sliderIndex);
               const initialFilename = getFilenameForSliderIndex(sliderIndex);
@@ -280,10 +303,6 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   if (showLoading && initialLoad) {
     myChart.showLoading();
   }
-  const nearestTime = getNearestPreviousTime();
-  const currentTime = new Date();
-  const hours = currentTime.getUTCHours() + 9;
-  const minutes = currentTime.getUTCMinutes();
   $.get("../data/" + filename, function (kospi_data) {
     allData = kospi_data;
     processedData = groupJsonData(kospi_data);
@@ -313,9 +332,19 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         if (node) {
           let value = node.value;
           if (value[4] != null && value[4] > 0) {
-            value[5] = echarts.number.linearMap(value[4], [0, 5], [visualMaxBound, visualMax], true);
+            value[5] = echarts.number.linearMap(
+              value[4],
+              [0, 5],
+              [visualMaxBound, visualMax],
+              true
+            );
           } else if (value[4] != null && value[4] < 0) {
-            value[5] = echarts.number.linearMap(value[4], [-5, 0], [visualMin, visualMinBound], true);
+            value[5] = echarts.number.linearMap(
+              value[4],
+              [-5, 0],
+              [visualMin, visualMinBound],
+              true
+            );
           } else {
             value[5] = 0;
           }
@@ -470,22 +499,25 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
                 return [name].join("");
               },
             },
-            breadcrumb: {
-              show: false,
-            },
+            breadcrumb: { show: false },
             labelLayout: function (params) {
               if (params.rect.width < 5 || params.rect.height < 5) {
                 return { fontSize: 0 };
               }
               return {
-                fontSize: Math.min(Math.sqrt(params.rect.width * params.rect.height) / 10, 20),
+                fontSize: Math.min(
+                  Math.sqrt(params.rect.width * params.rect.height) / 10,
+                  20
+                ),
               };
             },
             label: {
               show: true,
               formatter: function (params) {
                 let changeleaf = params.value[4];
-                changeleaf = isValidNumber(changeleaf) ? changeleaf.toFixed(2) + " %" : "-";
+                changeleaf = isValidNumber(changeleaf)
+                  ? changeleaf.toFixed(2) + " %"
+                  : "-";
                 return `${params.name}\n${changeleaf}`;
               },
               color: "#fff",
@@ -495,33 +527,18 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
               textShadowOffsetY: 0,
               fontWeight: "bold",
             },
-            itemStyle: {
-              borderColor: "black",
-            },
+            itemStyle: { borderColor: "black" },
             visualMin: visualMin,
             visualMax: visualMax,
             visualDimension: 5,
             levels: [
               {
-                itemStyle: {
-                  borderWidth: 1,
-                  gapWidth: 3,
-                  borderColor: "#333",
-                },
+                itemStyle: { borderWidth: 1, gapWidth: 3, borderColor: "#333" },
               },
               {
-                itemStyle: {
-                  borderWidth: 2,
-                  gapWidth: 1,
-                  borderColor: "#555",
-                },
+                itemStyle: { borderWidth: 2, gapWidth: 1, borderColor: "#555" },
               },
-              {
-                itemStyle: {
-                  borderWidth: 2,
-                  borderColor: "#777",
-                },
-              },
+              { itemStyle: { borderWidth: 2, borderColor: "#777" } },
             ],
             data: processedData,
           },
@@ -529,12 +546,19 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
       })
     );
   }).fail(function () {
-    // fallback: 슬라이더에서 현재 값보다 하나 낮은 값부터 재시도합니다.
+    // 실패 시, 슬라이더 값 fallback (현재 값보다 1 낮은 값부터 재시도)
     if (fallbackCallback) {
       fallbackCallback();
     } else {
-      let currentSliderVal = parseInt(document.getElementById("time-slider").value);
-      tryLoadFallbackFromSlider(type, currentSliderVal - 1);
+      let currentSliderVal = parseInt(
+        document.getElementById("time-slider").value
+      );
+      // 만약 현재 슬라이더 값이 이미 기본값 이하라면 더 이상 fallback하지 않습니다.
+      if (currentSliderVal <= defaultSliderValue) {
+        alert("더 이상 이전 데이터가 없습니다.");
+      } else {
+        tryLoadFallbackFromSlider(type, currentSliderVal - 1);
+      }
     }
   });
   if (option && typeof option === "object") {
@@ -543,7 +567,10 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
 }
 
 function getFilenameForSliderIndex(sliderIndex) {
-  const baseFilename = currentFilename.substring(0, currentFilename.length - 10);
+  const baseFilename = currentFilename.substring(
+    0,
+    currentFilename.length - 10
+  );
   const baseDate = currentFilename.slice(-10, -5);
   if (sliderIndex >= 39) {
     return currentFilename;
@@ -557,26 +584,33 @@ function getFilenameForSliderIndex(sliderIndex) {
   return `${baseFilename}${timeString}.json`;
 }
 
-// 슬라이더 이벤트 핸들러 수정: 현재 선택된 시장 정보를 직접 사용
+// 슬라이더 이벤트 핸들러: 현재 선택된 시장 정보를 직접 사용합니다.
 document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
   updateTimeDisplay(sliderValue);
   const newFilename = getFilenameForSliderIndex(sliderValue);
-  const currentMarket = $("#market-select").val() || (currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ");
+  const currentMarket =
+    $("#market-select").val() ||
+    (currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ");
   console.log("현재 시장:", currentMarket, "새 파일명:", newFilename);
   loadData(currentMarket, newFilename, false);
 });
 
-// fallback 함수: 슬라이더 값을 하나씩 낮춰서 재시도
+// fallback 함수: 슬라이더 값을 하나씩 낮춰서 해당 파일이 존재하는지 재시도합니다.
 function tryLoadFallbackFromSlider(type, sliderIndex) {
-  if (sliderIndex < 0) {
+  if (sliderIndex < defaultSliderValue) {
     alert("더 이상 이전 데이터가 없습니다.");
     return;
   }
   const fallbackFilename = getFilenameForSliderIndex(sliderIndex);
-  console.log("Fallback trying slider index:", sliderIndex, "filename:", fallbackFilename);
+  console.log(
+    "Fallback trying slider index:",
+    sliderIndex,
+    "filename:",
+    fallbackFilename
+  );
   $.getJSON("../data/" + fallbackFilename, function (data) {
-    // 성공하면 슬라이더 값을 업데이트하고 로드합니다.
+    // 성공하면 슬라이더 값을 업데이트 후 로드합니다.
     document.getElementById("time-slider").value = sliderIndex;
     updateTimeDisplay(sliderIndex);
     loadData(type, fallbackFilename, false);
@@ -598,7 +632,11 @@ window.onload = function () {
         document.getElementById("slider-container").style.display = "block";
         loadData("KOSPI", currentFilename, true, () => {
           const nearestTime = getNearestPreviousTime();
-          const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
+          const sliderIndex = nearestTime
+            ? calculateSliderIndex(nearestTime)
+            : 39;
+          // 기본 슬라이더 값 업데이트
+          defaultSliderValue = sliderIndex;
           $("#time-slider").val(sliderIndex);
           updateTimeDisplay(sliderIndex);
           const initialFilename = getFilenameForSliderIndex(sliderIndex);
@@ -712,7 +750,8 @@ function groupJsonData(data) {
         subGroup.value[1] += currMarketCap;
       });
       if (subGroup.value[0] > 0) {
-        subGroup.value[4] = ((subGroup.value[1] - subGroup.value[0]) / subGroup.value[0]) * 100;
+        subGroup.value[4] =
+          ((subGroup.value[1] - subGroup.value[0]) / subGroup.value[0]) * 100;
       }
       groupedData[groupName].children.push(subGroup);
       groupedData[groupName].value[0] += subGroup.value[0];
@@ -732,19 +771,24 @@ function groupJsonData(data) {
   });
   Object.values(groupedData).forEach((group) => {
     if (group.value[0] > 0) {
-      group.value[4] = ((group.value[1] - group.value[0]) / group.value[0]) * 100;
+      group.value[4] =
+        ((group.value[1] - group.value[0]) / group.value[0]) * 100;
     }
   });
   return Object.values(groupedData);
 }
 
-document.getElementById("open-filter-btn").addEventListener("click", function () {
-  document.getElementById("filter-popup").style.display = "block";
-});
+document
+  .getElementById("open-filter-btn")
+  .addEventListener("click", function () {
+    document.getElementById("filter-popup").style.display = "block";
+  });
 
-document.getElementById("close-filter-btn").addEventListener("click", function () {
-  document.getElementById("filter-popup").style.display = "none";
-});
+document
+  .getElementById("close-filter-btn")
+  .addEventListener("click", function () {
+    document.getElementById("filter-popup").style.display = "none";
+  });
 
 $("#reset-filter-btn").on("click", function () {
   $("#depth-select").val("3");
@@ -759,7 +803,9 @@ $("#reset-filter-btn").on("click", function () {
 });
 
 function applyFiltersAndRefreshChart() {
-  const myChart = echarts.getInstanceByDom(document.getElementById("chart-container"));
+  const myChart = echarts.getInstanceByDom(
+    document.getElementById("chart-container")
+  );
   if (!myChart) return;
   const filteredData = filterData(processedData);
   myChart.setOption({
@@ -772,9 +818,11 @@ function applyFiltersAndRefreshChart() {
   });
 }
 
-document.getElementById("market-cap-input").addEventListener("input", function (e) {
-  this.value = this.value.replace(/[^0-9.]/g, "");
-});
+document
+  .getElementById("market-cap-input")
+  .addEventListener("input", function (e) {
+    this.value = this.value.replace(/[^0-9.]/g, "");
+  });
 
 document.getElementById("change-input").addEventListener("input", function (e) {
   this.value = this.value.replace(/[^0-9.-]/g, "");
@@ -799,18 +847,25 @@ $(document).ready(function () {
   $("#market-select").val("KOSPI").trigger("change");
 });
 
+// 시장 선택 이벤트 핸들러 보완: start-date 목록 갱신 후, currentFilename과 슬라이더 기본값을 재설정합니다.
 $("#market-select").on("change", function () {
   var market = $(this).val();
-  var jsonFile = market === "KOSPI" ? "kospi_json_list.json" : "kosdaq_json_list.json";
+  var jsonFile =
+    market === "KOSPI" ? "kospi_json_list.json" : "kosdaq_json_list.json";
   $.getJSON(jsonFile + "?_=" + new Date().getTime(), function (data) {
     var $startDateSelect = $("#start-date-select");
     var $endDateSelect = $("#end-date-select");
     $startDateSelect.empty();
     $endDateSelect.empty();
-    $startDateSelect.append('<option value="" disabled selected hidden>시작 날짜 선택</option>');
-    $endDateSelect.append('<option value="" selected>단일 검색 (종료 날짜 없음)</option>');
+    $startDateSelect.append(
+      '<option value="" disabled selected hidden>시작 날짜 선택</option>'
+    );
+    $endDateSelect.append(
+      '<option value="" selected>단일 검색 (종료 날짜 없음)</option>'
+    );
     data.forEach(function (item) {
-      var option = '<option value="' + item.filename + '">' + item.name + "</option>";
+      var option =
+        '<option value="' + item.filename + '">' + item.name + "</option>";
       $startDateSelect.append(option);
       $endDateSelect.append(option);
     });
@@ -819,6 +874,12 @@ $("#market-select").on("change", function () {
     if ($startDateSelect.find("option").length > 1) {
       $startDateSelect.prop("selectedIndex", 1);
       currentFilename = $startDateSelect.val();
+      // 새 시장에 맞춰 기본 슬라이더 값 재설정
+      const nearestTime = getNearestPreviousTime();
+      const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
+      defaultSliderValue = sliderIndex;
+      $("#time-slider").val(sliderIndex);
+      updateTimeDisplay(sliderIndex);
     }
   }).fail(function () {
     alert("날짜 목록을 불러오는데 실패했습니다.");
@@ -874,13 +935,26 @@ function mergeData(oldNodes, newNodes, currentLevel, targetDepth) {
     if (!newNode) return;
     var mergedNode = Object.assign({}, oldNode);
     if (currentLevel < targetDepth && oldNode.children && newNode.children) {
-      mergedNode.children = mergeData(oldNode.children, newNode.children, currentLevel + 1, targetDepth);
+      mergedNode.children = mergeData(
+        oldNode.children,
+        newNode.children,
+        currentLevel + 1,
+        targetDepth
+      );
     } else if (currentLevel === targetDepth) {
       if (Array.isArray(oldNode.value) && Array.isArray(newNode.value)) {
         var oldMarketCap = oldNode.value[1];
         var newMarketCap = newNode.value[1];
-        var newChange = oldMarketCap ? ((newMarketCap - oldMarketCap) / oldMarketCap) * 100 : 0;
-        mergedNode.value = [oldNode.value[1], newNode.value[1], oldNode.value[3], newNode.value[3], newChange];
+        var newChange = oldMarketCap
+          ? ((newMarketCap - oldMarketCap) / oldMarketCap) * 100
+          : 0;
+        mergedNode.value = [
+          oldNode.value[1],
+          newNode.value[1],
+          oldNode.value[3],
+          newNode.value[3],
+          newChange,
+        ];
       }
     }
     merged.push(mergedNode);
@@ -888,7 +962,18 @@ function mergeData(oldNodes, newNodes, currentLevel, targetDepth) {
   return merged;
 }
 
-function filterData(data, currentLevel, targetDepth, query, marketCapFilter, marketCapOp, changeFilter, changeOp, changeFilter2, changeOp2) {
+function filterData(
+  data,
+  currentLevel,
+  targetDepth,
+  query,
+  marketCapFilter,
+  marketCapOp,
+  changeFilter,
+  changeOp,
+  changeFilter2,
+  changeOp2
+) {
   var filtered = [];
   data.forEach(function (item) {
     if (currentLevel < targetDepth && item.children) {
@@ -910,22 +995,35 @@ function filterData(data, currentLevel, targetDepth, query, marketCapFilter, mar
         filtered.push(newItem);
       }
     } else if (currentLevel === targetDepth) {
-      var passesName = query === "" || item.name.toLowerCase().indexOf(query) !== -1;
+      var passesName =
+        query === "" || item.name.toLowerCase().indexOf(query) !== -1;
       var passesMarketCap = true;
       if (marketCapFilter && Array.isArray(item.value)) {
         var currentMarketCap = item.value[1];
-        passesMarketCap = checkCondition(currentMarketCap, marketCapFilter, marketCapOp);
+        passesMarketCap = checkCondition(
+          currentMarketCap,
+          marketCapFilter,
+          marketCapOp
+        );
       }
       var passesChange = true;
       if ((changeFilter || changeFilter2) && Array.isArray(item.value)) {
         var currentChange = item.value[4];
-        var condition1 = changeFilter ? checkCondition(currentChange, changeFilter, changeOp) : null;
-        var condition2 = changeFilter2 ? checkCondition(currentChange, changeFilter2, changeOp2) : null;
+        var condition1 = changeFilter
+          ? checkCondition(currentChange, changeFilter, changeOp)
+          : null;
+        var condition2 = changeFilter2
+          ? checkCondition(currentChange, changeFilter2, changeOp2)
+          : null;
         if (changeFilter && changeFilter2) {
-          if ((changeFilter.value >= 0 && changeFilter2.value >= 0) || (changeFilter.value < 0 && changeFilter2.value < 0)) {
+          if (
+            (changeFilter.value >= 0 && changeFilter2.value >= 0) ||
+            (changeFilter.value < 0 && changeFilter2.value < 0)
+          ) {
             var lowerBound = Math.min(changeFilter.value, changeFilter2.value);
             var upperBound = Math.max(changeFilter.value, changeFilter2.value);
-            passesChange = currentChange >= lowerBound && currentChange <= upperBound;
+            passesChange =
+              currentChange >= lowerBound && currentChange <= upperBound;
           } else {
             passesChange = condition1 || condition2;
           }
@@ -967,7 +1065,9 @@ $("#apply-filter-btn").on("click", function () {
   var changeOp = $("#change-select").val();
   var changeInput2 = $("#change-input2").val().trim();
   var changeOp2 = $("#change-select2").val();
-  var marketCapFilter = marketCapInput ? parseFilterInput(marketCapInput) : null;
+  var marketCapFilter = marketCapInput
+    ? parseFilterInput(marketCapInput)
+    : null;
   var changeFilter = changeInput ? parseFilterInput(changeInput) : null;
   var changeFilter2 = changeInput2 ? parseFilterInput(changeInput2) : null;
   var chartDom = document.getElementById("chart-container");
@@ -981,39 +1081,40 @@ $("#apply-filter-btn").on("click", function () {
     $.when(
       $.getJSON("../data/" + startDateFile),
       $.getJSON("../data/" + endDateFile)
-    ).done(function (oldDataRes, newDataRes) {
-      var oldJson = oldDataRes[0];
-      var newJson = newDataRes[0];
-      var oldGrouped = groupJsonData(oldJson);
-      var newGrouped = groupJsonData(newJson);
-      var mergedData = mergeData(oldGrouped, newGrouped, 1, targetDepth);
-      var filteredData = filterData(
-        mergedData,
-        1,
-        targetDepth,
-        query,
-        marketCapFilter,
-        marketCapOp,
-        changeFilter,
-        changeOp,
-        changeFilter2,
-        changeOp2
-      );
-      var option = myChart.getOption();
-      option.series[0].leafDepth = targetDepth;
-      option.series[0].data = filteredData;
-      var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
-      var marketType = $("#market-select").val();
-      option.title = {
-        text: `${marketType.toUpperCase()} - ${formattedTitleDate}`,
-        left: "center",
-      };
-      myChart.setOption(option);
-    }).fail(function () {
-      // 실패 시 슬라이더 값 fallback으로 재시도 (slider 값에서 -1)
-      let sliderVal = parseInt(document.getElementById("time-slider").value);
-      tryLoadFallbackFromSlider($("#market-select").val(), sliderVal - 1);
-    });
+    )
+      .done(function (oldDataRes, newDataRes) {
+        var oldJson = oldDataRes[0];
+        var newJson = newDataRes[0];
+        var oldGrouped = groupJsonData(oldJson);
+        var newGrouped = groupJsonData(newJson);
+        var mergedData = mergeData(oldGrouped, newGrouped, 1, targetDepth);
+        var filteredData = filterData(
+          mergedData,
+          1,
+          targetDepth,
+          query,
+          marketCapFilter,
+          marketCapOp,
+          changeFilter,
+          changeOp,
+          changeFilter2,
+          changeOp2
+        );
+        var option = myChart.getOption();
+        option.series[0].leafDepth = targetDepth;
+        option.series[0].data = filteredData;
+        var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
+        var marketType = $("#market-select").val();
+        option.title = {
+          text: `${marketType.toUpperCase()} - ${formattedTitleDate}`,
+          left: "center",
+        };
+        myChart.setOption(option);
+      })
+      .fail(function () {
+        let sliderVal = parseInt(document.getElementById("time-slider").value);
+        tryLoadFallbackFromSlider($("#market-select").val(), sliderVal - 1);
+      });
   } else {
     window.isRangeSearch = false;
     $.getJSON("../data/" + startDateFile, function (newData) {
@@ -1046,23 +1147,3 @@ $("#apply-filter-btn").on("click", function () {
     });
   }
 });
-
-// ------------------------------
-// tryLoadFallbackFromSlider 함수
-// 슬라이더 값을 하나씩 낮춰서, 해당 파일이 존재하는지 재시도합니다.
-// ------------------------------
-function tryLoadFallbackFromSlider(type, sliderIndex) {
-  if (sliderIndex < 0) {
-    alert("더 이상 이전 데이터가 없습니다.");
-    return;
-  }
-  const fallbackFilename = getFilenameForSliderIndex(sliderIndex);
-  console.log("Fallback trying slider index:", sliderIndex, "filename:", fallbackFilename);
-  $.getJSON("../data/" + fallbackFilename, function (data) {
-    document.getElementById("time-slider").value = sliderIndex;
-    updateTimeDisplay(sliderIndex);
-    loadData(type, fallbackFilename, false);
-  }).fail(function () {
-    tryLoadFallbackFromSlider(type, sliderIndex - 1);
-  });
-}
