@@ -334,8 +334,25 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
         let node = originList[i];
         if (node) {
           let value = node.value;
-          if (value.length > 5) {
-            node.value = value.slice(0, 5);
+          if (value[4] != null && value[4] > 0) {
+            value[5] = echarts.number.linearMap(
+              value[4],
+              [0, 5],
+              [visualMaxBound, visualMax],
+              true
+            );
+          } else if (value[4] != null && value[4] < 0) {
+            value[5] = echarts.number.linearMap(
+              value[4],
+              [-5, 0],
+              [visualMin, visualMinBound],
+              true
+            );
+          } else {
+            value[5] = 0;
+          }
+          if (!isFinite(value[3])) {
+            value[5] = 0;
           }
           if (node.children) {
             convertData(node.children);
@@ -572,20 +589,15 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   }
 }
 
-function getFilenameForSliderIndex(
-  sliderIndex,
-  currentFilenameParam = currentFilename
-) {
-  // currentFilenameParam: 현재 선택된 파일명 (예: "kosdaq_map_data_202411061540.json")
-  const baseFilename = currentFilenameParam.substring(
+function getFilenameForSliderIndex(sliderIndex) {
+  const baseFilename = currentFilename.substring(
     0,
-    currentFilenameParam.length - 10
+    currentFilename.length - 10
   );
-  const baseDate = currentFilenameParam.slice(-10, -5); // "YYYYMMDD" 형식
+  const baseDate = currentFilename.slice(-10, -5);
   if (sliderIndex >= 39) {
-    return currentFilenameParam;
+    return currentFilename;
   }
-  // 시작 시간 09:20부터 10분 단위로 증가
   const totalMinutes = 20 + sliderIndex * 10;
   const hour = Math.floor(totalMinutes / 60);
   const minute = totalMinutes % 60;
@@ -598,20 +610,13 @@ function getFilenameForSliderIndex(
 document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
   updateTimeDisplay(sliderValue);
-
-  // <select id="start-date-select">에서 현재 선택된 파일명을 읽습니다.
-  // 만약 선택된 값이 없으면 기존 currentFilename(초기값) 사용.
-  let selectedFilename = $("#start-date-select").val() || currentFilename;
-
-  // 슬라이더 값에 따라 새 파일명을 생성합니다.
-  const newFilename = getFilenameForSliderIndex(sliderValue, selectedFilename);
+  const newFilename = getFilenameForSliderIndex(sliderValue);
   console.log("새로운 파일명: ", newFilename);
-
-  // 현재 선택된 시장 구분(KOSPI 또는 KOSDAQ)을 직접 읽어옴
-  const marketType = $("#market-select").val();
-
-  // 변경된 파일명을 사용하여 데이터를 로드합니다.
-  loadData(marketType, newFilename, false);
+  loadData(
+    currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ",
+    newFilename,
+    false
+  );
 });
 
 window.onload = function () {
@@ -1117,7 +1122,6 @@ $("#apply-filter-btn").on("click", function () {
         changeFilter2,
         changeOp2
       );
-      console.log("디스플레이 데이터:", filteredData);
       var option = myChart.getOption();
       option.series[0].leafDepth = targetDepth;
       option.series[0].data = filteredData;
