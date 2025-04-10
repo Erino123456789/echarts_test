@@ -590,20 +590,26 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
 }
 
 function getFilenameForSliderIndex(sliderIndex) {
-  const baseFilename = currentFilename.substring(
-    0,
-    currentFilename.length - 10
-  );
-  const baseDate = currentFilename.slice(-10, -5);
+  // startDateFile이 정의되어 있고 빈 문자열이 아니면 사용, 그렇지 않으면 currentFilename 사용
+  const file =
+    typeof startDateFile !== "undefined" && startDateFile
+      ? startDateFile
+      : currentFilename;
+  const baseFilename = file.substring(0, file.length - 10);
+  const baseDate = file.slice(-10, -5); // 예: "20241217"
+
   if (sliderIndex >= 39) {
-    return currentFilename;
+    return file;
   }
+
+  // 시작 시각 09:20에서부터 10분 단위로 증가하는 시간 계산
   const totalMinutes = 20 + sliderIndex * 10;
   const hour = Math.floor(totalMinutes / 60);
   const minute = totalMinutes % 60;
   const hourString = (9 + hour).toString().padStart(2, "0");
   const minuteString = minute.toString().padStart(2, "0");
   const timeString = `${baseDate}${hourString}${minuteString}`;
+
   return `${baseFilename}${timeString}.json`;
 }
 
@@ -1122,6 +1128,7 @@ $("#apply-filter-btn").on("click", function () {
         changeFilter2,
         changeOp2
       );
+      console.log(currentFilename);
       var option = myChart.getOption();
       option.series[0].leafDepth = targetDepth;
       option.series[0].data = filteredData;
