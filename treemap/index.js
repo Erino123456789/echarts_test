@@ -572,7 +572,10 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   }
 }
 
-function getFilenameForSliderIndex(sliderIndex, currentFilenameParam) {
+function getFilenameForSliderIndex(
+  sliderIndex,
+  currentFilenameParam = currentFilename
+) {
   // currentFilenameParam: 현재 선택된 파일명 (예: "kosdaq_map_data_202411061540.json")
   const baseFilename = currentFilenameParam.substring(
     0,
