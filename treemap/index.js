@@ -624,11 +624,11 @@ document.getElementById("time-slider").addEventListener("input", function () {
   updateTimeDisplay(sliderValue);
   const newFilename = getFilenameForSliderIndex(sliderValue);
   console.log("새로운 파일명: ", newFilename);
-  loadData(
-    currentFilename.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ",
-    newFilename,
-    false
-  );
+  // startDateFile이 유효하면 그걸 사용, 아니면 currentFilename 사용
+  const file = startDateFile && startDateFile.trim() !== "" ? startDateFile : currentFilename;
+  const marketType = file.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ";
+
+  loadData(marketType, newFilename, false);
 });
 
 window.onload = function () {
