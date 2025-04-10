@@ -4,6 +4,8 @@ let processedData = [];
 let initialLoad = true; // 첫 로딩 여부를 확인하는 변수
 let cachedFiles = {}; // 캐시 데이터 저장용 객체 추가
 let capturing = false; // 캡처 진행 상태를 추적
+let startDateFile;
+
 // 기존 변수 아래에 추가
 let currentFilters = {
   searchQuery: "",
@@ -590,9 +592,9 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
 }
 
 function getFilenameForSliderIndex(sliderIndex) {
-  // startDateFile이 정의되어 있고 빈 문자열이 아니면 사용, 그렇지 않으면 currentFilename 사용
+  // startDateFile이 공백이거나 값이 없으면 currentFilename을 사용
   const file =
-    typeof startDateFile !== "undefined" && startDateFile
+    startDateFile && startDateFile.trim() !== ""
       ? startDateFile
       : currentFilename;
   const baseFilename = file.substring(0, file.length - 10);
@@ -602,6 +604,10 @@ function getFilenameForSliderIndex(sliderIndex) {
     return file;
   }
 
+  if (sliderIndex >= 39) {
+    return file;
+  }
+  console.log(file);
   // 시작 시각 09:20에서부터 10분 단위로 증가하는 시간 계산
   const totalMinutes = 20 + sliderIndex * 10;
   const hour = Math.floor(totalMinutes / 60);
@@ -1039,7 +1045,7 @@ function filterData(
 
 $("#apply-filter-btn").on("click", function () {
   var market = $("#market-select").val();
-  var startDateFile = $("#start-date-select").val();
+  startDateFile = $("#start-date-select").val();
   var endDateFile = $("#end-date-select").val();
   var targetDepth = parseInt($("#depth-select").val(), 10);
   if (!market) {
@@ -1128,7 +1134,6 @@ $("#apply-filter-btn").on("click", function () {
         changeFilter2,
         changeOp2
       );
-      console.log(currentFilename);
       var option = myChart.getOption();
       option.series[0].leafDepth = targetDepth;
       option.series[0].data = filteredData;
