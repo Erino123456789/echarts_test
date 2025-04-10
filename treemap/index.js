@@ -603,11 +603,7 @@ function getFilenameForSliderIndex(sliderIndex) {
   if (sliderIndex >= 39) {
     return file;
   }
-
-  if (sliderIndex >= 39) {
-    return file;
-  }
-  console.log(file);
+  
   // 시작 시각 09:20에서부터 10분 단위로 증가하는 시간 계산
   const totalMinutes = 20 + sliderIndex * 10;
   const hour = Math.floor(totalMinutes / 60);
@@ -623,11 +619,10 @@ document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
   updateTimeDisplay(sliderValue);
   const newFilename = getFilenameForSliderIndex(sliderValue);
-  console.log("새로운 파일명: ", newFilename);
   // startDateFile이 유효하면 그걸 사용, 아니면 currentFilename 사용
   const file = startDateFile && startDateFile.trim() !== "" ? startDateFile : currentFilename;
   const marketType = file.toLowerCase().includes("kospi") ? "KOSPI" : "KOSDAQ";
-
+  console.log(marketType)
   loadData(marketType, newFilename, false);
 });
 
