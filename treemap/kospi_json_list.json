@@ -1,5 +1,9 @@
 [
     {
+        "name": "2025-12-02",
+        "filename": "kospi_map_data_20251202.json"
+    },
+    {
         "name": "2025-12-01",
         "filename": "kospi_map_data_20251201.json"
     },
