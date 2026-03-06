@@ -48,6 +48,10 @@
     "filename": "kosdaq_map_data_20260209.json"
   },
   {
+    "name": "2026-01-16",
+    "filename": "kosdaq_map_data_20260116.json"
+  },
+  {
     "name": "2026-01-15",
     "filename": "kosdaq_map_data_20260115.json"
   },
