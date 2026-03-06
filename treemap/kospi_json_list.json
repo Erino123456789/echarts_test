@@ -48,6 +48,10 @@
     "filename": "kospi_map_data_20260209.json"
   },
   {
+    "name": "2026-01-23",
+    "filename": "kospi_map_data_20260123.json"
+  },
+  {
     "name": "2026-01-22",
     "filename": "kospi_map_data_20260122.json"
   },
