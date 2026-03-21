@@ -7,6 +7,7 @@ let capturing = false; // 캡처 진행 상태를 추적
 let startDateFile;
 let currentBaseFiles = {};
 let dateSelectionMap = {};
+let currentMarketLabel = "KOSPI";
 
 // 기존 변수 아래에 추가
 let currentFilters = {
@@ -384,6 +385,7 @@ function loadJsonList(type) {
 function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   currentBaseFiles = { [type]: filename };
   currentFilename = filename;
+  currentMarketLabel = type;
   var dom = document.getElementById("chart-container");
   var myChart = echarts.init(dom, null, {
     renderer: "canvas",
@@ -965,6 +967,7 @@ function loadCombinedData(
         KOSDAQ: filenames.KOSDAQ,
       };
       currentFilename = titleFilename;
+      currentMarketLabel = type;
       if (fallbackCallback) {
         fallbackCallback();
       }
@@ -1079,6 +1082,14 @@ window.onload = function () {
       console.error("loadJsonList 오류:", error);
     });
 };
+
+window.addEventListener("resize", debounce(function () {
+  const chartDom = document.getElementById("chart-container");
+  const chartInstance = echarts.getInstanceByDom(chartDom);
+  if (chartInstance) {
+    chartInstance.resize();
+  }
+}, 150));
 
 const categoryGroups = {
   자동차: ["자동차", "자동차부품"],
@@ -1550,8 +1561,10 @@ $("#apply-filter-btn").on("click", function () {
         var option = myChart.getOption();
         option.series[0].leafDepth = targetDepth;
         option.series[0].data = filteredData;
+        option.series[0].name = market;
         currentBaseFiles = startFiles;
         currentFilename = startDateFile;
+        currentMarketLabel = market;
         // 제목 업데이트 추가
         var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
         var marketType = $("#market-select").val();
@@ -1597,9 +1610,11 @@ $("#apply-filter-btn").on("click", function () {
         var option = myChart.getOption();
         option.series[0].leafDepth = targetDepth;
         option.series[0].data = filteredData;
+        option.series[0].name = market;
         // 여기에 제목 업데이트 추가
         var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
         var marketType = $("#market-select").val(); // KOSPI 또는 KOSDAQ
+        currentMarketLabel = marketType;
         option.title = {
           text: `${marketType.toUpperCase()} - ${formattedTitleDate}`,
           left: "center",
@@ -1640,6 +1655,8 @@ $("#apply-filter-btn").on("click", function () {
             var option = myChart.getOption();
             option.series[0].leafDepth = targetDepth;
             option.series[0].data = filteredData;
+            option.series[0].name = market;
+            currentMarketLabel = market;
             myChart.setOption(option);
           }).fail(function () {
             alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
