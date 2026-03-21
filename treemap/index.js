@@ -1571,11 +1571,12 @@ $("#apply-filter-btn").on("click", function () {
     });
     $.when.apply($, requests)
       .done(function (newData) {
-        const responses =
-          requests.length === 1 ? [newData] : Array.prototype.slice.call(arguments);
-        const newDataList = responses.map(function (res) {
-          return res[0];
-        });
+        const newDataList =
+          requests.length === 1
+            ? [newData]
+            : Array.prototype.slice.call(arguments).map(function (res) {
+                return res[0];
+              });
         var mergedJson =
           market === "ALL" ? mergeRawDataSets(newDataList) : newDataList[0];
         var processedData = groupJsonData(mergedJson);
