@@ -8,9 +8,6 @@ let startDateFile;
 let currentBaseFiles = {};
 let dateSelectionMap = {};
 
-const MARKET_ALL = "ALL";
-const MARKET_TYPES = ["KOSPI", "KOSDAQ"];
-
 // 기존 변수 아래에 추가
 let currentFilters = {
   searchQuery: "",
@@ -70,19 +67,7 @@ function adjustTimeByMinutes(filename, subtractMinutes) {
 }
 
 function getMarketsForSelection(market) {
-  return market === MARKET_ALL ? MARKET_TYPES : [market];
-}
-
-function getJsonListFilename(market) {
-  return market === "KOSPI" ? "kospi_json_list.json" : "kosdaq_json_list.json";
-}
-
-function fetchJson(url) {
-  return $.getJSON(url + "?_=" + new Date().getTime());
-}
-
-function fetchMarketList(market) {
-  return fetchJson(getJsonListFilename(market));
+  return market === "ALL" ? ["KOSPI", "KOSDAQ"] : [market];
 }
 
 function extractDateKey(filename) {
@@ -90,65 +75,8 @@ function extractDateKey(filename) {
   return match ? match[1] : filename;
 }
 
-function setDateSelectionOptions(entries) {
-  const $startDateSelect = $("#start-date-select");
-  const $endDateSelect = $("#end-date-select");
-
-  dateSelectionMap = {};
-  $startDateSelect.empty();
-  $endDateSelect.empty();
-  $startDateSelect.append(
-    '<option value="" disabled selected hidden>시작 날짜 선택</option>'
-  );
-  $endDateSelect.append(
-    '<option value="" selected>단일 검색 (종료 날짜 없음)</option>'
-  );
-
-  entries.forEach((entry, index) => {
-    const token = `date-option-${index}`;
-    dateSelectionMap[token] = entry;
-    const optionHtml =
-      '<option value="' + token + '">' + entry.name + "</option>";
-    $startDateSelect.append(optionHtml);
-    $endDateSelect.append(optionHtml);
-  });
-
-  const hasOptions = entries.length > 0;
-  $startDateSelect.prop("disabled", !hasOptions);
-  $endDateSelect.prop("disabled", !hasOptions);
-
-  if (hasOptions) {
-    $startDateSelect.prop("selectedIndex", 1);
-  }
-}
-
-function buildCombinedDateEntries(kospiList, kosdaqList) {
-  const kospiMap = new Map(
-    kospiList.map((item) => [extractDateKey(item.filename), item])
-  );
-  const kosdaqMap = new Map(
-    kosdaqList.map((item) => [extractDateKey(item.filename), item])
-  );
-
-  return kospiList
-    .filter((item) => kosdaqMap.has(extractDateKey(item.filename)))
-    .map((item) => {
-      const dateKey = extractDateKey(item.filename);
-      const kosdaqItem = kosdaqMap.get(dateKey);
-      return {
-        name: item.name,
-        key: dateKey,
-        files: {
-          KOSPI: item.filename,
-          KOSDAQ: kosdaqItem.filename,
-        },
-      };
-    });
-}
-
-function mergeRawMarketData(dataSets) {
+function mergeRawDataSets(dataSets) {
   const sectorMap = new Map();
-
   dataSets.forEach((data) => {
     data.forEach((sector) => {
       if (!sectorMap.has(sector.name)) {
@@ -158,318 +86,69 @@ function mergeRawMarketData(dataSets) {
         });
         return;
       }
-
-      const existingSector = sectorMap.get(sector.name);
-      existingSector.children = existingSector.children.concat(
-        sector.children || []
-      );
+      const existing = sectorMap.get(sector.name);
+      existing.children = existing.children.concat(sector.children || []);
     });
   });
-
   return Array.from(sectorMap.values());
 }
 
-function renderChart(type, filename, rawData, showLoading = true) {
-  var dom = document.getElementById("chart-container");
-  var myChart = echarts.init(dom, null, {
-    renderer: "canvas",
-    useDirtyRect: false,
-  });
-  var option;
-  if (showLoading && initialLoad) {
-    myChart.showLoading();
-  }
-
-  allData = rawData;
-  processedData = groupJsonData(rawData);
-  console.log(processedData);
-
-  if (initialLoad) {
-    myChart.hideLoading();
-    initialLoad = false;
-  }
-
-  convertData(rawData);
-  function convertData(originList) {
-    for (let i = 0; i < originList.length; i++) {
-      let node = originList[i];
-      if (node) {
-        let value = node.value;
-        if (value[4] != null && value[4] > 0) {
-          value[5] = echarts.number.linearMap(value[4], [0, 5], [1, 5], true);
-        } else if (value[4] != null && value[4] < 0) {
-          value[5] = echarts.number.linearMap(
-            value[4],
-            [-5, 0],
-            [-5, -1],
-            true
-          );
-        } else {
-          value[5] = 0;
-        }
-        if (!isFinite(value[3])) {
-          value[5] = 0;
-        }
-        if (node.children) {
-          convertData(node.children);
-        }
-      }
-    }
-  }
-  function isValidNumber(num) {
-    return num != null && isFinite(num);
-  }
-
-  const formattedTitleDate = adjustTimeByMinutes(filename, 20);
-  myChart.setOption(
-    (option = {
-      title: {
-        text: `${type.toUpperCase()} - ${formattedTitleDate}`,
-        left: "center",
+function buildDateOptions(market, data) {
+  if (market !== "ALL") {
+    return data.map((item) => ({
+      label: item.name,
+      files: {
+        [market]: item.filename,
       },
-      tooltip: {
-        formatter: function (info) {
-          var value = info.value;
-          if (window.isRangeSearch) {
-            if (info.data.children) {
-              let start_cap = isValidNumber(value[0])
-                ? echarts.format.addCommas(value[0]) + " 백만원"
-                : "-";
-              let end_cap = isValidNumber(value[1])
-                ? echarts.format.addCommas(value[1]) + " 백만원"
-                : "-";
-              let change = isValidNumber(value[4])
-                ? value[4].toFixed(2) + " %"
-                : "-";
-              return [
-                '<div class="tooltip-title"><b>' +
-                  echarts.format.encodeHTML(info.name) +
-                  "</b></div>",
-                "시작일 시총: " + start_cap + "<br>",
-                "종료일 시총: " + end_cap + "<br>",
-                "변동율: " + change,
-              ].join("");
-            } else {
-              let start_cap = isValidNumber(value[0])
-                ? echarts.format.addCommas(value[0]) + " 백만원"
-                : "-";
-              let end_cap = isValidNumber(value[1])
-                ? echarts.format.addCommas(value[1]) + " 백만원"
-                : "-";
-              let start_price = isValidNumber(value[2])
-                ? echarts.format.addCommas(value[2]) + " 원"
-                : "-";
-              let end_price = isValidNumber(value[3])
-                ? echarts.format.addCommas(value[3]) + " 원"
-                : "-";
-              let change = isValidNumber(value[4])
-                ? value[4].toFixed(2) + " %"
-                : "-";
-              return [
-                '<div class="tooltip-title"><b>' +
-                  echarts.format.encodeHTML(info.name) +
-                  "</b></div>",
-                "시작일 시총: " + start_cap + "<br>",
-                "종료일 시총: " + end_cap + "<br>",
-                "시작일 주가: " + start_price + "<br>",
-                "종료일 주가: " + end_price + "<br>",
-                "변동율: " + change,
-              ].join("");
-            }
-          } else {
-            if (info.data.children) {
-              let now_cap = isValidNumber(value[0])
-                ? echarts.format.addCommas(value[0]) + " 백만원"
-                : "-";
-              let pre_cap = isValidNumber(value[1])
-                ? echarts.format.addCommas(value[1]) + " 백만원"
-                : "-";
-              let change = isValidNumber(value[4])
-                ? value[4].toFixed(2) + " %"
-                : "-";
-              return [
-                '<div class="tooltip-title"><b>' +
-                  echarts.format.encodeHTML(info.name) +
-                  "</b></div>",
-                "전일시총: " + now_cap + "<br>",
-                "현재시총: " + pre_cap + "<br>",
-                "변동율: " + change,
-              ].join("");
-            } else {
-              let now_cap = isValidNumber(value[0])
-                ? echarts.format.addCommas(value[0]) + " 백만원"
-                : "-";
-              let pre_cap = isValidNumber(value[1])
-                ? echarts.format.addCommas(value[1]) + " 백만원"
-                : "-";
-              let now_price = isValidNumber(value[2])
-                ? echarts.format.addCommas(value[2]) + " 원"
-                : "-";
-              let pre_price = isValidNumber(value[3])
-                ? echarts.format.addCommas(value[3]) + " 원"
-                : "-";
-              let change = isValidNumber(value[4])
-                ? value[4].toFixed(2) + " %"
-                : "-";
-              return [
-                '<div class="tooltip-title"><b>' +
-                  echarts.format.encodeHTML(info.name) +
-                  "</b></div>",
-                "전일시총: " + now_cap + "<br>",
-                "현재시총: " + pre_cap + "<br>",
-                "전일주가: " + now_price + "<br>",
-                "현재주가: " + pre_price + "<br>",
-                "변동율: " + change,
-              ].join("");
-            }
-          }
-        },
-      },
-      backgroundColor: "#f8f9fa",
-      visualMap: {
-        type: "continuous",
-        min: -5,
-        max: 5,
-        dimension: 4,
-        inRange: {
-          color: ["#942e38", "#aaaaaa", "#269f3c"],
-        },
-        show: true,
-      },
-      series: [
-        {
-          name: `${type.toUpperCase()}`,
-          width: "100%",
-          height: "100%" - "30px",
-          top: 30,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          leafDepth: 3,
-          drillDownIcon: "",
-          type: "treemap",
-          animation: true,
-          upperLabel: {
-            show: true,
-            color: "#fff",
-            borderWidth: 1,
-            fontWeight: "bold",
-            formatter: function (info) {
-              let name = info.name;
-              return [name].join("");
-            },
-          },
-          breadcrumb: {
-            show: false,
-          },
-          labelLayout: function (params) {
-            if (params.rect.width < 5 || params.rect.height < 5) {
-              return { fontSize: 0 };
-            }
-            return {
-              fontSize: Math.min(
-                Math.sqrt(params.rect.width * params.rect.height) / 10,
-                20
-              ),
-            };
-          },
-          label: {
-            show: true,
-            formatter: function (params) {
-              let value = params.value;
-              let pct = value && value.length > 4 ? value[4] : null;
-              let displayPct = isValidNumber(pct) ? pct.toFixed(2) + "%" : "";
-              return `${params.name}\n${displayPct}`;
-            },
-          },
-          itemStyle: {
-            gapWidth: 1,
-            borderColor: "#fff",
-          },
-          levels: [
-            {
-              itemStyle: {
-                borderColor: "#777",
-                borderWidth: 0,
-                gapWidth: 1,
-              },
-              upperLabel: {
-                show: false,
-              },
-            },
-            {
-              itemStyle: {
-                borderColor: "#555",
-                borderWidth: 4,
-                gapWidth: 1,
-              },
-              emphasis: {
-                itemStyle: {
-                  borderColor: "#ddd",
-                },
-              },
-            },
-            {
-              colorSaturation: [0.35, 0.5],
-              itemStyle: {
-                borderWidth: 5,
-                gapWidth: 1,
-                borderColorSaturation: 0.6,
-              },
-            },
-          ],
-          data: processedData,
-        },
-      ],
-    })
+    }));
+  }
+
+  const kospiMap = new Map(
+    data.KOSPI.map((item) => [extractDateKey(item.filename), item])
   );
+  const kosdaqMap = new Map(
+    data.KOSDAQ.map((item) => [extractDateKey(item.filename), item])
+  );
+
+  return data.KOSPI
+    .filter((item) => kosdaqMap.has(extractDateKey(item.filename)))
+    .map((item) => {
+      const key = extractDateKey(item.filename);
+      return {
+        label: item.name,
+        files: {
+          KOSPI: item.filename,
+          KOSDAQ: kosdaqMap.get(key).filename,
+        },
+      };
+    });
 }
 
-function loadData(type, filename, showLoading = true, fallbackCallback = null) {
-  $.get("../data/" + filename, function (marketData) {
-    currentBaseFiles = { [type]: filename };
-    renderChart(type, filename, marketData, showLoading);
-    if (typeof fallbackCallback === "function") {
-      fallbackCallback();
-    }
-  }).fail(function () {
-    if (typeof fallbackCallback === "function") {
-      fallbackCallback();
-      return;
-    }
-
-    console.error(`Failed to load: ${filename}`);
-    const nearestTime = getNearestPreviousTime();
-    const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
-    $("#time-slider").val(sliderIndex);
-    updateTimeDisplay(sliderIndex);
-    const newFilename = getFilenameForSliderIndex(sliderIndex, filename);
-    loadData(type, newFilename, false, () => {
-      let newSliderIndex = Math.max(sliderIndex - 1, 0);
-      $("#time-slider").val(newSliderIndex);
-      updateTimeDisplay(newSliderIndex);
-      const fallbackFilename = getFilenameForSliderIndex(
-        newSliderIndex,
-        filename
-      );
-      loadData(type, fallbackFilename, false);
-    });
+function populateDateSelects(options) {
+  var $startDateSelect = $("#start-date-select");
+  var $endDateSelect = $("#end-date-select");
+  dateSelectionMap = {};
+  $startDateSelect.empty();
+  $endDateSelect.empty();
+  $startDateSelect.append(
+    '<option value="" disabled selected hidden>시작 날짜 선택</option>'
+  );
+  $endDateSelect.append(
+    '<option value="" selected>단일 검색 (종료 날짜 없음)</option>'
+  );
+  options.forEach(function (item, index) {
+    const optionValue = "date_option_" + index;
+    dateSelectionMap[optionValue] = item.files;
+    var option =
+      '<option value="' + optionValue + '">' + item.label + "</option>";
+    $startDateSelect.append(option);
+    $endDateSelect.append(option);
   });
-}
-
-function loadCombinedData(files, showLoading = true, fallbackCallback = null) {
-  $.when($.getJSON("../data/" + files.KOSPI), $.getJSON("../data/" + files.KOSDAQ))
-    .done(function (kospiRes, kosdaqRes) {
-      currentBaseFiles = { ...files };
-      const combinedData = mergeRawMarketData([kospiRes[0], kosdaqRes[0]]);
-      renderChart("전체", files.KOSPI, combinedData, showLoading);
-      if (typeof fallbackCallback === "function") {
-        fallbackCallback();
-      }
-    })
-    .fail(function () {
-      alert("전체 시장 데이터를 불러오는데 실패했습니다.");
-    });
+  $startDateSelect.prop("disabled", options.length === 0);
+  $endDateSelect.prop("disabled", options.length === 0);
+  if (options.length > 0) {
+    $startDateSelect.prop("selectedIndex", 1);
+  }
 }
 
 function loadAndCacheData(filePrefix, date) {
@@ -702,16 +381,617 @@ function loadJsonList(type) {
   });
 }
 
-function getFilenameForSliderIndex(sliderIndex, file) {
-  const targetFile = file || currentFilename;
-  if (!targetFile) {
-    return "";
+function loadData(type, filename, showLoading = true, fallbackCallback = null) {
+  currentBaseFiles = { [type]: filename };
+  currentFilename = filename;
+  var dom = document.getElementById("chart-container");
+  var myChart = echarts.init(dom, null, {
+    renderer: "canvas",
+    useDirtyRect: false,
+  });
+  var option;
+  if (showLoading && initialLoad) {
+    myChart.showLoading();
   }
-  const baseFilename = targetFile.substring(0, targetFile.length - 10);
-  const baseDate = targetFile.slice(-10, -5); // 예: "20241217"
+  const nearestTime = getNearestPreviousTime();
+  const currentTime = new Date();
+  const hours = currentTime.getUTCHours() + 9;
+  const minutes = currentTime.getUTCMinutes();
+  $.get("../data/" + filename, function (kospi_data) {
+    allData = kospi_data;
+    processedData = groupJsonData(kospi_data);
+    console.log(processedData);
+    if (initialLoad) {
+      myChart.hideLoading();
+      initialLoad = false;
+    }
+    const visualMin = -5;
+    const visualMax = 5;
+    const visualMinBound = -1;
+    const visualMaxBound = 1;
+    convertData(kospi_data);
+    function convertData(originList) {
+      let min = Infinity;
+      let max = -Infinity;
+      for (let i = 0; i < originList.length; i++) {
+        let node = originList[i];
+        if (node) {
+          let value = node.value;
+          value[4] != null && value[4] < min && (min = value[4]);
+          value[4] != null && value[4] > max && (max = value[4]);
+        }
+      }
+      for (let i = 0; i < originList.length; i++) {
+        let node = originList[i];
+        if (node) {
+          let value = node.value;
+          if (value[4] != null && value[4] > 0) {
+            value[5] = echarts.number.linearMap(
+              value[4],
+              [0, 5],
+              [visualMaxBound, visualMax],
+              true
+            );
+          } else if (value[4] != null && value[4] < 0) {
+            value[5] = echarts.number.linearMap(
+              value[4],
+              [-5, 0],
+              [visualMin, visualMinBound],
+              true
+            );
+          } else {
+            value[5] = 0;
+          }
+          if (!isFinite(value[3])) {
+            value[5] = 0;
+          }
+          if (node.children) {
+            convertData(node.children);
+          }
+        }
+      }
+    }
+    function isValidNumber(num) {
+      return num != null && isFinite(num);
+    }
+    const formattedTitleDate = adjustTimeByMinutes(filename, 20);
+    myChart.setOption(
+      (option = {
+        title: {
+          text: `${type.toUpperCase()} - ${formattedTitleDate}`,
+          left: "center",
+        },
+        tooltip: {
+          formatter: function (info) {
+            var value = info.value;
+            if (window.isRangeSearch) {
+              if (info.data.children) {
+                let start_cap = isValidNumber(value[0])
+                  ? echarts.format.addCommas(value[0]) + " 백만원"
+                  : "-";
+                let end_cap = isValidNumber(value[1])
+                  ? echarts.format.addCommas(value[1]) + " 백만원"
+                  : "-";
+                let change = isValidNumber(value[4])
+                  ? value[4].toFixed(2) + " %"
+                  : "-";
+                return [
+                  '<div class="tooltip-title"><b>' +
+                    echarts.format.encodeHTML(info.name) +
+                    "</b></div>",
+                  "시작일 시총: " + start_cap + "<br>",
+                  "종료일 시총: " + end_cap + "<br>",
+                  "변동율: " + change,
+                ].join("");
+              } else {
+                let start_cap = isValidNumber(value[0])
+                  ? echarts.format.addCommas(value[0]) + " 백만원"
+                  : "-";
+                let end_cap = isValidNumber(value[1])
+                  ? echarts.format.addCommas(value[1]) + " 백만원"
+                  : "-";
+                let start_price = isValidNumber(value[2])
+                  ? echarts.format.addCommas(value[2]) + " 원"
+                  : "-";
+                let end_price = isValidNumber(value[3])
+                  ? echarts.format.addCommas(value[3]) + " 원"
+                  : "-";
+                let change = isValidNumber(value[4])
+                  ? value[4].toFixed(2) + " %"
+                  : "-";
+                return [
+                  '<div class="tooltip-title"><b>' +
+                    echarts.format.encodeHTML(info.name) +
+                    "</b></div>",
+                  "시작일 시총: " + start_cap + "<br>",
+                  "종료일 시총: " + end_cap + "<br>",
+                  "시작일 주가: " + start_price + "<br>",
+                  "종료일 주가: " + end_price + "<br>",
+                  "변동율: " + change,
+                ].join("");
+              }
+            } else {
+              if (info.data.children) {
+                let now_cap = isValidNumber(value[0])
+                  ? echarts.format.addCommas(value[0]) + " 백만원"
+                  : "-";
+                let pre_cap = isValidNumber(value[1])
+                  ? echarts.format.addCommas(value[1]) + " 백만원"
+                  : "-";
+                let change = isValidNumber(value[4])
+                  ? value[4].toFixed(2) + " %"
+                  : "-";
+                return [
+                  '<div class="tooltip-title"><b>' +
+                    echarts.format.encodeHTML(info.name) +
+                    "</b></div>",
+                  "전일시총: " + now_cap + "<br>",
+                  "현재시총: " + pre_cap + "<br>",
+                  "변동율: " + change,
+                ].join("");
+              } else {
+                let now_cap = isValidNumber(value[0])
+                  ? echarts.format.addCommas(value[0]) + " 백만원"
+                  : "-";
+                let pre_cap = isValidNumber(value[1])
+                  ? echarts.format.addCommas(value[1]) + " 백만원"
+                  : "-";
+                let now_price = isValidNumber(value[2])
+                  ? echarts.format.addCommas(value[2]) + " 원"
+                  : "-";
+                let pre_price = isValidNumber(value[3])
+                  ? echarts.format.addCommas(value[3]) + " 원"
+                  : "-";
+                let change = isValidNumber(value[4])
+                  ? value[4].toFixed(2) + " %"
+                  : "-";
+                return [
+                  '<div class="tooltip-title"><b>' +
+                    echarts.format.encodeHTML(info.name) +
+                    "</b></div>",
+                  "전일시총: " + now_cap + "<br>",
+                  "현재시총: " + pre_cap + "<br>",
+                  "전일주가: " + now_price + "<br>",
+                  "현재주가: " + pre_price + "<br>",
+                  "변동율: " + change,
+                ].join("");
+              }
+            }
+          },
+        },
+        backgroundColor: "#f8f9fa",
+        visualMap: {
+          type: "continuous",
+          min: -5,
+          max: 5,
+          dimension: 4,
+          inRange: {
+            color: ["#942e38", "#aaaaaa", "#269f3c"],
+          },
+          show: true,
+        },
+        series: [
+          {
+            name: `${type.toUpperCase()}`,
+            width: "100%",
+            height: "100%" - "30px",
+            top: 30,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            leafDepth: 3,
+            drillDownIcon: "",
+            type: "treemap",
+            animation: true,
+            upperLabel: {
+              show: true,
+              color: "#fff",
+              borderWidth: 1,
+              fontWeight: "bold",
+              formatter: function (info) {
+                let name = info.name;
+                return [name].join("");
+              },
+            },
+            breadcrumb: {
+              show: false,
+            },
+            labelLayout: function (params) {
+              if (params.rect.width < 5 || params.rect.height < 5) {
+                return { fontSize: 0 };
+              }
+              return {
+                fontSize: Math.min(
+                  Math.sqrt(params.rect.width * params.rect.height) / 10,
+                  20
+                ),
+              };
+            },
+            label: {
+              show: true,
+              formatter: function (params) {
+                let changeleaf = params.value[4];
+                changeleaf = isValidNumber(changeleaf)
+                  ? changeleaf.toFixed(2) + " %"
+                  : "-";
+                return `${params.name}\n${changeleaf}`;
+              },
+              color: "#fff",
+              textShadowColor: "black",
+              textShadowBlur: 4,
+              textShadowOffsetX: 0,
+              textShadowOffsetY: 0,
+              fontWeight: "bold",
+            },
+            itemStyle: {
+              borderColor: "black",
+            },
+            visualMin: visualMin,
+            visualMax: visualMax,
+            visualDimension: 5,
+            levels: [
+              {
+                itemStyle: {
+                  borderWidth: 1,
+                  gapWidth: 3,
+                  borderColor: "#333",
+                },
+              },
+              {
+                itemStyle: {
+                  borderWidth: 2,
+                  gapWidth: 1,
+                  borderColor: "#555",
+                },
+              },
+              {
+                itemStyle: {
+                  borderWidth: 2,
+                  borderColor: "#777",
+                },
+              },
+            ],
+            data: processedData,
+          },
+        ],
+      })
+    );
+  }).fail(function () {
+    if (fallbackCallback) {
+      fallbackCallback();
+    } else {
+      console.error(`Failed to load: ${filename}`);
+      const nearestTime = getNearestPreviousTime();
+      const sliderIndex = nearestTime ? calculateSliderIndex(nearestTime) : 39;
+      $("#time-slider").val(sliderIndex);
+      updateTimeDisplay(sliderIndex);
+      const newFilename = getFilenameForSliderIndex(sliderIndex);
+      loadData(type, newFilename, false, () => {
+        let newSliderIndex = Math.max(sliderIndex - 1, 0);
+        $("#time-slider").val(newSliderIndex);
+        updateTimeDisplay(newSliderIndex);
+        const fallbackFilename = getFilenameForSliderIndex(newSliderIndex);
+        loadData(type, fallbackFilename, false);
+      });
+    }
+  });
+  if (option && typeof option === "object") {
+    myChart.setOption(option);
+  }
+}
+
+function loadCombinedData(
+  type,
+  filenames,
+  titleFilename,
+  showLoading = true,
+  fallbackCallback = null
+) {
+  $.when(
+    $.getJSON("../data/" + filenames.KOSPI),
+    $.getJSON("../data/" + filenames.KOSDAQ)
+  )
+    .done(function (kospiRes, kosdaqRes) {
+      const mergedRawData = mergeRawDataSets([kospiRes[0], kosdaqRes[0]]);
+      var dom = document.getElementById("chart-container");
+      var myChart = echarts.init(dom, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      var option;
+      if (showLoading && initialLoad) {
+        myChart.showLoading();
+      }
+      allData = mergedRawData;
+      processedData = groupJsonData(mergedRawData);
+      console.log(processedData);
+      if (initialLoad) {
+        myChart.hideLoading();
+        initialLoad = false;
+      }
+      const visualMin = -5;
+      const visualMax = 5;
+      const visualMinBound = -1;
+      const visualMaxBound = 1;
+      convertData(mergedRawData);
+      function convertData(originList) {
+        let min = Infinity;
+        let max = -Infinity;
+        for (let i = 0; i < originList.length; i++) {
+          let node = originList[i];
+          if (node) {
+            let value = node.value;
+            value[4] != null && value[4] < min && (min = value[4]);
+            value[4] != null && value[4] > max && (max = value[4]);
+          }
+        }
+        for (let i = 0; i < originList.length; i++) {
+          let node = originList[i];
+          if (node) {
+            let value = node.value;
+            if (value[4] != null && value[4] > 0) {
+              value[5] = echarts.number.linearMap(
+                value[4],
+                [0, 5],
+                [visualMaxBound, visualMax],
+                true
+              );
+            } else if (value[4] != null && value[4] < 0) {
+              value[5] = echarts.number.linearMap(
+                value[4],
+                [-5, 0],
+                [visualMin, visualMinBound],
+                true
+              );
+            } else {
+              value[5] = 0;
+            }
+            if (!isFinite(value[3])) {
+              value[5] = 0;
+            }
+            if (node.children) {
+              convertData(node.children);
+            }
+          }
+        }
+      }
+      function isValidNumber(num) {
+        return num != null && isFinite(num);
+      }
+      const formattedTitleDate = adjustTimeByMinutes(titleFilename, 20);
+      myChart.setOption(
+        (option = {
+          title: {
+            text: `${type.toUpperCase()} - ${formattedTitleDate}`,
+            left: "center",
+          },
+          tooltip: {
+            formatter: function (info) {
+              var value = info.value;
+              if (window.isRangeSearch) {
+                if (info.data.children) {
+                  let start_cap = isValidNumber(value[0])
+                    ? echarts.format.addCommas(value[0]) + " 백만원"
+                    : "-";
+                  let end_cap = isValidNumber(value[1])
+                    ? echarts.format.addCommas(value[1]) + " 백만원"
+                    : "-";
+                  let change = isValidNumber(value[4])
+                    ? value[4].toFixed(2) + " %"
+                    : "-";
+                  return [
+                    '<div class="tooltip-title"><b>' +
+                      echarts.format.encodeHTML(info.name) +
+                      "</b></div>",
+                    "시작일 시총: " + start_cap + "<br>",
+                    "종료일 시총: " + end_cap + "<br>",
+                    "변동율: " + change,
+                  ].join("");
+                } else {
+                  let start_cap = isValidNumber(value[0])
+                    ? echarts.format.addCommas(value[0]) + " 백만원"
+                    : "-";
+                  let end_cap = isValidNumber(value[1])
+                    ? echarts.format.addCommas(value[1]) + " 백만원"
+                    : "-";
+                  let start_price = isValidNumber(value[2])
+                    ? echarts.format.addCommas(value[2]) + " 원"
+                    : "-";
+                  let end_price = isValidNumber(value[3])
+                    ? echarts.format.addCommas(value[3]) + " 원"
+                    : "-";
+                  let change = isValidNumber(value[4])
+                    ? value[4].toFixed(2) + " %"
+                    : "-";
+                  return [
+                    '<div class="tooltip-title"><b>' +
+                      echarts.format.encodeHTML(info.name) +
+                      "</b></div>",
+                    "시작일 시총: " + start_cap + "<br>",
+                    "종료일 시총: " + end_cap + "<br>",
+                    "시작일 주가: " + start_price + "<br>",
+                    "종료일 주가: " + end_price + "<br>",
+                    "변동율: " + change,
+                  ].join("");
+                }
+              } else {
+                if (info.data.children) {
+                  let now_cap = isValidNumber(value[0])
+                    ? echarts.format.addCommas(value[0]) + " 백만원"
+                    : "-";
+                  let pre_cap = isValidNumber(value[1])
+                    ? echarts.format.addCommas(value[1]) + " 백만원"
+                    : "-";
+                  let change = isValidNumber(value[4])
+                    ? value[4].toFixed(2) + " %"
+                    : "-";
+                  return [
+                    '<div class="tooltip-title"><b>' +
+                      echarts.format.encodeHTML(info.name) +
+                      "</b></div>",
+                    "전일시총: " + now_cap + "<br>",
+                    "현재시총: " + pre_cap + "<br>",
+                    "변동율: " + change,
+                  ].join("");
+                } else {
+                  let now_cap = isValidNumber(value[0])
+                    ? echarts.format.addCommas(value[0]) + " 백만원"
+                    : "-";
+                  let pre_cap = isValidNumber(value[1])
+                    ? echarts.format.addCommas(value[1]) + " 백만원"
+                    : "-";
+                  let now_price = isValidNumber(value[2])
+                    ? echarts.format.addCommas(value[2]) + " 원"
+                    : "-";
+                  let pre_price = isValidNumber(value[3])
+                    ? echarts.format.addCommas(value[3]) + " 원"
+                    : "-";
+                  let change = isValidNumber(value[4])
+                    ? value[4].toFixed(2) + " %"
+                    : "-";
+                  return [
+                    '<div class="tooltip-title"><b>' +
+                      echarts.format.encodeHTML(info.name) +
+                      "</b></div>",
+                    "전일시총: " + now_cap + "<br>",
+                    "현재시총: " + pre_cap + "<br>",
+                    "전일주가: " + now_price + "<br>",
+                    "현재주가: " + pre_price + "<br>",
+                    "변동율: " + change,
+                  ].join("");
+                }
+              }
+            },
+          },
+          backgroundColor: "#f8f9fa",
+          visualMap: {
+            type: "continuous",
+            min: -5,
+            max: 5,
+            dimension: 4,
+            inRange: {
+              color: ["#942e38", "#aaaaaa", "#269f3c"],
+            },
+            show: true,
+          },
+          series: [
+            {
+              name: `${type.toUpperCase()}`,
+              width: "100%",
+              height: "100%" - "30px",
+              top: 30,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              leafDepth: 3,
+              drillDownIcon: "",
+              type: "treemap",
+              animation: true,
+              upperLabel: {
+                show: true,
+                color: "#fff",
+                borderWidth: 1,
+                fontWeight: "bold",
+                formatter: function (info) {
+                  let name = info.name;
+                  return [name].join("");
+                },
+              },
+              breadcrumb: {
+                show: false,
+              },
+              labelLayout: function (params) {
+                if (params.rect.width < 5 || params.rect.height < 5) {
+                  return { fontSize: 0 };
+                }
+                return {
+                  fontSize: Math.min(
+                    Math.sqrt(params.rect.width * params.rect.height) / 10,
+                    20
+                  ),
+                };
+              },
+              label: {
+                show: true,
+                formatter: function (params) {
+                  let changeleaf = params.value[4];
+                  changeleaf = isValidNumber(changeleaf)
+                    ? changeleaf.toFixed(2) + " %"
+                    : "-";
+                  return `${params.name}\n${changeleaf}`;
+                },
+                color: "#fff",
+                textShadowColor: "black",
+                textShadowBlur: 4,
+                textShadowOffsetX: 0,
+                textShadowOffsetY: 0,
+                fontWeight: "bold",
+              },
+              itemStyle: {
+                borderColor: "black",
+              },
+              visualMin: visualMin,
+              visualMax: visualMax,
+              visualDimension: 5,
+              levels: [
+                {
+                  itemStyle: {
+                    borderWidth: 1,
+                    gapWidth: 3,
+                    borderColor: "#333",
+                  },
+                },
+                {
+                  itemStyle: {
+                    borderWidth: 2,
+                    gapWidth: 1,
+                    borderColor: "#555",
+                  },
+                },
+                {
+                  itemStyle: {
+                    borderWidth: 2,
+                    borderColor: "#777",
+                  },
+                },
+              ],
+              data: processedData,
+            },
+          ],
+        })
+      );
+      currentBaseFiles = {
+        KOSPI: filenames.KOSPI,
+        KOSDAQ: filenames.KOSDAQ,
+      };
+      currentFilename = titleFilename;
+      if (fallbackCallback) {
+        fallbackCallback();
+      }
+      if (option && typeof option === "object") {
+        myChart.setOption(option);
+      }
+    })
+    .fail(function () {
+      if (fallbackCallback) {
+        fallbackCallback();
+      } else {
+        alert("전체 시장 데이터를 불러오는데 실패했습니다.");
+      }
+    });
+}
+
+function getFilenameForSliderIndex(sliderIndex) {
+  // startDateFile이 공백이거나 값이 없으면 currentFilename을 사용
+  const file =
+    startDateFile && startDateFile.trim() !== ""
+      ? startDateFile
+      : currentFilename;
+  const baseFilename = file.substring(0, file.length - 10);
+  const baseDate = file.slice(-10, -5); // 예: "20241217"
 
   if (sliderIndex >= 39) {
-    return targetFile;
+    return file;
   }
   
   // 시작 시각 09:20에서부터 10분 단위로 증가하는 시간 계산
@@ -725,26 +1005,50 @@ function getFilenameForSliderIndex(sliderIndex, file) {
   return `${baseFilename}${timeString}.json`;
 }
 
+function getFilenameForSliderIndexFromFile(sliderIndex, file) {
+  const originalStartDateFile = startDateFile;
+  const originalCurrentFilename = currentFilename;
+  startDateFile = file;
+  currentFilename = file;
+  const filename = getFilenameForSliderIndex(sliderIndex);
+  startDateFile = originalStartDateFile;
+  currentFilename = originalCurrentFilename;
+  return filename;
+}
+
 document.getElementById("time-slider").addEventListener("input", function () {
   const sliderValue = parseInt(this.value);
   updateTimeDisplay(sliderValue);
   const marketType = $("#market-select").val() || "KOSPI";
-
-  if (marketType === MARKET_ALL) {
-    if (!currentBaseFiles.KOSPI || !currentBaseFiles.KOSDAQ) {
-      return;
-    }
-    const nextFiles = {
-      KOSPI: getFilenameForSliderIndex(sliderValue, currentBaseFiles.KOSPI),
-      KOSDAQ: getFilenameForSliderIndex(sliderValue, currentBaseFiles.KOSDAQ),
-    };
-    loadCombinedData(nextFiles, false);
+  if (marketType === "ALL") {
+    if (!currentBaseFiles.KOSPI || !currentBaseFiles.KOSDAQ) return;
+    const kospiFilename = getFilenameForSliderIndexFromFile(
+      sliderValue,
+      currentBaseFiles.KOSPI
+    );
+    const kosdaqFilename = getFilenameForSliderIndexFromFile(
+      sliderValue,
+      currentBaseFiles.KOSDAQ
+    );
+    loadCombinedData(
+      "ALL",
+      {
+        KOSPI: kospiFilename,
+        KOSDAQ: kosdaqFilename,
+      },
+      kospiFilename,
+      false
+    );
     return;
   }
-
-  const baseFile = currentBaseFiles[marketType] || currentFilename;
-  const newFilename = getFilenameForSliderIndex(sliderValue, baseFile);
-  loadData(marketType, newFilename, false);
+  const newFilename = getFilenameForSliderIndex(sliderValue);
+  const file =
+    startDateFile && startDateFile.trim() !== "" ? startDateFile : currentFilename;
+  const currentMarketType = file.toLowerCase().includes("kospi")
+    ? "KOSPI"
+    : "KOSDAQ";
+  console.log(currentMarketType);
+  loadData(currentMarketType, newFilename, false);
 });
 
 window.onload = function () {
@@ -976,34 +1280,32 @@ $(document).ready(function () {
 
 $("#market-select").on("change", function () {
   var market = $(this).val();
-  if (market === MARKET_ALL) {
-    $.when(fetchMarketList("KOSPI"), fetchMarketList("KOSDAQ"))
+  if (market === "ALL") {
+    $.when(
+      $.getJSON("kospi_json_list.json?_=" + new Date().getTime()),
+      $.getJSON("kosdaq_json_list.json?_=" + new Date().getTime())
+    )
       .done(function (kospiRes, kosdaqRes) {
-        const entries = buildCombinedDateEntries(kospiRes[0], kosdaqRes[0]);
-        setDateSelectionOptions(entries);
+        populateDateSelects(
+          buildDateOptions("ALL", {
+            KOSPI: kospiRes[0],
+            KOSDAQ: kosdaqRes[0],
+          })
+        );
       })
       .fail(function () {
-        alert("전체 시장 날짜 목록을 불러오는데 실패했습니다.");
+        alert("날짜 목록을 불러오는데 실패했습니다.");
       });
     return;
   }
 
-  fetchMarketList(market)
-    .done(function (data) {
-      const entries = data.map(function (item) {
-        return {
-          name: item.name,
-          key: extractDateKey(item.filename),
-          files: {
-            [market]: item.filename,
-          },
-        };
-      });
-      setDateSelectionOptions(entries);
-    })
-    .fail(function () {
-      alert("날짜 목록을 불러오는데 실패했습니다.");
-    });
+  var jsonFile =
+    market === "KOSPI" ? "kospi_json_list.json" : "kosdaq_json_list.json";
+  $.getJSON(jsonFile + "?_=" + new Date().getTime(), function (data) {
+    populateDateSelects(buildDateOptions(market, data));
+  }).fail(function () {
+    alert("날짜 목록을 불러오는데 실패했습니다.");
+  });
 });
 
 function parseFilterInput(value) {
@@ -1163,21 +1465,21 @@ function filterData(
 
 $("#apply-filter-btn").on("click", function () {
   var market = $("#market-select").val();
-  startDateFile = $("#start-date-select").val();
-  var endDateFile = $("#end-date-select").val();
-  var startSelection = dateSelectionMap[startDateFile];
-  var endSelection = endDateFile ? dateSelectionMap[endDateFile] : null;
+  const startDateValue = $("#start-date-select").val();
+  const endDateValue = $("#end-date-select").val();
+  const startFiles = dateSelectionMap[startDateValue];
+  const endFiles = endDateValue ? dateSelectionMap[endDateValue] : null;
+  startDateFile = startFiles
+    ? startFiles.KOSPI || startFiles.KOSDAQ || ""
+    : "";
+  var endDateFile = endFiles ? endFiles.KOSPI || endFiles.KOSDAQ || "" : "";
   var targetDepth = parseInt($("#depth-select").val(), 10);
   if (!market) {
     alert("시장 구분을 선택해주세요.");
     return;
   }
-  if (!startDateFile || !startSelection) {
+  if (!startFiles) {
     alert("시작 날짜를 선택해주세요.");
-    return;
-  }
-  if (endDateFile && !endSelection) {
-    alert("종료 날짜를 다시 선택해주세요.");
     return;
   }
   if (!targetDepth) {
@@ -1205,28 +1507,31 @@ $("#apply-filter-btn").on("click", function () {
   if (endDateFile) {
     window.isRangeSearch = true;
     const startRequests = getMarketsForSelection(market).map(function (marketCode) {
-      return $.getJSON("../data/" + startSelection.files[marketCode]);
+      return $.getJSON("../data/" + startFiles[marketCode]);
     });
     const endRequests = getMarketsForSelection(market).map(function (marketCode) {
-      return $.getJSON("../data/" + endSelection.files[marketCode]);
+      return $.getJSON("../data/" + endFiles[marketCode]);
     });
-
     $.when.apply($, startRequests.concat(endRequests))
-      .done(function () {
-        const responses = Array.prototype.slice.call(arguments);
-        const splitIndex = startRequests.length;
-        const startDataSets = responses.slice(0, splitIndex).map(function (res) {
-          return res[0];
-        });
-        const endDataSets = responses.slice(splitIndex).map(function (res) {
-          return res[0];
-        });
+      .done(function (oldDataRes, newDataRes) {
+        const responses =
+          startRequests.length + endRequests.length === 2
+            ? [oldDataRes, newDataRes]
+            : Array.prototype.slice.call(arguments);
+        const oldJsonList = responses
+          .slice(0, startRequests.length)
+          .map(function (res) {
+            return res[0];
+          });
+        const newJsonList = responses
+          .slice(startRequests.length)
+          .map(function (res) {
+            return res[0];
+          });
         var oldJson =
-          market === MARKET_ALL
-            ? mergeRawMarketData(startDataSets)
-            : startDataSets[0];
+          market === "ALL" ? mergeRawDataSets(oldJsonList) : oldJsonList[0];
         var newJson =
-          market === MARKET_ALL ? mergeRawMarketData(endDataSets) : endDataSets[0];
+          market === "ALL" ? mergeRawDataSets(newJsonList) : newJsonList[0];
         var oldGrouped = groupJsonData(oldJson);
         var newGrouped = groupJsonData(newJson);
         var mergedData = mergeData(oldGrouped, newGrouped, 1, targetDepth);
@@ -1245,12 +1550,10 @@ $("#apply-filter-btn").on("click", function () {
         var option = myChart.getOption();
         option.series[0].leafDepth = targetDepth;
         option.series[0].data = filteredData;
-        currentBaseFiles = { ...startSelection.files };
-        currentFilename =
-          startSelection.files.KOSPI || startSelection.files.KOSDAQ || currentFilename;
-        var titleFilename =
-          startSelection.files.KOSPI || startSelection.files.KOSDAQ;
-        var formattedTitleDate = adjustTimeByMinutes(titleFilename, 20);
+        currentBaseFiles = startFiles;
+        currentFilename = startDateFile;
+        // 제목 업데이트 추가
+        var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
         var marketType = $("#market-select").val();
         option.title = {
           text: `${marketType.toUpperCase()} - ${formattedTitleDate}`,
@@ -1263,21 +1566,21 @@ $("#apply-filter-btn").on("click", function () {
       });
   } else {
     window.isRangeSearch = false;
-    const singleRequests = getMarketsForSelection(market).map(function (marketCode) {
-      return $.getJSON("../data/" + startSelection.files[marketCode]);
+    const requests = getMarketsForSelection(market).map(function (marketCode) {
+      return $.getJSON("../data/" + startFiles[marketCode]);
     });
-
-    $.when.apply($, singleRequests)
-      .done(function () {
-        const dataSets =
-          singleRequests.length === 1
-            ? [arguments[0]]
-            : Array.prototype.slice.call(arguments).map(function (res) {
-                return res[0];
-              });
-        var newData =
-          market === MARKET_ALL ? mergeRawMarketData(dataSets) : dataSets[0];
-        var processedData = groupJsonData(newData);
+    $.when.apply($, requests)
+      .done(function (newData) {
+        const responses =
+          requests.length === 1 ? [newData] : Array.prototype.slice.call(arguments);
+        const newDataList = responses.map(function (res) {
+          return res[0];
+        });
+        var mergedJson =
+          market === "ALL" ? mergeRawDataSets(newDataList) : newDataList[0];
+        var processedData = groupJsonData(mergedJson);
+        currentBaseFiles = startFiles;
+        currentFilename = startDateFile;
         var filteredData = filterData(
           processedData,
           1,
@@ -1293,13 +1596,9 @@ $("#apply-filter-btn").on("click", function () {
         var option = myChart.getOption();
         option.series[0].leafDepth = targetDepth;
         option.series[0].data = filteredData;
-        currentBaseFiles = { ...startSelection.files };
-        currentFilename =
-          startSelection.files.KOSPI || startSelection.files.KOSDAQ || currentFilename;
-        var titleFilename =
-          startSelection.files.KOSPI || startSelection.files.KOSDAQ;
-        var formattedTitleDate = adjustTimeByMinutes(titleFilename, 20);
-        var marketType = $("#market-select").val();
+        // 여기에 제목 업데이트 추가
+        var formattedTitleDate = adjustTimeByMinutes(startDateFile, 20);
+        var marketType = $("#market-select").val(); // KOSPI 또는 KOSDAQ
         option.title = {
           text: `${marketType.toUpperCase()} - ${formattedTitleDate}`,
           left: "center",
@@ -1307,7 +1606,46 @@ $("#apply-filter-btn").on("click", function () {
         myChart.setOption(option);
       })
       .fail(function () {
-        alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+        // 404 오류 발생 시, 시간값 추가해서 재시도
+        const dateMatch = startDateFile.match(/(\d{8})(\d{4})?\.json$/);
+        if (market === "ALL" || !dateMatch || dateMatch[2]) {
+          alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+          return;
+        }
+        const selectedDate = dateMatch[1];
+        const filePrefix = startDateFile.split("_")[0] + "_map_data";
+        const nearestTime = getNearestPreviousTime();
+        if (nearestTime) {
+          const fileWithTime = `${filePrefix}_${selectedDate}${nearestTime}.json`;
+          console.log(
+            "404 발생, 시간값 추가된 파일명으로 재시도:",
+            fileWithTime
+          );
+          $.getJSON("../data/" + fileWithTime, function (newData2) {
+            currentBaseFiles = startFiles;
+            currentFilename = fileWithTime;
+            var filteredData = filterData(
+              groupJsonData(newData2),
+              1,
+              targetDepth,
+              query,
+              marketCapFilter,
+              marketCapOp,
+              changeFilter,
+              changeOp,
+              changeFilter2,
+              changeOp2
+            );
+            var option = myChart.getOption();
+            option.series[0].leafDepth = targetDepth;
+            option.series[0].data = filteredData;
+            myChart.setOption(option);
+          }).fail(function () {
+            alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+          });
+        } else {
+          alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
+        }
       });
   }
 });
