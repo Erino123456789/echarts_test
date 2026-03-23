@@ -1,0 +1,2818 @@
+[
+    {
+        "name": "IT서비스",
+        "id": "IT서비스",
+        "discretion": "mandatory",
+        "value": 44557988.0,
+        "children": [
+            {
+                "name": "삼성에스디에스",
+                "id": "018260",
+                "discretion": "mandatory",
+                "value": [
+                    12581630.0,
+                    0.0,
+                    162600,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "포스코DX",
+                "id": "022100",
+                "discretion": "mandatory",
+                "value": [
+                    4925925.0,
+                    0.0,
+                    32400,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LG씨엔에스",
+                "id": "064400",
+                "discretion": "mandatory",
+                "value": [
+                    6549490.0,
+                    0.0,
+                    67600,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대오토에버",
+                "id": "307950",
+                "discretion": "mandatory",
+                "value": [
+                    11806024.0,
+                    0.0,
+                    430500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "카카오페이",
+                "id": "377300",
+                "discretion": "mandatory",
+                "value": [
+                    8694919.0,
+                    0.0,
+                    64300,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "가구",
+        "id": "가구",
+        "discretion": "mandatory",
+        "value": 1013136.0,
+        "children": [
+            {
+                "name": "한샘",
+                "id": "009240",
+                "discretion": "mandatory",
+                "value": [
+                    1013136.0,
+                    0.0,
+                    43050,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "가스유틸리티",
+        "id": "가스유틸리티",
+        "discretion": "mandatory",
+        "value": 3480200.0,
+        "children": [
+            {
+                "name": "한국가스공사",
+                "id": "036460",
+                "discretion": "mandatory",
+                "value": [
+                    3480200.0,
+                    0.0,
+                    37700,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "가정용기기와용품",
+        "id": "가정용기기와용품",
+        "discretion": "mandatory",
+        "value": 5265096.0,
+        "children": [
+            {
+                "name": "코웨이",
+                "id": "021240",
+                "discretion": "mandatory",
+                "value": [
+                    5265096.0,
+                    0.0,
+                    74400,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "건강관리장비와용품",
+        "id": "건강관리장비와용품",
+        "discretion": "mandatory",
+        "value": 953295.0,
+        "children": [
+            {
+                "name": "에스디바이오센서",
+                "id": "137310",
+                "discretion": "mandatory",
+                "value": [
+                    953295.0,
+                    0.0,
+                    7830,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "건설",
+        "id": "건설",
+        "discretion": "mandatory",
+        "value": 38453135.0,
+        "children": [
+            {
+                "name": "현대건설",
+                "id": "000720",
+                "discretion": "mandatory",
+                "value": [
+                    18262345.0,
+                    0.0,
+                    164000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "GS건설",
+                "id": "006360",
+                "discretion": "mandatory",
+                "value": [
+                    2721491.0,
+                    0.0,
+                    31800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성E&A",
+                "id": "028050",
+                "discretion": "mandatory",
+                "value": [
+                    6918800.0,
+                    0.0,
+                    35300,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "대우건설",
+                "id": "047040",
+                "discretion": "mandatory",
+                "value": [
+                    7942549.0,
+                    0.0,
+                    19110,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "DL이앤씨",
+                "id": "375500",
+                "discretion": "mandatory",
+                "value": [
+                    2607950.0,
+                    0.0,
+                    67400,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "건축자재",
+        "id": "건축자재",
+        "discretion": "mandatory",
+        "value": 6701543.0,
+        "children": [
+            {
+                "name": "아세아",
+                "id": "002030",
+                "discretion": "mandatory",
+                "value": [
+                    572050.0,
+                    0.0,
+                    276000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "KCC",
+                "id": "002380",
+                "discretion": "mandatory",
+                "value": [
+                    4852013.0,
+                    0.0,
+                    546000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한일시멘트",
+                "id": "300720",
+                "discretion": "mandatory",
+                "value": [
+                    1277480.0,
+                    0.0,
+                    17370,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "게임엔터테인먼트",
+        "id": "게임엔터테인먼트",
+        "discretion": "mandatory",
+        "value": 21440075.0,
+        "children": [
+            {
+                "name": "엔씨소프트",
+                "id": "036570",
+                "discretion": "mandatory",
+                "value": [
+                    4912037.0,
+                    0.0,
+                    228000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "더블유게임즈",
+                "id": "192080",
+                "discretion": "mandatory",
+                "value": [
+                    1077730.0,
+                    0.0,
+                    50900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "넷마블",
+                "id": "251270",
+                "discretion": "mandatory",
+                "value": [
+                    4286527.0,
+                    0.0,
+                    52300,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "크래프톤",
+                "id": "259960",
+                "discretion": "mandatory",
+                "value": [
+                    11163781.0,
+                    0.0,
+                    235500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "광고",
+        "id": "광고",
+        "discretion": "mandatory",
+        "value": 2450378.0,
+        "children": [
+            {
+                "name": "제일기획",
+                "id": "030000",
+                "discretion": "mandatory",
+                "value": [
+                    2450378.0,
+                    0.0,
+                    21300,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "기계",
+        "id": "기계",
+        "discretion": "mandatory",
+        "value": 105170375.0,
+        "children": [
+            {
+                "name": "현대엘리베이터",
+                "id": "017800",
+                "discretion": "mandatory",
+                "value": [
+                    3471404.0,
+                    0.0,
+                    88800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "두산에너빌리티",
+                "id": "034020",
+                "discretion": "mandatory",
+                "value": [
+                    70205502.0,
+                    0.0,
+                    109600,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대로템",
+                "id": "064350",
+                "discretion": "mandatory",
+                "value": [
+                    19656527.0,
+                    0.0,
+                    180100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "두산밥캣",
+                "id": "241560",
+                "discretion": "mandatory",
+                "value": [
+                    6048518.0,
+                    0.0,
+                    63100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "두산로보틱스",
+                "id": "454910",
+                "discretion": "mandatory",
+                "value": [
+                    5788424.0,
+                    0.0,
+                    89300,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "다각화된통신서비스",
+        "id": "다각화된통신서비스",
+        "discretion": "mandatory",
+        "value": 15297716.0,
+        "children": [
+            {
+                "name": "KT",
+                "id": "030200",
+                "discretion": "mandatory",
+                "value": [
+                    15297716.0,
+                    0.0,
+                    60700,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "담배",
+        "id": "담배",
+        "discretion": "mandatory",
+        "value": 18061572.0,
+        "children": [
+            {
+                "name": "KT&G",
+                "id": "033780",
+                "discretion": "mandatory",
+                "value": [
+                    18061572.0,
+                    0.0,
+                    157500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "디스플레이패널",
+        "id": "디스플레이패널",
+        "discretion": "mandatory",
+        "value": 6015000.0,
+        "children": [
+            {
+                "name": "LG디스플레이",
+                "id": "034220",
+                "discretion": "mandatory",
+                "value": [
+                    6015000.0,
+                    0.0,
+                    12030,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "무선통신서비스",
+        "id": "무선통신서비스",
+        "discretion": "mandatory",
+        "value": 23725341.0,
+        "children": [
+            {
+                "name": "SK텔레콤",
+                "id": "017670",
+                "discretion": "mandatory",
+                "value": [
+                    16925456.0,
+                    0.0,
+                    78800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LG유플러스",
+                "id": "032640",
+                "discretion": "mandatory",
+                "value": [
+                    6799885.0,
+                    0.0,
+                    15820,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "무역회사와판매업체",
+        "id": "무역회사와판매업체",
+        "discretion": "mandatory",
+        "value": 13546055.0,
+        "children": [
+            {
+                "name": "포스코인터내셔널",
+                "id": "047050",
+                "discretion": "mandatory",
+                "value": [
+                    13546055.0,
+                    0.0,
+                    77000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "반도체와반도체장비",
+        "id": "반도체와반도체장비",
+        "discretion": "mandatory",
+        "value": 2007875176.0,
+        "children": [
+            {
+                "name": "SK하이닉스",
+                "id": "000660",
+                "discretion": "mandatory",
+                "value": [
+                    717691282.0,
+                    0.0,
+                    1007000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성전자",
+                "id": "005930",
+                "discretion": "mandatory",
+                "value": [
+                    1180375802.0,
+                    0.0,
+                    199400,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한미반도체",
+                "id": "042700",
+                "discretion": "mandatory",
+                "value": [
+                    29499126.0,
+                    0.0,
+                    309500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SK스퀘어",
+                "id": "402340",
+                "discretion": "mandatory",
+                "value": [
+                    80308966.0,
+                    0.0,
+                    608000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "방송과엔터테인먼트",
+        "id": "방송과엔터테인먼트",
+        "discretion": "mandatory",
+        "value": 14815339.0,
+        "children": [
+            {
+                "name": "하이브",
+                "id": "352820",
+                "discretion": "mandatory",
+                "value": [
+                    14815339.0,
+                    0.0,
+                    344000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "백화점과일반상점",
+        "id": "백화점과일반상점",
+        "discretion": "mandatory",
+        "value": 16987914.0,
+        "children": [
+            {
+                "name": "신세계",
+                "id": "004170",
+                "discretion": "mandatory",
+                "value": [
+                    3317942.0,
+                    0.0,
+                    344000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "GS리테일",
+                "id": "007070",
+                "discretion": "mandatory",
+                "value": [
+                    1709772.0,
+                    0.0,
+                    20450,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "호텔신라",
+                "id": "008770",
+                "discretion": "mandatory",
+                "value": [
+                    1746541.0,
+                    0.0,
+                    44500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "롯데쇼핑",
+                "id": "023530",
+                "discretion": "mandatory",
+                "value": [
+                    3210774.0,
+                    0.0,
+                    113500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대백화점",
+                "id": "069960",
+                "discretion": "mandatory",
+                "value": [
+                    2077325.0,
+                    0.0,
+                    91800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "이마트",
+                "id": "139480",
+                "discretion": "mandatory",
+                "value": [
+                    2778899.0,
+                    0.0,
+                    100700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "BGF리테일",
+                "id": "282330",
+                "discretion": "mandatory",
+                "value": [
+                    2146661.0,
+                    0.0,
+                    124200,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "복합기업",
+        "id": "복합기업",
+        "discretion": "mandatory",
+        "value": 129089261.0,
+        "children": [
+            {
+                "name": "두산",
+                "id": "000150",
+                "discretion": "mandatory",
+                "value": [
+                    19205888.0,
+                    0.0,
+                    1186000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한화",
+                "id": "000880",
+                "discretion": "mandatory",
+                "value": [
+                    9047519.0,
+                    0.0,
+                    120700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "CJ",
+                "id": "001040",
+                "discretion": "mandatory",
+                "value": [
+                    6039639.0,
+                    0.0,
+                    207000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LG",
+                "id": "003550",
+                "discretion": "mandatory",
+                "value": [
+                    14728161.0,
+                    0.0,
+                    95500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "롯데지주",
+                "id": "004990",
+                "discretion": "mandatory",
+                "value": [
+                    3399059.0,
+                    0.0,
+                    32400,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성물산",
+                "id": "028260",
+                "discretion": "mandatory",
+                "value": [
+                    50568022.0,
+                    0.0,
+                    297500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SK",
+                "id": "034730",
+                "discretion": "mandatory",
+                "value": [
+                    26100973.0,
+                    0.0,
+                    360000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "복합유틸리티",
+        "id": "복합유틸리티",
+        "discretion": "mandatory",
+        "value": 1077981.0,
+        "children": [
+            {
+                "name": "지역난방공사",
+                "id": "071320",
+                "discretion": "mandatory",
+                "value": [
+                    1077981.0,
+                    0.0,
+                    93100,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "비철금속",
+        "id": "비철금속",
+        "discretion": "mandatory",
+        "value": 35894201.0,
+        "children": [
+            {
+                "name": "고려아연",
+                "id": "010130",
+                "discretion": "mandatory",
+                "value": [
+                    33125402.0,
+                    0.0,
+                    1587000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "풍산",
+                "id": "103140",
+                "discretion": "mandatory",
+                "value": [
+                    2768799.0,
+                    0.0,
+                    98800,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "상업서비스와공급품",
+        "id": "상업서비스와공급품",
+        "discretion": "mandatory",
+        "value": 3378127.0,
+        "children": [
+            {
+                "name": "에스원",
+                "id": "012750",
+                "discretion": "mandatory",
+                "value": [
+                    3378127.0,
+                    0.0,
+                    88900,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "생명보험",
+        "id": "생명보험",
+        "discretion": "mandatory",
+        "value": 50842412.0,
+        "children": [
+            {
+                "name": "삼성생명",
+                "id": "032830",
+                "discretion": "mandatory",
+                "value": [
+                    46300000.0,
+                    0.0,
+                    231500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한화생명",
+                "id": "088350",
+                "discretion": "mandatory",
+                "value": [
+                    4542412.0,
+                    0.0,
+                    5230,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "석유와가스",
+        "id": "석유와가스",
+        "discretion": "mandatory",
+        "value": 59225694.0,
+        "children": [
+            {
+                "name": "S-Oil",
+                "id": "010950",
+                "discretion": "mandatory",
+                "value": [
+                    12586756.0,
+                    0.0,
+                    111800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "GS",
+                "id": "078930",
+                "discretion": "mandatory",
+                "value": [
+                    6411161.0,
+                    0.0,
+                    69000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SK이노베이션",
+                "id": "096770",
+                "discretion": "mandatory",
+                "value": [
+                    19255113.0,
+                    0.0,
+                    113900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "HD현대",
+                "id": "267250",
+                "discretion": "mandatory",
+                "value": [
+                    20972664.0,
+                    0.0,
+                    265500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "섬유,의류,신발,호화품",
+        "id": "섬유,의류,신발,호화품",
+        "discretion": "mandatory",
+        "value": 13150707.0,
+        "children": [
+            {
+                "name": "영원무역홀딩스",
+                "id": "009970",
+                "discretion": "mandatory",
+                "value": [
+                    3064327.0,
+                    0.0,
+                    227000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "미스토홀딩스",
+                "id": "081660",
+                "discretion": "mandatory",
+                "value": [
+                    2365241.0,
+                    0.0,
+                    44550,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "영원무역",
+                "id": "111770",
+                "discretion": "mandatory",
+                "value": [
+                    3731026.0,
+                    0.0,
+                    84200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "효성티앤씨",
+                "id": "298020",
+                "discretion": "mandatory",
+                "value": [
+                    1588259.0,
+                    0.0,
+                    367000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "F&F",
+                "id": "383220",
+                "discretion": "mandatory",
+                "value": [
+                    2401854.0,
+                    0.0,
+                    62700,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "손해보험",
+        "id": "손해보험",
+        "discretion": "mandatory",
+        "value": 37584506.0,
+        "children": [
+            {
+                "name": "삼성화재",
+                "id": "000810",
+                "discretion": "mandatory",
+                "value": [
+                    21832293.0,
+                    0.0,
+                    474500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대해상",
+                "id": "001450",
+                "discretion": "mandatory",
+                "value": [
+                    2798220.0,
+                    0.0,
+                    31300,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "DB손해보험",
+                "id": "005830",
+                "discretion": "mandatory",
+                "value": [
+                    12953993.0,
+                    0.0,
+                    186700,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "식품",
+        "id": "식품",
+        "discretion": "mandatory",
+        "value": 28841862.0,
+        "children": [
+            {
+                "name": "대상",
+                "id": "001680",
+                "discretion": "mandatory",
+                "value": [
+                    717214.0,
+                    0.0,
+                    20700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "오리온홀딩스",
+                "id": "001800",
+                "discretion": "mandatory",
+                "value": [
+                    1556739.0,
+                    0.0,
+                    24850,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼양식품",
+                "id": "003230",
+                "discretion": "mandatory",
+                "value": [
+                    8670500.0,
+                    0.0,
+                    1151000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "농심",
+                "id": "004370",
+                "discretion": "mandatory",
+                "value": [
+                    2314445.0,
+                    0.0,
+                    380500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "동원산업",
+                "id": "006040",
+                "discretion": "mandatory",
+                "value": [
+                    1801238.0,
+                    0.0,
+                    40800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "오뚜기",
+                "id": "007310",
+                "discretion": "mandatory",
+                "value": [
+                    1474881.0,
+                    0.0,
+                    368000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "동서",
+                "id": "026960",
+                "discretion": "mandatory",
+                "value": [
+                    2612140.0,
+                    0.0,
+                    26200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "CJ제일제당",
+                "id": "097950",
+                "discretion": "mandatory",
+                "value": [
+                    3191487.0,
+                    0.0,
+                    212000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "오리온",
+                "id": "271560",
+                "discretion": "mandatory",
+                "value": [
+                    5448079.0,
+                    0.0,
+                    137800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "롯데웰푸드",
+                "id": "280360",
+                "discretion": "mandatory",
+                "value": [
+                    1055139.0,
+                    0.0,
+                    113400,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "양방향미디어와서비스",
+        "id": "양방향미디어와서비스",
+        "discretion": "mandatory",
+        "value": 56881180.0,
+        "children": [
+            {
+                "name": "NAVER",
+                "id": "035420",
+                "discretion": "mandatory",
+                "value": [
+                    34742859.0,
+                    0.0,
+                    221500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "카카오",
+                "id": "035720",
+                "discretion": "mandatory",
+                "value": [
+                    22138321.0,
+                    0.0,
+                    50000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "에너지장비및서비스",
+        "id": "에너지장비및서비스",
+        "discretion": "mandatory",
+        "value": 11674374.0,
+        "children": [
+            {
+                "name": "한화솔루션",
+                "id": "009830",
+                "discretion": "mandatory",
+                "value": [
+                    8886844.0,
+                    0.0,
+                    51700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "씨에스윈드",
+                "id": "112610",
+                "discretion": "mandatory",
+                "value": [
+                    2787530.0,
+                    0.0,
+                    66100,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "우주항공과국방",
+        "id": "우주항공과국방",
+        "discretion": "mandatory",
+        "value": 126399853.0,
+        "children": [
+            {
+                "name": "한화에어로스페이스",
+                "id": "012450",
+                "discretion": "mandatory",
+                "value": [
+                    68063689.0,
+                    0.0,
+                    1320000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한국항공우주",
+                "id": "047810",
+                "discretion": "mandatory",
+                "value": [
+                    18101127.0,
+                    0.0,
+                    185700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LIG넥스원",
+                "id": "079550",
+                "discretion": "mandatory",
+                "value": [
+                    14542000.0,
+                    0.0,
+                    661000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한화시스템",
+                "id": "272210",
+                "discretion": "mandatory",
+                "value": [
+                    25693037.0,
+                    0.0,
+                    136000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "은행",
+        "id": "은행",
+        "discretion": "mandatory",
+        "value": 206363769.0,
+        "children": [
+            {
+                "name": "기업은행",
+                "id": "024110",
+                "discretion": "mandatory",
+                "value": [
+                    19217963.0,
+                    0.0,
+                    24100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "신한지주",
+                "id": "055550",
+                "discretion": "mandatory",
+                "value": [
+                    46468662.0,
+                    0.0,
+                    97900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "하나금융지주",
+                "id": "086790",
+                "discretion": "mandatory",
+                "value": [
+                    31506482.0,
+                    0.0,
+                    113200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "KB금융",
+                "id": "105560",
+                "discretion": "mandatory",
+                "value": [
+                    57866391.0,
+                    0.0,
+                    155200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "BNK금융지주",
+                "id": "138930",
+                "discretion": "mandatory",
+                "value": [
+                    5849665.0,
+                    0.0,
+                    18850,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "iM금융지주",
+                "id": "139130",
+                "discretion": "mandatory",
+                "value": [
+                    2769168.0,
+                    0.0,
+                    17240,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "JB금융지주",
+                "id": "175330",
+                "discretion": "mandatory",
+                "value": [
+                    5826448.0,
+                    0.0,
+                    30950,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "우리금융지주",
+                "id": "316140",
+                "discretion": "mandatory",
+                "value": [
+                    24885187.0,
+                    0.0,
+                    33900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "카카오뱅크",
+                "id": "323410",
+                "discretion": "mandatory",
+                "value": [
+                    11973803.0,
+                    0.0,
+                    25100,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "음료",
+        "id": "음료",
+        "discretion": "mandatory",
+        "value": 2295087.0,
+        "children": [
+            {
+                "name": "하이트진로",
+                "id": "000080",
+                "discretion": "mandatory",
+                "value": [
+                    1164919.0,
+                    0.0,
+                    16610,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "롯데칠성",
+                "id": "005300",
+                "discretion": "mandatory",
+                "value": [
+                    1130168.0,
+                    0.0,
+                    121800,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "자동차",
+        "id": "자동차",
+        "discretion": "mandatory",
+        "value": 171644355.0,
+        "children": [
+            {
+                "name": "기아",
+                "id": "000270",
+                "discretion": "mandatory",
+                "value": [
+                    65784590.0,
+                    0.0,
+                    168500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대차",
+                "id": "005380",
+                "discretion": "mandatory",
+                "value": [
+                    105859765.0,
+                    0.0,
+                    517000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "자동차부품",
+        "id": "자동차부품",
+        "discretion": "mandatory",
+        "value": 63008983.0,
+        "children": [
+            {
+                "name": "한국앤컴퍼니",
+                "id": "000240",
+                "discretion": "mandatory",
+                "value": [
+                    2572745.0,
+                    0.0,
+                    27100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "세방전지",
+                "id": "004490",
+                "discretion": "mandatory",
+                "value": [
+                    849618.0,
+                    0.0,
+                    61300,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "에스엘",
+                "id": "005850",
+                "discretion": "mandatory",
+                "value": [
+                    2930902.0,
+                    0.0,
+                    63100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "DN오토모티브",
+                "id": "007340",
+                "discretion": "mandatory",
+                "value": [
+                    2325807.0,
+                    0.0,
+                    39750,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대위아",
+                "id": "011210",
+                "discretion": "mandatory",
+                "value": [
+                    2308863.0,
+                    0.0,
+                    84900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대모비스",
+                "id": "012330",
+                "discretion": "mandatory",
+                "value": [
+                    36338399.0,
+                    0.0,
+                    400500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한온시스템",
+                "id": "018880",
+                "discretion": "mandatory",
+                "value": [
+                    4248727.0,
+                    0.0,
+                    4140,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "금호타이어",
+                "id": "073240",
+                "discretion": "mandatory",
+                "value": [
+                    1792504.0,
+                    0.0,
+                    6240,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한국타이어앤테크놀로지",
+                "id": "161390",
+                "discretion": "mandatory",
+                "value": [
+                    7110429.0,
+                    0.0,
+                    57400,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "HL만도",
+                "id": "204320",
+                "discretion": "mandatory",
+                "value": [
+                    2530989.0,
+                    0.0,
+                    53900,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "전기유틸리티",
+        "id": "전기유틸리티",
+        "discretion": "mandatory",
+        "value": 41297644.0,
+        "children": [
+            {
+                "name": "한국전력",
+                "id": "015760",
+                "discretion": "mandatory",
+                "value": [
+                    31552534.0,
+                    0.0,
+                    49150,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한전KPS",
+                "id": "051600",
+                "discretion": "mandatory",
+                "value": [
+                    3037500.0,
+                    0.0,
+                    67500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한전기술",
+                "id": "052690",
+                "discretion": "mandatory",
+                "value": [
+                    6707610.0,
+                    0.0,
+                    175500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "전기장비",
+        "id": "전기장비",
+        "discretion": "mandatory",
+        "value": 106707769.0,
+        "children": [
+            {
+                "name": "대한전선",
+                "id": "001440",
+                "discretion": "mandatory",
+                "value": [
+                    5723932.0,
+                    0.0,
+                    30700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LS",
+                "id": "006260",
+                "discretion": "mandatory",
+                "value": [
+                    9469200.0,
+                    0.0,
+                    303500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LS ELECTRIC",
+                "id": "010120",
+                "discretion": "mandatory",
+                "value": [
+                    26580000.0,
+                    0.0,
+                    886000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "산일전기",
+                "id": "062040",
+                "discretion": "mandatory",
+                "value": [
+                    4862796.0,
+                    0.0,
+                    159200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "HD현대일렉트릭",
+                "id": "267260",
+                "discretion": "mandatory",
+                "value": [
+                    34569202.0,
+                    0.0,
+                    959000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "효성중공업",
+                "id": "298040",
+                "discretion": "mandatory",
+                "value": [
+                    25502639.0,
+                    0.0,
+                    2735000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "전기제품",
+        "id": "전기제품",
+        "discretion": "mandatory",
+        "value": 130887171.0,
+        "children": [
+            {
+                "name": "삼성SDI",
+                "id": "006400",
+                "discretion": "mandatory",
+                "value": [
+                    32274505.0,
+                    0.0,
+                    400500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "엘앤에프",
+                "id": "066970",
+                "discretion": "mandatory",
+                "value": [
+                    4520070.0,
+                    0.0,
+                    112100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SK아이이테크놀로지",
+                "id": "361610",
+                "discretion": "mandatory",
+                "value": [
+                    1815674.0,
+                    0.0,
+                    22200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LG에너지솔루션",
+                "id": "373220",
+                "discretion": "mandatory",
+                "value": [
+                    87867000.0,
+                    0.0,
+                    375500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "에코프로머티",
+                "id": "450080",
+                "discretion": "mandatory",
+                "value": [
+                    4409922.0,
+                    0.0,
+                    62500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "전자장비와기기",
+        "id": "전자장비와기기",
+        "discretion": "mandatory",
+        "value": 51008975.0,
+        "children": [
+            {
+                "name": "이수페타시스",
+                "id": "007660",
+                "discretion": "mandatory",
+                "value": [
+                    9308289.0,
+                    0.0,
+                    126800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성전기",
+                "id": "009150",
+                "discretion": "mandatory",
+                "value": [
+                    34695222.0,
+                    0.0,
+                    464500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LG이노텍",
+                "id": "011070",
+                "discretion": "mandatory",
+                "value": [
+                    7005464.0,
+                    0.0,
+                    296000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "전자제품",
+        "id": "전자제품",
+        "discretion": "mandatory",
+        "value": 19204305.0,
+        "children": [
+            {
+                "name": "LG전자",
+                "id": "066570",
+                "discretion": "mandatory",
+                "value": [
+                    19204305.0,
+                    0.0,
+                    117900,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "제약",
+        "id": "제약",
+        "discretion": "mandatory",
+        "value": 173228336.0,
+        "children": [
+            {
+                "name": "유한양행",
+                "id": "000100",
+                "discretion": "mandatory",
+                "value": [
+                    7988654.0,
+                    0.0,
+                    100300,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "대웅",
+                "id": "003090",
+                "discretion": "mandatory",
+                "value": [
+                    1430293.0,
+                    0.0,
+                    24600,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "녹십자홀딩스",
+                "id": "005250",
+                "discretion": "mandatory",
+                "value": [
+                    657454.0,
+                    0.0,
+                    13980,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "녹십자",
+                "id": "006280",
+                "discretion": "mandatory",
+                "value": [
+                    1716752.0,
+                    0.0,
+                    146900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한미사이언스",
+                "id": "008930",
+                "discretion": "mandatory",
+                "value": [
+                    2629655.0,
+                    0.0,
+                    38450,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한올바이오파마",
+                "id": "009420",
+                "discretion": "mandatory",
+                "value": [
+                    2951596.0,
+                    0.0,
+                    56500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성에피스홀딩스",
+                "id": "0126Z0",
+                "discretion": "mandatory",
+                "value": [
+                    13735443.0,
+                    0.0,
+                    552000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "셀트리온",
+                "id": "068270",
+                "discretion": "mandatory",
+                "value": [
+                    46671749.0,
+                    0.0,
+                    202000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "대웅제약",
+                "id": "069620",
+                "discretion": "mandatory",
+                "value": [
+                    1853852.0,
+                    0.0,
+                    160000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한미약품",
+                "id": "128940",
+                "discretion": "mandatory",
+                "value": [
+                    7174155.0,
+                    0.0,
+                    560000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "종근당",
+                "id": "185750",
+                "discretion": "mandatory",
+                "value": [
+                    1224307.0,
+                    0.0,
+                    88700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성바이오로직스",
+                "id": "207940",
+                "discretion": "mandatory",
+                "value": [
+                    74111813.0,
+                    0.0,
+                    1601000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SK바이오사이언스",
+                "id": "302440",
+                "discretion": "mandatory",
+                "value": [
+                    3360927.0,
+                    0.0,
+                    42850,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SK바이오팜",
+                "id": "326030",
+                "discretion": "mandatory",
+                "value": [
+                    7721686.0,
+                    0.0,
+                    98600,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "조선",
+        "id": "조선",
+        "discretion": "mandatory",
+        "value": 169579115.0,
+        "children": [
+            {
+                "name": "HD한국조선해양",
+                "id": "009540",
+                "discretion": "mandatory",
+                "value": [
+                    28627725.0,
+                    0.0,
+                    404500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성중공업",
+                "id": "010140",
+                "discretion": "mandatory",
+                "value": [
+                    25124000.0,
+                    0.0,
+                    28550,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한국카본",
+                "id": "017960",
+                "discretion": "mandatory",
+                "value": [
+                    2585041.0,
+                    0.0,
+                    49800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한화오션",
+                "id": "042660",
+                "discretion": "mandatory",
+                "value": [
+                    39557969.0,
+                    0.0,
+                    129100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "HD현대마린엔진",
+                "id": "071970",
+                "discretion": "mandatory",
+                "value": [
+                    2727288.0,
+                    0.0,
+                    80400,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한화엔진",
+                "id": "082740",
+                "discretion": "mandatory",
+                "value": [
+                    4093082.0,
+                    0.0,
+                    49050,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "HD현대중공업",
+                "id": "329180",
+                "discretion": "mandatory",
+                "value": [
+                    58673325.0,
+                    0.0,
+                    559000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "HD현대마린솔루션",
+                "id": "443060",
+                "discretion": "mandatory",
+                "value": [
+                    8190685.0,
+                    0.0,
+                    182700,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "증권",
+        "id": "증권",
+        "discretion": "mandatory",
+        "value": 103576100.0,
+        "children": [
+            {
+                "name": "NH투자증권",
+                "id": "005940",
+                "discretion": "mandatory",
+                "value": [
+                    12685860.0,
+                    0.0,
+                    35600,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "미래에셋증권",
+                "id": "006800",
+                "discretion": "mandatory",
+                "value": [
+                    37594921.0,
+                    0.0,
+                    67700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "삼성증권",
+                "id": "016360",
+                "discretion": "mandatory",
+                "value": [
+                    9135390.0,
+                    0.0,
+                    102300,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "키움증권",
+                "id": "039490",
+                "discretion": "mandatory",
+                "value": [
+                    12485144.0,
+                    0.0,
+                    460500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한국금융지주",
+                "id": "071050",
+                "discretion": "mandatory",
+                "value": [
+                    13067745.0,
+                    0.0,
+                    234500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "메리츠금융지주",
+                "id": "138040",
+                "discretion": "mandatory",
+                "value": [
+                    18607040.0,
+                    0.0,
+                    110100,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "철강",
+        "id": "철강",
+        "discretion": "mandatory",
+        "value": 36004559.0,
+        "children": [
+            {
+                "name": "세아베스틸지주",
+                "id": "001430",
+                "discretion": "mandatory",
+                "value": [
+                    2374072.0,
+                    0.0,
+                    66200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "세아제강지주",
+                "id": "003030",
+                "discretion": "mandatory",
+                "value": [
+                    832473.0,
+                    0.0,
+                    201000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대제철",
+                "id": "004020",
+                "discretion": "mandatory",
+                "value": [
+                    4997545.0,
+                    0.0,
+                    37450,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "POSCO홀딩스",
+                "id": "005490",
+                "discretion": "mandatory",
+                "value": [
+                    27800469.0,
+                    0.0,
+                    343500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "카드",
+        "id": "카드",
+        "discretion": "mandatory",
+        "value": 6916776.0,
+        "children": [
+            {
+                "name": "삼성카드",
+                "id": "029780",
+                "discretion": "mandatory",
+                "value": [
+                    6916776.0,
+                    0.0,
+                    59700,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "포장재",
+        "id": "포장재",
+        "discretion": "mandatory",
+        "value": 1351453.0,
+        "children": [
+            {
+                "name": "율촌화학",
+                "id": "008730",
+                "discretion": "mandatory",
+                "value": [
+                    597680.0,
+                    0.0,
+                    24100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "동원시스템즈",
+                "id": "014820",
+                "discretion": "mandatory",
+                "value": [
+                    753773.0,
+                    0.0,
+                    26000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "항공사",
+        "id": "항공사",
+        "discretion": "mandatory",
+        "value": 18381710.0,
+        "children": [
+            {
+                "name": "대한항공",
+                "id": "003490",
+                "discretion": "mandatory",
+                "value": [
+                    9702614.0,
+                    0.0,
+                    26350,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한진칼",
+                "id": "180640",
+                "discretion": "mandatory",
+                "value": [
+                    8679096.0,
+                    0.0,
+                    130000,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "항공화물운송과물류",
+        "id": "항공화물운송과물류",
+        "discretion": "mandatory",
+        "value": 19883545.0,
+        "children": [
+            {
+                "name": "CJ대한통운",
+                "id": "000120",
+                "discretion": "mandatory",
+                "value": [
+                    2596045.0,
+                    0.0,
+                    113800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "현대글로비스",
+                "id": "086280",
+                "discretion": "mandatory",
+                "value": [
+                    17287500.0,
+                    0.0,
+                    230500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "해운사",
+        "id": "해운사",
+        "discretion": "mandatory",
+        "value": 22893062.0,
+        "children": [
+            {
+                "name": "HMM",
+                "id": "011200",
+                "discretion": "mandatory",
+                "value": [
+                    20043807.0,
+                    0.0,
+                    21250,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "팬오션",
+                "id": "028670",
+                "discretion": "mandatory",
+                "value": [
+                    2849255.0,
+                    0.0,
+                    5330,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "핸드셋",
+        "id": "핸드셋",
+        "discretion": "mandatory",
+        "value": 1088293.0,
+        "children": [
+            {
+                "name": "영풍",
+                "id": "000670",
+                "discretion": "mandatory",
+                "value": [
+                    1088293.0,
+                    0.0,
+                    60200,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "호텔,레스토랑,레저",
+        "id": "호텔,레스토랑,레저",
+        "discretion": "mandatory",
+        "value": 6336712.0,
+        "children": [
+            {
+                "name": "파라다이스",
+                "id": "034230",
+                "discretion": "mandatory",
+                "value": [
+                    1684928.0,
+                    0.0,
+                    18190,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "강원랜드",
+                "id": "035250",
+                "discretion": "mandatory",
+                "value": [
+                    3891578.0,
+                    0.0,
+                    18190,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "GKL",
+                "id": "114090",
+                "discretion": "mandatory",
+                "value": [
+                    760206.0,
+                    0.0,
+                    12290,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "화장품",
+        "id": "화장품",
+        "discretion": "mandatory",
+        "value": 31796844.0,
+        "children": [
+            {
+                "name": "아모레퍼시픽홀딩스",
+                "id": "002790",
+                "discretion": "mandatory",
+                "value": [
+                    2156121.0,
+                    0.0,
+                    28200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LG생활건강",
+                "id": "051900",
+                "discretion": "mandatory",
+                "value": [
+                    3909778.0,
+                    0.0,
+                    255500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "아모레퍼시픽",
+                "id": "090430",
+                "discretion": "mandatory",
+                "value": [
+                    8235780.0,
+                    0.0,
+                    140800,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한국콜마",
+                "id": "161890",
+                "discretion": "mandatory",
+                "value": [
+                    1810509.0,
+                    0.0,
+                    76700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "코스맥스",
+                "id": "192820",
+                "discretion": "mandatory",
+                "value": [
+                    2225639.0,
+                    0.0,
+                    196100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "에이피알",
+                "id": "278470",
+                "discretion": "mandatory",
+                "value": [
+                    13459017.0,
+                    0.0,
+                    359500,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    },
+    {
+        "name": "화학",
+        "id": "화학",
+        "discretion": "mandatory",
+        "value": 72612007.0,
+        "children": [
+            {
+                "name": "DL",
+                "id": "000210",
+                "discretion": "mandatory",
+                "value": [
+                    1360037.0,
+                    0.0,
+                    64900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "미원상사",
+                "id": "002840",
+                "discretion": "mandatory",
+                "value": [
+                    652650.0,
+                    0.0,
+                    137400,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "태광산업",
+                "id": "003240",
+                "discretion": "mandatory",
+                "value": [
+                    1435173.0,
+                    0.0,
+                    1289000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "포스코퓨처엠",
+                "id": "003670",
+                "discretion": "mandatory",
+                "value": [
+                    17718087.0,
+                    0.0,
+                    199200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "롯데정밀화학",
+                "id": "004000",
+                "discretion": "mandatory",
+                "value": [
+                    1359660.0,
+                    0.0,
+                    52700,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "코스모화학",
+                "id": "005420",
+                "discretion": "mandatory",
+                "value": [
+                    561528.0,
+                    0.0,
+                    14620,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "대한유화",
+                "id": "006650",
+                "discretion": "mandatory",
+                "value": [
+                    874900.0,
+                    0.0,
+                    134600,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "OCI홀딩스",
+                "id": "010060",
+                "discretion": "mandatory",
+                "value": [
+                    3790057.0,
+                    0.0,
+                    203000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "롯데케미칼",
+                "id": "011170",
+                "discretion": "mandatory",
+                "value": [
+                    3601690.0,
+                    0.0,
+                    84200,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "금호석유화학",
+                "id": "011780",
+                "discretion": "mandatory",
+                "value": [
+                    3433587.0,
+                    0.0,
+                    131900,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SKC",
+                "id": "011790",
+                "discretion": "mandatory",
+                "value": [
+                    3764109.0,
+                    0.0,
+                    99400,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "한솔케미칼",
+                "id": "014680",
+                "discretion": "mandatory",
+                "value": [
+                    3342837.0,
+                    0.0,
+                    294000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "LG화학",
+                "id": "051910",
+                "discretion": "mandatory",
+                "value": [
+                    21883626.0,
+                    0.0,
+                    310000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "TKG휴켐스",
+                "id": "069260",
+                "discretion": "mandatory",
+                "value": [
+                    762794.0,
+                    0.0,
+                    18660,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "후성",
+                "id": "093370",
+                "discretion": "mandatory",
+                "value": [
+                    750787.0,
+                    0.0,
+                    7000,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "코오롱인더",
+                "id": "120110",
+                "discretion": "mandatory",
+                "value": [
+                    1929088.0,
+                    0.0,
+                    70100,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "미원에스씨",
+                "id": "268280",
+                "discretion": "mandatory",
+                "value": [
+                    611500.0,
+                    0.0,
+                    122300,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "SK케미칼",
+                "id": "285130",
+                "discretion": "mandatory",
+                "value": [
+                    1013708.0,
+                    0.0,
+                    58600,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "HS효성첨단소재",
+                "id": "298050",
+                "discretion": "mandatory",
+                "value": [
+                    1010228.0,
+                    0.0,
+                    225500,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "name": "이수스페셜티케미컬",
+                "id": "457190",
+                "discretion": "mandatory",
+                "value": [
+                    2755961.0,
+                    0.0,
+                    91200,
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    }
+]
