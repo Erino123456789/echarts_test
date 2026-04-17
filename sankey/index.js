@@ -10,6 +10,16 @@ var selectedYear = null;
 var selectedQuarter = null;
 var selectedType = null;
 
+var MAIN_CHAIN_CODES = [
+  "ifrs-full_Revenue",
+  "ifrs-full_GrossProfit",
+  "dart_OperatingIncomeLoss",
+  "ifrs-full_ProfitLossBeforeTax",
+  "ifrs-full_ProfitLossFromContinuingOperations",
+  "ifrs-full_ProfitLoss",
+  "ifrs-full_ComprehensiveIncome",
+];
+
 // (1) CSV 로드 (ticker 폴더 내 CSV 파일)
 function loadCompanyData() {
   Papa.parse("ticker/krx_dart_merged.csv", {
@@ -292,33 +302,104 @@ function loadChartData() {
     });
 }
 
-// (6) Sankey 차트 렌더링 (기존 로직 유지)
-function generateSankeyLinks(nodes) {
-  const mainChainCodes = [
-    "ifrs-full_Revenue",
-    "ifrs-full_GrossProfit",
-    "dart_OperatingIncomeLoss",
-    "ifrs-full_ProfitLossBeforeTax",
-    "ifrs-full_ProfitLossFromContinuingOperations",
-    "ifrs-full_ProfitLoss",
-    "ifrs-full_ComprehensiveIncome",
-  ];
-  // 메인체인 노드의 인덱스 수집
-  let mainChainIndices = [];
+function getMainChainIndices(nodes) {
+  const mainChainIndices = [];
   nodes.forEach((node, i) => {
-    if (mainChainCodes.includes(node.code)) {
+    if (MAIN_CHAIN_CODES.includes(node.code)) {
       mainChainIndices.push(i);
     }
   });
-  // 값이 0인 메인 노드의 flag는 바로 다음 메인체인 노드의 flag로 설정
+  return mainChainIndices;
+}
+
+function normalizeMainChainFlags(nodes, mainChainIndices) {
   for (let j = 0; j < mainChainIndices.length - 1; j++) {
     const idx = mainChainIndices[j];
     if (nodes[idx].value === 0) {
       nodes[idx].flag = nodes[mainChainIndices[j + 1]].flag;
     }
   }
+}
+
+function assignNodeDepths(nodes) {
+  const mainChainIndices = getMainChainIndices(nodes);
+  if (mainChainIndices.length === 0) {
+    nodes.forEach((node) => {
+      node.depth = 0;
+    });
+    return 0;
+  }
+
+  normalizeMainChainFlags(nodes, mainChainIndices);
+
+  nodes.forEach((node) => {
+    delete node.depth;
+  });
+
+  nodes[mainChainIndices[0]].depth = 0;
+
+  for (let i = 0; i < mainChainIndices.length - 1; i++) {
+    const leftIndex = mainChainIndices[i];
+    const rightIndex = mainChainIndices[i + 1];
+    const leftNode = nodes[leftIndex];
+    const rightNode = nodes[rightIndex];
+    const leftDepth = leftNode.depth;
+
+    const subNodes = nodes
+      .slice(leftIndex + 1, rightIndex)
+      .filter((node) => !MAIN_CHAIN_CODES.includes(node.code));
+
+    let rightDepth = leftDepth + 1;
+
+    if (subNodes.length > 0) {
+      if (leftNode.flag === rightNode.flag) {
+        const hasSameFlagSubNode = subNodes.some(
+          (sub) => sub.flag === leftNode.flag
+        );
+        rightDepth = hasSameFlagSubNode ? leftDepth + 2 : leftDepth + 1;
+      } else {
+        rightDepth = leftDepth + 2;
+      }
+    }
+
+    rightNode.depth = rightDepth;
+
+    subNodes.forEach((sub) => {
+      if (leftNode.flag === rightNode.flag) {
+        if (sub.flag === leftNode.flag) {
+          // 오른쪽 메인 노드로 새로 합류하는 항목
+          sub.depth = rightDepth - 1;
+        } else {
+          // 왼쪽 메인 노드에서 분기되어 나가는 항목
+          sub.depth = leftDepth + 1;
+        }
+      } else {
+        // 메인 노드의 flag가 다를 때는 중간 브리지 레벨에 배치
+        sub.depth = leftDepth + 1;
+      }
+    });
+  }
+
+  let maxDepth = 0;
+  nodes.forEach((node) => {
+    if (typeof node.depth !== "number") {
+      node.depth = 0;
+    }
+    if (node.depth > maxDepth) {
+      maxDepth = node.depth;
+    }
+  });
+
+  return maxDepth;
+}
+
+// (6) Sankey 차트 렌더링용 링크 생성
+function generateSankeyLinks(nodes) {
+  const mainChainIndices = getMainChainIndices(nodes);
+  normalizeMainChainFlags(nodes, mainChainIndices);
 
   let links = [];
+
   // 각 메인체인 구간에 대해 처리
   for (let i = 0; i < mainChainIndices.length - 1; i++) {
     const leftIndex = mainChainIndices[i];
@@ -329,7 +410,7 @@ function generateSankeyLinks(nodes) {
     // 메인 노드 사이의 서브 노드들(메인코드가 아닌 노드)
     const subNodes = nodes
       .slice(leftIndex + 1, rightIndex)
-      .filter((node) => !mainChainCodes.includes(node.code));
+      .filter((node) => !MAIN_CHAIN_CODES.includes(node.code));
 
     if (leftNode.flag === rightNode.flag) {
       // 같은 flag인 경우, 메인체인 링크 값은
@@ -341,6 +422,7 @@ function generateSankeyLinks(nodes) {
       } else {
         mainLinkValue = Math.abs(rightNode.value);
       }
+
       // 메인체인 A -> B 링크를 한 번만 추가
       links.push({
         source: leftNode.name,
@@ -392,40 +474,32 @@ function generateSankeyLinks(nodes) {
       }
     }
   }
+
   return links;
 }
 
 function renderChart(data) {
   currentChartData = data;
+
   // 컨테이너의 실제 너비(픽셀)를 구합니다.
   var container = document.getElementById("main");
   var containerWidth = container.clientWidth;
   // 왼쪽, 오른쪽 5%씩을 제외한 사용 가능한 너비 계산
-  var leftMargin = containerWidth * 0.05;
   var effectiveWidth = containerWidth * 0.9;
-  const mainChainCodes = [
-    "ifrs-full_Revenue",
-    "ifrs-full_GrossProfit",
-    "dart_OperatingIncomeLoss",
-    "ifrs-full_ProfitLossBeforeTax",
-    "ifrs-full_ProfitLossFromContinuingOperations",
-    "ifrs-full_ProfitLoss",
-    "ifrs-full_ComprehensiveIncome",
-  ];
-  const mainChainIndices = [];
-  data.forEach((node, i) => {
-    if (mainChainCodes.includes(node.code)) {
-      mainChainIndices.push(i);
-    }
-  });
+
+  const mainChainIndices = getMainChainIndices(data);
   const firstMainChainIndex = mainChainIndices[0];
+
   data.forEach((node, i) => {
     node.itemStyle =
       i === firstMainChainIndex
         ? { color: "gray" }
         : { color: node.flag === "income" ? "green" : "red" };
   });
+
+  assignNodeDepths(data);
   const links = generateSankeyLinks(data);
+
   let diffSubNodes = [];
   for (let i = 0; i < mainChainIndices.length - 1; i++) {
     for (let j = mainChainIndices[i] + 1; j < mainChainIndices[i + 1]; j++) {
@@ -434,16 +508,19 @@ function renderChart(data) {
       }
     }
   }
+
   const diffIndices = diffSubNodes.map((item) => item.index);
   data = data.filter((_, i) => !diffIndices.includes(i));
   diffSubNodes.sort((a, b) => b.index - a.index);
   diffSubNodes.forEach((item) => {
     data.push(item.node);
   });
+
   var colorMapping = {};
   data.forEach(function (node) {
     colorMapping[node.name] = node.itemStyle.color;
   });
+
   links.forEach(function (link) {
     if (useGradient) {
       link.lineStyle = {
@@ -464,14 +541,24 @@ function renderChart(data) {
       link.lineStyle = { color: colorMapping[link.target] };
     }
   });
-  console.log(links);
+
+  console.log("nodes with depth:", data);
+  console.log("links:", links);
+
   chart.setOption({
     tooltip: {
       trigger: "item",
       triggerOn: "mousemove",
       formatter: function (params) {
         if (params.dataType === "node") {
-          return "<b>" + params.name + "</b>: " + params.value.toLocaleString();
+          return (
+            "<b>" +
+            params.name +
+            "</b>: " +
+            params.value.toLocaleString() +
+            "<br/>depth: " +
+            params.data.depth
+          );
         }
         return (
           params.data.source +
@@ -515,5 +602,6 @@ window.addEventListener("resize", function () {
     chart.resize();
   }
 });
+
 // 페이지 로드 시 CSV 파싱
 loadCompanyData();
