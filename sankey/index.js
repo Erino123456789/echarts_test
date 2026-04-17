@@ -575,7 +575,7 @@ function renderChart(data) {
         width: effectiveWidth,
         nodeWidth: 30,
         nodeGap: 15,
-        layoutIterations: 0,
+        layoutIterations: 32,
         nodeAlign: "right",
         data: data,
         links: links,
