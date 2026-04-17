@@ -237,14 +237,7 @@ function updateTimeDisplay(sliderValue) {
 }
 
 function getPreferredPixelRatio() {
-  const deviceRatio = window.devicePixelRatio || 1;
-  const isDesktopViewport = window.innerWidth >= 1024;
-
-  if (isDesktopViewport && deviceRatio < 1.5) {
-    return 2;
-  }
-
-  return Math.min(deviceRatio, 2);
+  return 2;
 }
 
 function handleScreenshot() {
