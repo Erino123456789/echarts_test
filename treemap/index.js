@@ -236,6 +236,17 @@ function updateTimeDisplay(sliderValue) {
   console.log(`슬라이더 값: ${sliderValue}, 시간: ${timeString}`);
 }
 
+function getPreferredPixelRatio() {
+  const deviceRatio = window.devicePixelRatio || 1;
+  const isDesktopViewport = window.innerWidth >= 1024;
+
+  if (isDesktopViewport && deviceRatio < 1.5) {
+    return 2;
+  }
+
+  return Math.min(deviceRatio, 2);
+}
+
 function handleScreenshot() {
   const screenshotSelect = document.getElementById("screenshot-select");
   const selectedOption = screenshotSelect.value;
@@ -270,7 +281,10 @@ function captureCurrentScreenshot() {
   const chartContainer = document.getElementById("chart-container");
   return new Promise((resolve, reject) => {
     if (chartContainer) {
-      html2canvas(chartContainer, { backgroundColor: null })
+      html2canvas(chartContainer, {
+        backgroundColor: null,
+        scale: getPreferredPixelRatio(),
+      })
         .then(function (canvas) {
           const imgData = canvas.toDataURL("image/png");
           resolve(imgData);
@@ -390,6 +404,7 @@ function loadData(type, filename, showLoading = true, fallbackCallback = null) {
   var myChart = echarts.init(dom, null, {
     renderer: "canvas",
     useDirtyRect: false,
+    devicePixelRatio: getPreferredPixelRatio(),
   });
   var option;
   if (showLoading && initialLoad) {
@@ -699,6 +714,7 @@ function loadCombinedData(
       var myChart = echarts.init(dom, null, {
         renderer: "canvas",
         useDirtyRect: false,
+        devicePixelRatio: getPreferredPixelRatio(),
       });
       var option;
       if (showLoading && initialLoad) {
