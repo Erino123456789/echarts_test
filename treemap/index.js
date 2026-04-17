@@ -8,6 +8,9 @@ let startDateFile;
 let currentBaseFiles = {};
 let dateSelectionMap = {};
 let currentMarketLabel = "KOSPI";
+let pendingUrlState = null;
+let isEmbedMode = false;
+let suppressUrlSync = false;
 
 // 기존 변수 아래에 추가
 let currentFilters = {
@@ -150,6 +153,196 @@ function populateDateSelects(options) {
   if (options.length > 0) {
     $startDateSelect.prop("selectedIndex", 1);
   }
+}
+
+function getRepresentativeFile(files) {
+  if (!files) return "";
+  return files.KOSPI || files.KOSDAQ || "";
+}
+
+function findDateOptionValueByFile(file) {
+  if (!file) return "";
+  const targetDateKey = extractDateKey(file);
+  const entries = Object.entries(dateSelectionMap);
+  const matched = entries.find(function ([, files]) {
+    return (
+      extractDateKey(getRepresentativeFile(files)) === targetDateKey ||
+      files.KOSPI === file ||
+      files.KOSDAQ === file
+    );
+  });
+  return matched ? matched[0] : "";
+}
+
+function getCurrentStateForSharing(embed) {
+  const params = new URLSearchParams();
+  const market = $("#market-select").val() || currentMarketLabel || "KOSPI";
+  const startValue = $("#start-date-select").val();
+  const endValue = $("#end-date-select").val();
+  const startFiles = dateSelectionMap[startValue] || currentBaseFiles;
+  const endFiles = dateSelectionMap[endValue] || null;
+  const sliderValue = document.getElementById("time-slider").value;
+
+  params.set("market", market);
+  params.set("depth", $("#depth-select").val() || "3");
+  params.set("slider", sliderValue);
+
+  if (startFiles) {
+    params.set("start", getRepresentativeFile(startFiles));
+  }
+  if (endFiles) {
+    params.set("end", getRepresentativeFile(endFiles));
+  }
+
+  const query = $("#search-input").val().trim();
+  const marketCap = $("#market-cap-input").val().trim();
+  const change = $("#change-input").val().trim();
+  const change2 = $("#change-input2").val().trim();
+
+  if (query) params.set("query", query);
+  if (marketCap) {
+    params.set("marketCap", marketCap);
+    params.set("marketCapOp", $("#market-cap-select").val());
+  }
+  if (change) {
+    params.set("change", change);
+    params.set("changeOp", $("#change-select").val());
+  }
+  if (change2) {
+    params.set("change2", change2);
+    params.set("changeOp2", $("#change-select2").val());
+  }
+  if (embed) {
+    params.set("embed", "1");
+  }
+
+  return params;
+}
+
+function syncUrlWithCurrentState() {
+  if (suppressUrlSync || isEmbedMode) return;
+  const params = getCurrentStateForSharing(false);
+  const newUrl = `${window.location.pathname}?${params.toString()}`;
+  window.history.replaceState({}, "", newUrl);
+}
+
+function parseUrlState() {
+  const params = new URLSearchParams(window.location.search);
+  const market = params.get("market");
+  const start = params.get("start");
+
+  isEmbedMode = params.get("embed") === "1";
+  if (!market || !start) {
+    return null;
+  }
+
+  return {
+    market: market,
+    start: start,
+    end: params.get("end") || "",
+    depth: params.get("depth") || "3",
+    query: params.get("query") || "",
+    marketCap: params.get("marketCap") || "",
+    marketCapOp: params.get("marketCapOp") || "gt",
+    change: params.get("change") || "",
+    changeOp: params.get("changeOp") || "gt",
+    change2: params.get("change2") || "",
+    changeOp2: params.get("changeOp2") || "gt",
+    slider: params.get("slider") || "",
+  };
+}
+
+function applyEmbedMode() {
+  if (!isEmbedMode) return;
+
+  const filterButton = document.getElementById("open-filter-btn");
+  const sliderContainer = document.getElementById("slider-container");
+  const screenshotOutput = document.getElementById("screenshot-output");
+  const chartContainer = document.getElementById("chart-container");
+
+  if (filterButton) filterButton.style.display = "none";
+  if (sliderContainer) sliderContainer.style.display = "none";
+  if (screenshotOutput) screenshotOutput.style.display = "none";
+  if (chartContainer) {
+    chartContainer.style.marginTop = "0";
+    chartContainer.style.height = "100vh";
+  }
+}
+
+function applyPendingUrlStateIfReady() {
+  if (!pendingUrlState) return;
+  if ($("#market-select").val() !== pendingUrlState.market) return;
+
+  const startOptionValue = findDateOptionValueByFile(pendingUrlState.start);
+  if (!startOptionValue) return;
+
+  suppressUrlSync = true;
+  $("#start-date-select").val(startOptionValue);
+
+  const endOptionValue = findDateOptionValueByFile(pendingUrlState.end);
+  $("#end-date-select").val(endOptionValue || "");
+
+  $("#depth-select").val(pendingUrlState.depth);
+  $("#search-input").val(pendingUrlState.query);
+  $("#market-cap-select").val(pendingUrlState.marketCapOp);
+  $("#market-cap-input").val(pendingUrlState.marketCap);
+  $("#change-select").val(pendingUrlState.changeOp);
+  $("#change-input").val(pendingUrlState.change);
+  $("#change-select2").val(pendingUrlState.changeOp2);
+  $("#change-input2").val(pendingUrlState.change2);
+
+  $("#apply-filter-btn").trigger("click");
+
+  if (pendingUrlState.slider !== "") {
+    $("#time-slider").val(pendingUrlState.slider);
+    document
+      .getElementById("time-slider")
+      .dispatchEvent(new Event("input"));
+  }
+
+  pendingUrlState = null;
+  suppressUrlSync = false;
+}
+
+function copyTextToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+
+  return new Promise(function (resolve, reject) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+      document.execCommand("copy");
+      resolve();
+    } catch (error) {
+      reject(error);
+    } finally {
+      document.body.removeChild(textarea);
+    }
+  });
+}
+
+function handleShareView() {
+  const embedParams = getCurrentStateForSharing(true);
+  const embedUrl = `${window.location.origin}${window.location.pathname}?${embedParams.toString()}`;
+  const iframeCode =
+    `<iframe src="${embedUrl}" ` +
+    `style="width:100%;height:100vh;border:0;" loading="lazy"></iframe>`;
+
+  copyTextToClipboard(iframeCode)
+    .then(function () {
+      alert("iframe 코드가 복사되었습니다.");
+    })
+    .catch(function () {
+      window.prompt("아래 iframe 코드를 복사하세요.", iframeCode);
+    });
 }
 
 function loadAndCacheData(filePrefix, date) {
@@ -1061,9 +1254,12 @@ document.getElementById("time-slider").addEventListener("input", function () {
     : "KOSDAQ";
   console.log(currentMarketType);
   loadData(currentMarketType, newFilename, false);
+  syncUrlWithCurrentState();
 });
 
 window.onload = function () {
+  pendingUrlState = parseUrlState();
+  applyEmbedMode();
   initializeFilters();
   loadJsonList("kospi")
     .then((data) => {
@@ -1295,7 +1491,9 @@ function initializeFilters() {
 }
 
 $(document).ready(function () {
-  $("#market-select").val("KOSPI").trigger("change");
+  const initialMarket = pendingUrlState ? pendingUrlState.market : "KOSPI";
+  $("#market-select").val(initialMarket).trigger("change");
+  $("#share-view-btn").on("click", handleShareView);
 });
 
 $("#market-select").on("change", function () {
@@ -1312,6 +1510,7 @@ $("#market-select").on("change", function () {
             KOSDAQ: kosdaqRes[0],
           })
         );
+        applyPendingUrlStateIfReady();
       })
       .fail(function () {
         alert("날짜 목록을 불러오는데 실패했습니다.");
@@ -1323,6 +1522,7 @@ $("#market-select").on("change", function () {
     market === "KOSPI" ? "kospi_json_list.json" : "kosdaq_json_list.json";
   $.getJSON(jsonFile + "?_=" + new Date().getTime(), function (data) {
     populateDateSelects(buildDateOptions(market, data));
+    applyPendingUrlStateIfReady();
   }).fail(function () {
     alert("날짜 목록을 불러오는데 실패했습니다.");
   });
@@ -1582,6 +1782,7 @@ $("#apply-filter-btn").on("click", function () {
           left: "center",
         };
         myChart.setOption(option);
+        syncUrlWithCurrentState();
       })
       .fail(function () {
         alert("선택한 날짜 범위의 데이터를 불러오는데 실패했습니다.");
@@ -1629,6 +1830,7 @@ $("#apply-filter-btn").on("click", function () {
           left: "center",
         };
         myChart.setOption(option);
+        syncUrlWithCurrentState();
       })
       .fail(function () {
         // 404 오류 발생 시, 시간값 추가해서 재시도
@@ -1667,6 +1869,7 @@ $("#apply-filter-btn").on("click", function () {
             option.series[0].name = market;
             currentMarketLabel = market;
             myChart.setOption(option);
+            syncUrlWithCurrentState();
           }).fail(function () {
             alert("선택한 날짜의 데이터를 불러오는데 실패했습니다.");
           });
